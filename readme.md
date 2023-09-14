@@ -2,7 +2,7 @@
 
 This repository includes all code for the Gihub Copilot WSU capstone project
 
-**This branch is for the Database System project *using Github Copilot***
+**This branch is for the Database System project *using NO generative AI***
 
 ## Team Members
 
