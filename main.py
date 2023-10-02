@@ -1,23 +1,22 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6 import uic
 
-app = QApplication(sys.argv)
 
-window = QWidget()
-window.setWindowTitle("CptS421 - Case Study 1")
-window.setGeometry(400, 400, 400, 200)
+class MyApp(QMainWindow):  # Change QWidget to QMainWindow
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('myGUI.ui', self)
 
-label = QLabel("Business Page:", window)
-label.move(10, 10)
 
-# utton = QPushButton("Click Me", window)
-# button.move(150, 100)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    app.setStyleSheet(''' QWidget { font-size: 30px; }  ''')
 
-# def on_button_click():
-#    label.setText("Button Clicked!")
+    myApp = MyApp()
+    myApp.show()
 
-# button.clicked.connect(on_button_click)
-
-window.show()
-
-sys.exit(app.exec())
+    try:
+        sys.exit(app.exec())
+    except SystemExit:
+        print('Closing Window...')
