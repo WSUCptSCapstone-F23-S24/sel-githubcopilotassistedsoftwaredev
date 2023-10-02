@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6 import uic
 
 
-class MyApp(QMainWindow):  # Change QWidget to QMainWindow
+class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('myGUI.ui', self)
@@ -11,8 +11,6 @@ class MyApp(QMainWindow):  # Change QWidget to QMainWindow
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    app.setStyleSheet(''' QWidget { font-size: 30px; }  ''')
-
     myApp = MyApp()
     myApp.show()
 
