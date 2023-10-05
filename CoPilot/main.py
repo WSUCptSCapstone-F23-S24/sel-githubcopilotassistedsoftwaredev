@@ -10,6 +10,7 @@ import time
 zipcodes = ["99017", "99033","99102","99104","99111","99113","99163","99164"]
 states = ["WA", "OR", "ID"]
 cities = ["Seattle", "Pullman", "Portland", "Spokane", "Boise", "Moscow", "Tacoma", "Olympia"]
+foodEstablishments = ["Jack in the Box", "McDonalds", "Chipotle", "Wendy's"]
 
 
 
@@ -19,7 +20,10 @@ def openWindow():
     window = QWidget()
     window.setWindowTitle("Business Application")
     # make the window 720p
-    window.resize(1280, 720)
+    window.resize(1050, 700)
+    # make the window unable to be resized
+    window.setFixedSize(window.size())
+    
     # make a grey background behind the zipcode selector
     background1 = QLabel(window)
     background1.setStyleSheet("background-color: grey;")
@@ -110,7 +114,7 @@ def openWindow():
     # make another grey background behind Zip Code information
     background2 = QLabel(window)
     background2.setStyleSheet("background-color: grey;")
-    background2.move(700, 0)
+    background2.move(500, 0)
     # make the size fit all of the selectors
     background2.resize(550, 200)
 
@@ -119,7 +123,7 @@ def openWindow():
     # set the text of the label
     zipCodeInfoLabel.setText("ZIP Code Information")
     # move the label above the zipcode selector
-    zipCodeInfoLabel.move(900, 20)
+    zipCodeInfoLabel.move(700, 20)
     # make the label look nice
     zipCodeInfoLabel.setStyleSheet("color: black;")
     # resize the label
@@ -132,7 +136,7 @@ def openWindow():
     # set the text of the label
     businessLabel.setText("Business")
     # move the label above the zipcode selector
-    businessLabel.move(750, 50)
+    businessLabel.move(550, 50)
     # make the label look nice
     businessLabel.setStyleSheet("color: black;")
     # resize the label
@@ -145,7 +149,7 @@ def openWindow():
     # set the text of the label
     populationLabel.setText("Population")
     # move the label above the zipcode selector
-    populationLabel.move(750, 100)
+    populationLabel.move(550, 100)
     # make the label look nice
     populationLabel.setStyleSheet("color: black;")
     # resize the label
@@ -158,7 +162,7 @@ def openWindow():
     # set the text of the label
     averageIncomeLabel.setText("Average Income")
     # move the label above the zipcode selector
-    averageIncomeLabel.move(750, 150)
+    averageIncomeLabel.move(550, 150)
     # make the label look nice
     averageIncomeLabel.setStyleSheet("color: black;")
     # resize the label
@@ -169,35 +173,41 @@ def openWindow():
     # add text box for business
     businessTextBox = QLineEdit(window)
     # move the text box
-    businessTextBox.move(900, 50)
+    businessTextBox.move(700, 50)
     # make the text box look nice
     businessTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     businessTextBox.resize(300, 25)
     # make the text box text larger
     businessTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    businessTextBox.setReadOnly(True)
 
     # add text box for population
     populationTextBox = QLineEdit(window)
     # move the text box
-    populationTextBox.move(900, 100)
+    populationTextBox.move(700, 100)
     # make the text box look nice
     populationTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     populationTextBox.resize(300, 25)
     # make the text box text larger
     populationTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    populationTextBox.setReadOnly(True)
 
     # add text box for average income
     averageIncomeTextBox = QLineEdit(window)
     # move the text box
-    averageIncomeTextBox.move(900, 150)
+    averageIncomeTextBox.move(700, 150)
     # make the text box look nice
     averageIncomeTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     averageIncomeTextBox.resize(300, 25)
     # make the text box text larger
     averageIncomeTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    averageIncomeTextBox.setReadOnly(True)
 
 
 
@@ -205,7 +215,7 @@ def openWindow():
     # make another grey background behind Filter Categories
     background3 = QLabel(window)
     background3.setStyleSheet("background-color: grey;")
-    background3.move(0, 200)
+    background3.move(0, 175)
     # make the size fit all of the selectors
     background3.resize(300, 300)
 
@@ -214,7 +224,7 @@ def openWindow():
     # set the text of the label
     filterCategoriesLabel.setText("Filter Categories")
     # move the label above the zipcode selector
-    filterCategoriesLabel.move(65, 220)
+    filterCategoriesLabel.move(65, 195)
     # make the label look nice
     filterCategoriesLabel.setStyleSheet("color: black;")
     # resize the label
@@ -226,7 +236,7 @@ def openWindow():
     # add drop down menu under filter categories without another label
     filterCategoriesSelector = QComboBox(window)
     # move zipcode selector to the right of the city selector
-    filterCategoriesSelector.move(20, 250)
+    filterCategoriesSelector.move(20, 225)
     # make the zipcode selector look nice
     filterCategoriesSelector.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # set the size of the zipcode selector
@@ -241,7 +251,7 @@ def openWindow():
     # make another grey background behind Filtered Businesses
     background4 = QLabel(window)
     background4.setStyleSheet("background-color: grey;")
-    background4.move(550, 225)
+    background4.move(350, 225)
     # make the size fit all of the selectors
     background4.resize(700, 250)
 
@@ -250,7 +260,7 @@ def openWindow():
     # set the text of the label
     filteredBusinessesLabel.setText("Filtered Businesses")
     # move the label above the zipcode selector
-    filteredBusinessesLabel.move(575, 230)
+    filteredBusinessesLabel.move(375, 230)
     # make the label look nice
     filteredBusinessesLabel.setStyleSheet("color: black;")
     # resize the label
@@ -263,7 +273,7 @@ def openWindow():
     # set the text of the label
     nameLabel.setText("Name")
     # move the label above the zipcode selector
-    nameLabel.move(575, 300)
+    nameLabel.move(375, 300)
     # make the label look nice
     nameLabel.setStyleSheet("color: black;")
     # resize the label
@@ -276,7 +286,7 @@ def openWindow():
     # set the text of the label
     addressLabel.setText("Address")
     # move the label above the zipcode selector
-    addressLabel.move(775, 300)
+    addressLabel.move(575, 300)
     # make the label look nice
     addressLabel.setStyleSheet("color: black;")
     # resize the label
@@ -289,7 +299,7 @@ def openWindow():
     # set the text of the label
     ratingLabel.setText("Rating")
     # move the label above the zipcode selector
-    ratingLabel.move(975, 300)
+    ratingLabel.move(775, 300)
     # make the label look nice
     ratingLabel.setStyleSheet("color: black;")
     # resize the label
@@ -302,7 +312,7 @@ def openWindow():
     # set the text of the label
     reviewsLabel.setText("Reviews")
     # move the label above the zipcode selector
-    reviewsLabel.move(1050, 300)
+    reviewsLabel.move(850, 300)
     # make the label look nice
     reviewsLabel.setStyleSheet("color: black;")
     # resize the label
@@ -315,7 +325,7 @@ def openWindow():
     # set the text of the label
     checkinsLabel.setText("Check-ins")
     # move the label above the zipcode selector
-    checkinsLabel.move(1150, 300)
+    checkinsLabel.move(950, 300)
     # make the label look nice
     checkinsLabel.setStyleSheet("color: black;")
     # resize the label
@@ -326,57 +336,134 @@ def openWindow():
     # add text box for name
     nameTextBox = QLineEdit(window)
     # move the text box
-    nameTextBox.move(555, 325)
+    nameTextBox.move(355, 325)
     # make the text box look nice
     nameTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     nameTextBox.resize(150, 25)
     # make the text box text larger
     nameTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    nameTextBox.setReadOnly(True)
 
     # add text box for address
     addressTextBox = QLineEdit(window)
     # move the text box
-    addressTextBox.move(700, 325)
+    addressTextBox.move(500, 325)
     # make the text box look nice
     addressTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     addressTextBox.resize(260, 25)
     # make the text box text larger
     addressTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    addressTextBox.setReadOnly(True)
 
     # add text box for rating
     ratingTextBox = QLineEdit(window)
     # move the text box
-    ratingTextBox.move(960, 325)
+    ratingTextBox.move(760, 325)
     # make the text box look nice
     ratingTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     ratingTextBox.resize(80, 25)
     # make the text box text larger
     ratingTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    ratingTextBox.setReadOnly(True)
     
     # add text box for reviews
     reviewsTextBox = QLineEdit(window)
     # move the text box
-    reviewsTextBox.move(1040, 325)
+    reviewsTextBox.move(840, 325)
     # make the text box look nice
     reviewsTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     reviewsTextBox.resize(95, 25)
     # make the text box text larger
     reviewsTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    reviewsTextBox.setReadOnly(True)
 
     # add text box for checkins
     checkinsTextBox = QLineEdit(window)
     # move the text box
-    checkinsTextBox.move(1135, 325)
+    checkinsTextBox.move(935, 325)
     # make the text box look nice
     checkinsTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
     # resize the text box
     checkinsTextBox.resize(115, 25)
     # make the text box text larger
     checkinsTextBox.setFont(QFont("Arial", 15))
+    # make the textbox unable to be edited
+    checkinsTextBox.setReadOnly(True)
+    
+
+    # make a gray background on the bottom left of the window
+    background5 = QLabel(window)
+    background5.setStyleSheet("background-color: grey;")
+    background5.move(0, 500)
+    # make the size fit all of the selectors
+    background5.resize(500, 200)
+
+    # add a label inside of the gray background for popular businesses
+    popularBusinessesLabel = QLabel(window)
+    # set the text of the label
+    popularBusinessesLabel.setText("Popular Businesses")
+    # move the label above the zipcode selector
+    popularBusinessesLabel.move(20, 500)
+    # make the label look nice
+    popularBusinessesLabel.setStyleSheet("color: black;")
+    # resize the label
+    popularBusinessesLabel.resize(300, 25)
+    # make the label text larger
+    popularBusinessesLabel.setFont(QFont("Arial", 15))
+
+    # add a large textbox below popularbusinesseslabel
+    popularBusinessesTextBox = QTextEdit(window)
+    # move the text box
+    popularBusinessesTextBox.move(20, 525)
+    # make the text box look nice
+    popularBusinessesTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
+    # resize the text box
+    popularBusinessesTextBox.resize(460, 150)
+    # make the textbox unable to be edited
+    popularBusinessesTextBox.setReadOnly(True)
+
+    # make a gray background on the bottom right of the window
+    background6 = QLabel(window)
+    background6.setStyleSheet("background-color: grey;")
+    background6.move(550, 500)
+    # make the size fit all of the selectors
+    background6.resize(500, 200)
+
+    # add a label inside of the gray background for successful businesses
+    successfulBusinessesLabel = QLabel(window)
+    # set the text of the label
+    successfulBusinessesLabel.setText("Successful Businesses")
+    # move the label above the zipcode selector
+    successfulBusinessesLabel.move(570, 500)
+    # make the label look nice
+    successfulBusinessesLabel.setStyleSheet("color: black;")
+    # resize the label
+    successfulBusinessesLabel.resize(300, 25)
+    # make the label text larger
+    successfulBusinessesLabel.setFont(QFont("Arial", 15))
+
+    # add a large textbox below successfulbusinesseslabel
+    successfulBusinessesTextBox = QTextEdit(window)
+    # move the text box
+    successfulBusinessesTextBox.move(570, 525)
+    # make the text box look nice
+    successfulBusinessesTextBox.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
+    # resize the text box
+    successfulBusinessesTextBox.resize(460, 150)
+    # make the textbox unable to be edited
+    successfulBusinessesTextBox.setReadOnly(True)
+
+    
+    
+    
 
 
 
