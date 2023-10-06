@@ -51,6 +51,9 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
     </property>
@@ -222,6 +225,9 @@
       <height>201</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
     </property>
@@ -319,86 +325,6 @@
      <string>93398.0</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget_3">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>90</y>
-      <width>231</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Sunken</enum>
-    </property>
-    <property name="flow">
-     <enum>QListView::TopToBottom</enum>
-    </property>
-    <property name="viewMode">
-     <enum>QListView::ListMode</enum>
-    </property>
-    <item>
-     <property name="text">
-      <string>23                     Restaurants</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>9                       Beauty &amp; Spas</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>9                       Fast Food</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>7                       Nail Salons</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="label_13">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>60</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="text">
-     <string># of Business</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_14">
-    <property name="geometry">
-     <rect>
-      <x>820</x>
-      <y>60</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="text">
-     <string>Category</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
@@ -420,6 +346,9 @@
       <width>971</width>
       <height>201</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -539,6 +468,9 @@
     <property name="autoFillBackground">
      <bool>false</bool>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 193, 194);</string>
+    </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
     </property>
@@ -553,9 +485,9 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>491</y>
+      <y>481</y>
       <width>431</width>
-      <height>181</height>
+      <height>191</height>
      </rect>
     </property>
    </widget>
@@ -567,6 +499,12 @@
       <width>451</width>
       <height>221</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(170, 207, 188);</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -582,13 +520,364 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>490</y>
+      <y>480</y>
       <width>431</width>
-      <height>181</height>
+      <height>191</height>
      </rect>
     </property>
    </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>290</y>
+      <width>671</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <row>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>3</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>4</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>5</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>Business Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Address</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>City</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Stars</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Review Count</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Review Rating</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string># of Checkins</string>
+     </property>
+    </column>
+    <item row="0" column="0">
+     <property name="text">
+      <string>All Brite Dental</string>
+     </property>
+    </item>
+    <item row="0" column="1">
+     <property name="text">
+      <string>4055 S Arizona Ave, Ste 7</string>
+     </property>
+    </item>
+    <item row="0" column="2">
+     <property name="text">
+      <string>Chandler</string>
+     </property>
+    </item>
+    <item row="0" column="3">
+     <property name="text">
+      <string>2.5</string>
+     </property>
+    </item>
+    <item row="0" column="4">
+     <property name="text">
+      <string>5</string>
+     </property>
+    </item>
+    <item row="0" column="5">
+     <property name="text">
+      <string>4.0</string>
+     </property>
+    </item>
+    <item row="0" column="6">
+     <property name="text">
+      <string>4</string>
+     </property>
+    </item>
+    <item row="1" column="0">
+     <property name="text">
+      <string>Arby's</string>
+     </property>
+    </item>
+    <item row="1" column="1">
+     <property name="text">
+      <string>2900 S Alma School Rd</string>
+     </property>
+    </item>
+    <item row="1" column="2">
+     <property name="text">
+      <string>Chandler</string>
+     </property>
+    </item>
+    <item row="1" column="3">
+     <property name="text">
+      <string>4.0</string>
+     </property>
+    </item>
+    <item row="1" column="4">
+     <property name="text">
+      <string>6</string>
+     </property>
+    </item>
+    <item row="1" column="5">
+     <property name="text">
+      <string>4.0</string>
+     </property>
+    </item>
+    <item row="1" column="6">
+     <property name="text">
+      <string>97</string>
+     </property>
+    </item>
+    <item row="2" column="0">
+     <property name="text">
+      <string>Baskin Robbins</string>
+     </property>
+    </item>
+    <item row="2" column="1">
+     <property name="text">
+      <string>4970 S Alma School Rd</string>
+     </property>
+    </item>
+    <item row="2" column="2">
+     <property name="text">
+      <string>Chandler</string>
+     </property>
+    </item>
+    <item row="2" column="3">
+     <property name="text">
+      <string>1.5</string>
+     </property>
+    </item>
+    <item row="2" column="4">
+     <property name="text">
+      <string>10</string>
+     </property>
+    </item>
+    <item row="2" column="5">
+     <property name="text">
+      <string>1.9</string>
+     </property>
+    </item>
+    <item row="2" column="6">
+     <property name="text">
+      <string>39</string>
+     </property>
+    </item>
+    <item row="3" column="0">
+     <property name="text">
+      <string>Blu Burger Grille</string>
+     </property>
+    </item>
+    <item row="3" column="1">
+     <property name="text">
+      <string>4995 S Alma School, Ste 1</string>
+     </property>
+    </item>
+    <item row="3" column="2">
+     <property name="text">
+      <string>Chandler</string>
+     </property>
+    </item>
+    <item row="3" column="3">
+     <property name="text">
+      <string>3.5</string>
+     </property>
+    </item>
+    <item row="3" column="4">
+     <property name="text">
+      <string>73</string>
+     </property>
+    </item>
+    <item row="3" column="5">
+     <property name="text">
+      <string>3.778</string>
+     </property>
+    </item>
+    <item row="3" column="6">
+     <property name="text">
+      <string>206</string>
+     </property>
+    </item>
+    <item row="4" column="0">
+     <property name="text">
+      <string>chandler Nail and Sp</string>
+     </property>
+    </item>
+    <item row="4" column="1">
+     <property name="text">
+      <string>3165 S Alma School Rd</string>
+     </property>
+    </item>
+    <item row="4" column="2">
+     <property name="text">
+      <string>Chandler</string>
+     </property>
+    </item>
+    <item row="4" column="3">
+     <property name="text">
+      <string>2.5</string>
+     </property>
+    </item>
+    <item row="4" column="4">
+     <property name="text">
+      <string>6</string>
+     </property>
+    </item>
+    <item row="4" column="5">
+     <property name="text">
+      <string>2.667</string>
+     </property>
+    </item>
+    <item row="4" column="6">
+     <property name="text">
+      <string>13</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>60</y>
+      <width>231</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>#of Business</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Category</string>
+     </property>
+    </column>
+    <item row="0" column="0">
+     <property name="text">
+      <string>23</string>
+     </property>
+    </item>
+    <item row="0" column="1">
+     <property name="text">
+      <string>Restaurants</string>
+     </property>
+    </item>
+    <item row="1" column="0">
+     <property name="text">
+      <string>9</string>
+     </property>
+    </item>
+    <item row="1" column="1">
+     <property name="text">
+      <string>Beauty &amp; Spas</string>
+     </property>
+    </item>
+    <item row="2" column="0">
+     <property name="text">
+      <string>9</string>
+     </property>
+    </item>
+    <item row="2" column="1">
+     <property name="text">
+      <string>Fast Food</string>
+     </property>
+    </item>
+    <item row="3" column="0">
+     <property name="text">
+      <string>7</string>
+     </property>
+    </item>
+    <item row="3" column="1">
+     <property name="text">
+      <string>Nail Salons</string>
+     </property>
+    </item>
+    <item row="4" column="0">
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item row="4" column="1">
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+   </widget>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -599,7 +888,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
