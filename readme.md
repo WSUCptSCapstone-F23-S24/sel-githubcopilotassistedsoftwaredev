@@ -47,6 +47,7 @@ Currently, the application has no database back-end, so data on the front-end is
 
 ## Additional Documentation
 [Metric Tracking Document](https://docs.google.com/spreadsheets/d/1ymLoq1peAggIlSSYoW2vvT3tpB8PEj7SNVEC08-0Hpo/edit?usp=sharing)
+[Case Study 1 Part 1 Report](https://docs.google.com/document/d/1Tt-thmhBi_Uz75E4v8us9cPoAFDKK6eRIz1PHmFuLgI/edit?usp=sharing).
 
 ## License
 Copyright (c) 2023 Joshua Burke, Joshua Maloy, Ryan Luders, Jay-Ar Arsenio
