@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt6 import uic
 import json
 
@@ -16,23 +16,29 @@ class MyApp(QMainWindow):
         self.ui.StateSelector.addItems(sorted(self.states))
         self.ui.CitySelector.addItems(sorted(self.cities))
         self.ui.ZipcodeSelector.addItems(sorted(self.zipcodes))
+        self.ui.CategoryList.addItems(sorted(self.businessList[0]['categories']))
+        self.ui.BusinessCountLabel.setText(str(len(self.businessList)))
 
         self.ui.StateSelector.currentTextChanged.connect(self.updateCitySelector)
-        self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodeSelector)        
+        self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodeSelector)  
+        self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateCategoryList)
+
+
+
 
     # Function to handle loading all data so init is cleaner
     def loadData(self):
         # Read business data
-        self.businessList = self.loadFile('./data/yelp_business.json')
+        self.businessList = self.loadFile('yelp_business.json')
 
         # Read checkin data
-        self.checkinList = self.loadFile('./data/yelp_checkin.json')
+        self.checkinList = self.loadFile('yelp_checkin.json')
 
         # Read review data
-        self.reviewList = self.loadFile('./data/yelp_review.json')
+        self.reviewList = self.loadFile('yelp_review.json')
 
         # Read user data
-        self.userList = self.loadFile('./data/yelp_user.json')
+        self.userList = self.loadFile('yelp_user.json')
 
         # Load location selector data
         self.loadLocations()
@@ -87,6 +93,19 @@ class MyApp(QMainWindow):
             self.ui.ZipcodeSelector.clearSelection()
             self.ui.ZipcodeSelector.clear()
             self.ui.ZipcodeSelector.addItems(sorted(self.citytozipcode[str(city)]))
+
+
+    def updateCategoryList(self):
+        if (self.ui.ZipcodeSelector.currentItem()):
+            zipcode = self.ui.ZipcodeSelector.currentItem().text()
+            self.ui.CategoryList.clearSelection()
+            self.ui.CategoryList.clear()
+            for business in self.businessList:
+                if business['postal_code'] == zipcode:
+                    self.ui.CategoryList.addItems(sorted(business['categories']))
+                    break 
+    
+        
 
         
 
