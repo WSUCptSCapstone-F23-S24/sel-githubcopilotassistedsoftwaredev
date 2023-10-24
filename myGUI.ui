@@ -64,7 +64,7 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="StateSelector">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -79,7 +79,7 @@
      </font>
     </property>
     <property name="placeholderText">
-     <string>Az</string>
+     <string>Select</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -100,7 +100,7 @@
      <string>State</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="CitySelector">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -168,7 +168,7 @@
      <string>City</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget_2">
+   <widget class="QListWidget" name="ZipcodeSelector">
     <property name="geometry">
      <rect>
       <x>280</x>
