@@ -114,41 +114,6 @@
       <pointsize>12</pointsize>
      </font>
     </property>
-    <item>
-     <property name="text">
-      <string>Anthem</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Avondale</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Cave Creek</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Central City</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Central City Village</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Chandler</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>El Mirage</string>
-     </property>
-    </item>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
@@ -177,31 +142,6 @@
       <height>121</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string>85224</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>85225</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>85226</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>85248</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>85286</string>
-     </property>
-    </item>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
