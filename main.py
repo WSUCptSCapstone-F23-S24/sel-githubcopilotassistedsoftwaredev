@@ -127,6 +127,77 @@ def updateTable(self):
                         count += 1
         self.tableWidget_2.setItem(categories.index(i), 0, QTableWidgetItem(str(count)))
 
+#make updateList3 that fills the listWidget_4 with the unique categories
+def updateList3(self):
+    if self.listWidget_2.currentItem() == None: #modified
+        return
+    data = [] 
+    with open('yelp_business.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data.append(json.loads(line))
+    categories = []
+    for i in data:
+        if i['postal_code'] == self.listWidget_2.currentItem().text():
+            for j in i['categories']:
+                if j not in categories:
+                    categories.append(j)
+    self.listWidget_4.clear()
+    categories.sort()
+    for i in categories:
+        self.listWidget_4.addItem(i)
+
+#make updateTable2 that fills 6 columns (Buisiness Name, address, city, stars, Review_count, 
+#Review Rating Number of Checkins) with the buisnesses in the postal code selected listWidget 
+#that match the selected category in listWidget_4
+#using the yelp_business.json, yelp_review.json, and yelp_checkin.json files
+def updateTable2(self):
+    if self.listWidget_4.currentItem() == None: #modified
+        return
+    data = [] 
+    with open('yelp_business.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data.append(json.loads(line))
+    data2 = [] 
+    with open('yelp_review.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data2.append(json.loads(line))
+    data3 = [] 
+    with open('yelp_checkin.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data3.append(json.loads(line))
+    self.tableWidget.clear()
+    self.tableWidget.setRowCount(0)
+    self.tableWidget.setColumnCount(7)
+    col_headers = ['Business Name', 'Address', 'City', 'Stars', 'Review Count','Review Rating', '# of Checkins']
+    self.tableWidget.setHorizontalHeaderLabels(col_headers)
+    for i in data:
+        if i['postal_code'] == self.listWidget_2.currentItem().text():
+            for j in i['categories']:
+                if j == self.listWidget_4.currentItem().text():
+                    self.tableWidget.insertRow(self.tableWidget.rowCount())
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 0, QTableWidgetItem(i['name']))
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 1, QTableWidgetItem(i['address']))
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 2, QTableWidgetItem(i['city']))
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 3, QTableWidgetItem(str(i['stars'])))
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 4, QTableWidgetItem(str(i['review_count'])))
+                    totalstars = 0
+                    for k in data2:
+                        if k['business_id'] == i['business_id']:
+                            totalstars = totalstars + k['stars']
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 5, QTableWidgetItem(str(round(totalstars/i['review_count'], 1))))
+                    checkins = 0
+                    for k in data3:
+                        if k['business_id'] == i['business_id']:
+                            for l in k['time']:
+                                for m in l:
+                                    checkins += 1
+                    self.tableWidget.setItem(self.tableWidget.rowCount()-1, 6, QTableWidgetItem(str(checkins)))
+                    break
+    #sort the table by the business name
+    self.tableWidget.sortItems(0)
+
+
+
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -158,7 +229,9 @@ class MyApp(QMainWindow):
         self.listWidget_2.currentItemChanged.connect(lambda: updateLabel3(self))
         self.listWidget_2.currentItemChanged.connect(lambda: updateTable(self))
 
+        self.listWidget_2.currentItemChanged.connect(lambda: updateList3(self))
 
+        self.listWidget_4.currentItemChanged.connect(lambda: updateTable2(self))#scary good guess
 
 
 if __name__ == '__main__':
