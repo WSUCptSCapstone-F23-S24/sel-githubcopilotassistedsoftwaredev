@@ -188,10 +188,10 @@
      </rect>
     </property>
     <property name="text">
-     <string># of Buisinesses:</string>
+     <string># of Businesses:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="BusinessCountLabel">
+   <widget class="QLabel" name="BusinessCount">
     <property name="geometry">
      <rect>
       <x>610</x>
@@ -691,7 +691,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QTableWidget" name="tableWidget_2">
+   <widget class="QTableWidget" name="BusinessCategories">
     <property name="geometry">
      <rect>
       <x>720</x>

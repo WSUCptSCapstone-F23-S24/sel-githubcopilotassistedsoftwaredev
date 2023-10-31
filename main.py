@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
+from PyQt6.QtWidgets import *
 from PyQt6 import uic
 import json
 
@@ -16,12 +16,14 @@ class MyApp(QMainWindow):
         self.ui.StateSelector.addItems(sorted(self.states))
         self.ui.CitySelector.addItems(sorted(self.cities))
         self.ui.ZipcodeSelector.addItems(sorted(self.zipcodes))
-        self.ui.CategoryList.addItems(sorted(self.businessList[0]['categories']))
-        self.ui.BusinessCountLabel.setText(str(len(self.businessList)))
+        self.ui.CategoryList.addItems(self.businesscategories.keys())
+        self.ui.BusinessCount.setText(str(len(self.businessList)))
+
+        self.ui.CategoryList.setSortingEnabled(True)
 
         self.ui.StateSelector.currentTextChanged.connect(self.updateCitySelector)
         self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodeSelector)  
-        self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateCategoryList)
+        self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipCodeInfo)
 
 
 
@@ -57,7 +59,7 @@ class MyApp(QMainWindow):
     # Iterates through self.businessList and returns a list of unique states
     def loadLocations(self):
         self.states, self.cities, self.zipcodes = set(), set(), set()
-        self.statetocity, self.citytozipcode = dict(), dict()
+        self.statetocity, self.citytozipcode, self.zipcodetobusiness, self.businesscategories = dict(), dict(), dict(), dict()
         for business in self.businessList:
             self.states.add(business['state'])
             self.cities.add(business['city'])
@@ -78,6 +80,27 @@ class MyApp(QMainWindow):
                 self.citytozipcode[business['city']].add(business['postal_code'])
             # print(self.statetocity)
 
+            if business['postal_code'] in self.zipcodetobusiness:
+                self.zipcodetobusiness[business['postal_code']].append(business)
+            else:
+                self.zipcodetobusiness[business['postal_code']] = list()
+                self.zipcodetobusiness[business['postal_code']].append(business)
+
+            for category in business['categories']:
+                if category in self.businesscategories:
+                    self.businesscategories[category] = self.businesscategories[category] + 1
+                else:
+                    self.businesscategories[category] = 1
+
+        categories = sorted([(k, v) for k, v in self.businesscategories.items()], key=lambda x : x[1], reverse=True)
+        self.ui.BusinessCategories.clearContents()
+        self.ui.BusinessCategories.setRowCount(len(categories))
+        self.ui.BusinessCategories.verticalHeader().setVisible(False)
+        for index in range(len(categories)):
+             self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
+             self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))
+            
+
     def updateCitySelector(self):
         state = self.ui.StateSelector.currentText()
         self.ui.ZipcodeSelector.clearSelection()
@@ -95,15 +118,30 @@ class MyApp(QMainWindow):
             self.ui.ZipcodeSelector.addItems(sorted(self.citytozipcode[str(city)]))
 
 
-    def updateCategoryList(self):
+    def updateZipCodeInfo(self):
         if (self.ui.ZipcodeSelector.currentItem()):
             zipcode = self.ui.ZipcodeSelector.currentItem().text()
             self.ui.CategoryList.clearSelection()
             self.ui.CategoryList.clear()
-            for business in self.businessList:
-                if business['postal_code'] == zipcode:
-                    self.ui.CategoryList.addItems(sorted(business['categories']))
-                    break 
+
+            self.ui.BusinessCount.setText(str(len(self.zipcodetobusiness[zipcode])))
+
+            currentcategories = dict()
+            for business in self.zipcodetobusiness[zipcode]:
+                for category in business['categories']:
+                    if category in currentcategories:
+                        currentcategories[category] = currentcategories[category] + 1
+                    else:
+                        currentcategories[category] = 1
+            
+            categories = sorted([(k, v) for k, v in currentcategories.items()], key=lambda x : x[1], reverse=True)
+            self.ui.BusinessCategories.clearContents()
+            self.ui.BusinessCategories.setRowCount(len(categories))
+            self.ui.BusinessCategories.verticalHeader().setVisible(False)
+            for index in range(len(categories)):
+                self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
+                self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))
+                self.ui.CategoryList.addItem(categories[index][0])
     
         
 
