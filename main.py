@@ -41,6 +41,9 @@ class MyApp(QMainWindow):
 
         # Read user data
         self.userList = self.loadFile('yelp_user.json')
+        
+        with open('./yelp_zipcode.JSON') as file:
+            self.zipcodeData = json.load(file)
 
         # Load location selector data
         self.loadLocations()
@@ -60,6 +63,7 @@ class MyApp(QMainWindow):
     def loadLocations(self):
         self.states, self.cities, self.zipcodes = set(), set(), set()
         self.statetocity, self.citytozipcode, self.zipcodetobusiness, self.businesscategories = dict(), dict(), dict(), dict()
+        self.zipcodeDataDict = dict()
         for business in self.businessList:
             self.states.add(business['state'])
             self.cities.add(business['city'])
@@ -99,6 +103,11 @@ class MyApp(QMainWindow):
         for index in range(len(categories)):
              self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
              self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))
+
+        for entry in self.zipcodeData:
+            self.zipcodeDataDict[entry['zipcode']] = (entry['medianIncome'], entry['meanIncome'], entry['population'])
+        print(self.zipcodeDataDict)
+        
             
 
     def updateCitySelector(self):
@@ -142,6 +151,9 @@ class MyApp(QMainWindow):
                 self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
                 self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))
                 self.ui.CategoryList.addItem(categories[index][0])
+
+            self.ui.populationCount.setText(str(self.zipcodeDataDict[int(zipcode)][2]))
+            self.ui.avgIncome.setText(str(self.zipcodeDataDict[int(zipcode)][1]))
     
         
 
