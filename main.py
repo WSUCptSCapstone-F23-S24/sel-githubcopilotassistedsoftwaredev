@@ -216,7 +216,8 @@ def updateTable3(self):
     col_headers = ['Business Name', 'Stars', 'Review Rating', 'Review Count']
     self.tableWidget_3.setHorizontalHeaderLabels(col_headers)
     self.tableWidget_3.verticalHeader().setVisible(False)
-    #sort the data by the review rating
+    #sort the data by review rating
+    data.sort(key=lambda x: x['stars'], reverse=True)
     for i in data:
         if i['postal_code'] == self.listWidget_2.currentItem().text():
             self.tableWidget_3.insertRow(self.tableWidget_3.rowCount())
@@ -231,6 +232,42 @@ def updateTable3(self):
             if self.tableWidget_3.rowCount() == 20:
                 break
 
+#make updateTable4 that fills 3 columns (Buisiness Name, number of reviews, number of check ins) of tablewidget_4
+#With the top 20 buisinesses in the postal code selected listWidget_2 that have the highest number of check ins
+#using the yelp_business.json and yelp_checkin.json files
+def updateTable4(self):
+    if self.listWidget_2.currentItem() == None: #modified
+        return
+    data = [] 
+    with open('yelp_business.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data.append(json.loads(line))
+    data2 = [] 
+    with open('yelp_checkin.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data2.append(json.loads(line))
+    self.tableWidget_4.clear()
+    self.tableWidget_4.setRowCount(0)
+    self.tableWidget_4.setColumnCount(3)
+    col_headers = ['Business Name', '# of Reviews', '# of Checkins']
+    self.tableWidget_4.setHorizontalHeaderLabels(col_headers)
+    self.tableWidget_4.verticalHeader().setVisible(False)
+    #sort the data by number of checkins
+    data.sort(key=lambda x: x['review_count'], reverse=True)
+    for i in data:
+        if i['postal_code'] == self.listWidget_2.currentItem().text():
+            self.tableWidget_4.insertRow(self.tableWidget_4.rowCount())
+            self.tableWidget_4.setItem(self.tableWidget_4.rowCount()-1, 0, QTableWidgetItem(i['name']))
+            self.tableWidget_4.setItem(self.tableWidget_4.rowCount()-1, 1, QTableWidgetItem(str(i['review_count'])))
+            checkins = 0
+            for j in data2:
+                if j['business_id'] == i['business_id']:
+                    for k in j['time']:
+                        for l in k:
+                            checkins += 1
+            self.tableWidget_4.setItem(self.tableWidget_4.rowCount()-1, 2, QTableWidgetItem(str(checkins)))
+            if self.tableWidget_4.rowCount() == 20:
+                break
 
 
 
@@ -271,6 +308,9 @@ class MyApp(QMainWindow):
 
         #for each selected postal code from listWidget_2, add a sorted list of 20 buisnesses with the highest stars to the tableWidget_3
         self.listWidget_2.currentItemChanged.connect(lambda: updateTable3(self))
+
+        #for each selected postal code from listWidget_2, add a sorted list of 20 buuisnesses with the highest number of check ins to the tableWidget_4
+        self.listWidget_2.currentItemChanged.connect(lambda: updateTable4(self))
 
 
 if __name__ == '__main__':
