@@ -252,6 +252,8 @@ def updateTable4(self):
     col_headers = ['Business Name', '# of Reviews', '# of Checkins']
     self.tableWidget_4.setHorizontalHeaderLabels(col_headers)
     self.tableWidget_4.verticalHeader().setVisible(False)
+    #modify the size of the columns to fit tableWidget_4
+    self.tableWidget_4.setColumnWidth(0, 200)
     #sort the data by number of checkins
     data.sort(key=lambda x: x['review_count'], reverse=True)
     for i in data:
@@ -263,10 +265,10 @@ def updateTable4(self):
             for j in data2:
                 if j['business_id'] == i['business_id']:
                     for k in j['time']:
-                        for l in k:
+                        for l in j['time'][k]:
                             checkins += 1
             self.tableWidget_4.setItem(self.tableWidget_4.rowCount()-1, 2, QTableWidgetItem(str(checkins)))
-            if self.tableWidget_4.rowCount() == 20:
+            if self.tableWidget_4.rowCount() == 100:
                 break
 
 
