@@ -24,6 +24,8 @@ class MyApp(QMainWindow):
         self.ui.StateSelector.currentTextChanged.connect(self.updateCitySelector)
         self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodeSelector)  
         self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipCodeInfo)
+        self.ui.SearchButton.clicked.connect(self.filterBusinessDisplay)
+        self.ui.ResetSearch.clicked.connect(self.updateZipCodeInfo)
         self.fillBusinessDisplay(self.businessList)
 
 
@@ -171,6 +173,7 @@ class MyApp(QMainWindow):
 
             self.ui.populationCount.setText(str(self.zipcodeDataDict[int(zipcode)][2]))
             self.ui.avgIncome.setText(str(self.zipcodeDataDict[int(zipcode)][1]))
+            self.fillBusinessDisplay(self.zipcodetobusiness[zipcode])
 
     def fillBusinessDisplay(self, businessList):
         businessList = sorted(businessList, key=lambda x : x['name'])
@@ -198,6 +201,19 @@ class MyApp(QMainWindow):
             else:
                 checkins = 0
             self.ui.BusinessDisplay.setItem(index, 6, QTableWidgetItem(str(checkins)))
+    
+    def filterBusinessDisplay(self):
+        if (self.ui.CategoryList.currentItem()):
+            category = self.ui.CategoryList.currentItem().text()
+            if (self.ui.ZipcodeSelector.currentItem()):
+                zipcode = self.ui.ZipcodeSelector.currentItem().text()
+                businesses = filter(lambda x: category in x['categories'], self.zipcodetobusiness[zipcode])
+            else:
+                businesses = filter(lambda x: category in x['categories'], self.businessList)
+            self.fillBusinessDisplay(businesses)
+
+    # def resetBusinessDisplay(self):
+    #     if (self.ui.CategoryList.currentItem()):
 
     
         
