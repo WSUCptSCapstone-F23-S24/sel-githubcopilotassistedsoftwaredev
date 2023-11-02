@@ -304,13 +304,18 @@ class MyApp(QMainWindow):
 
         self.listWidget_2.currentItemChanged.connect(lambda: updateList3(self))
 
-        self.listWidget_4.currentItemChanged.connect(lambda: updateTable2(self))#scary good guess
+        #when pushButton is pressed, run the following code: self.listWidget_4.currentItemChanged.connect(lambda: updateTable2(self))
+        self.pushButton.clicked.connect(lambda: updateTable2(self))
+        #self.listWidget_4.currentItemChanged.connect(lambda: updateTable2(self))#scary good guess
 
         #for each selected postal code from listWidget_2, add a sorted list of 20 buisnesses with the highest stars to the tableWidget_3
-        self.listWidget_2.currentItemChanged.connect(lambda: updateTable3(self))
+        self.pushButton_3.clicked.connect(lambda: updateTable3(self))
 
         #for each selected postal code from listWidget_2, add a sorted list of 20 buuisnesses with the highest number of check ins to the tableWidget_4
-        self.listWidget_2.currentItemChanged.connect(lambda: updateTable4(self))
+        self.pushButton_3.clicked.connect(lambda: updateTable4(self))
+
+        #when pushButton_2 is pressed clear tableWidget
+        self.pushButton_2.clicked.connect(lambda: self.tableWidget.clear())
 
 
 if __name__ == '__main__':
