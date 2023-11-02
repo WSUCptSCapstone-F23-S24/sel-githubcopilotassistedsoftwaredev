@@ -196,6 +196,42 @@ def updateTable2(self):
     #sort the table by the business name
     self.tableWidget.sortItems(0)
 
+#make updateTable3 that fills 4 columns (Buisiness Name, stars, Review Rating, Review_count) of tablewidget_3
+#with the top 20 buisnesses in the postal code selected listWidget_2 that have the highest review_rating
+#using the yelp_business.json and yelp_review.json files
+def updateTable3(self):
+    if self.listWidget_2.currentItem() == None: #modified
+        return
+    data = [] 
+    with open('yelp_business.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data.append(json.loads(line))
+    data2 = [] 
+    with open('yelp_review.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data2.append(json.loads(line))
+    self.tableWidget_3.clear()
+    self.tableWidget_3.setRowCount(0)
+    self.tableWidget_3.setColumnCount(4)
+    col_headers = ['Business Name', 'Stars', 'Review Rating', 'Review Count']
+    self.tableWidget_3.setHorizontalHeaderLabels(col_headers)
+    self.tableWidget_3.verticalHeader().setVisible(False)
+    #sort the data by the review rating
+    for i in data:
+        if i['postal_code'] == self.listWidget_2.currentItem().text():
+            self.tableWidget_3.insertRow(self.tableWidget_3.rowCount())
+            self.tableWidget_3.setItem(self.tableWidget_3.rowCount()-1, 0, QTableWidgetItem(i['name']))
+            self.tableWidget_3.setItem(self.tableWidget_3.rowCount()-1, 1, QTableWidgetItem(str(i['stars'])))
+            totalstars = 0
+            for j in data2:
+                if j['business_id'] == i['business_id']:
+                    totalstars = totalstars + j['stars']
+            self.tableWidget_3.setItem(self.tableWidget_3.rowCount()-1, 2, QTableWidgetItem(str(round(totalstars/i['review_count'], 1))))
+            self.tableWidget_3.setItem(self.tableWidget_3.rowCount()-1, 3, QTableWidgetItem(str(i['review_count'])))
+            if self.tableWidget_3.rowCount() == 20:
+                break
+
+
 
 
 class MyApp(QMainWindow):
@@ -232,6 +268,9 @@ class MyApp(QMainWindow):
         self.listWidget_2.currentItemChanged.connect(lambda: updateList3(self))
 
         self.listWidget_4.currentItemChanged.connect(lambda: updateTable2(self))#scary good guess
+
+        #for each selected postal code from listWidget_2, add a sorted list of 20 buisnesses with the highest stars to the tableWidget_3
+        self.listWidget_2.currentItemChanged.connect(lambda: updateTable3(self))
 
 
 if __name__ == '__main__':
