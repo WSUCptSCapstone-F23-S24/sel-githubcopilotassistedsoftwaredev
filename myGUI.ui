@@ -446,7 +446,7 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
    </widget>
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableWidget" name="BusinessDisplay">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -482,7 +482,7 @@
     </row>
     <column>
      <property name="text">
-      <string>Business Name</string>
+      <string>Name</string>
      </property>
     </column>
     <column>
@@ -502,17 +502,17 @@
     </column>
     <column>
      <property name="text">
-      <string>Review Count</string>
+      <string>Reviews</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Review Rating</string>
+      <string>Rating</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string># of Checkins</string>
+      <string>Checkins</string>
      </property>
     </column>
     <item row="0" column="0">

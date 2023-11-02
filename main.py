@@ -24,6 +24,8 @@ class MyApp(QMainWindow):
         self.ui.StateSelector.currentTextChanged.connect(self.updateCitySelector)
         self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodeSelector)  
         self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipCodeInfo)
+        self.fillBusinessDisplay(self.businessList)
+
 
 
 
@@ -47,6 +49,7 @@ class MyApp(QMainWindow):
 
         # Load location selector data
         self.loadLocations()
+        self.loadBusinessData()
 
 
     # Loads data from file (formatted as 1 json object per line) and returns data in a list
@@ -106,7 +109,21 @@ class MyApp(QMainWindow):
 
         for entry in self.zipcodeData:
             self.zipcodeDataDict[entry['zipcode']] = (entry['medianIncome'], entry['meanIncome'], entry['population'])
-        print(self.zipcodeDataDict)
+
+    def loadBusinessData(self):
+        self.businessRatings = dict()
+        self.businessCheckins = dict()
+        for review in self.reviewList:
+            businessId = review['business_id']
+            if businessId in self.businessRatings:
+                self.businessRatings[businessId].append(review)
+            else:
+                self.businessRatings[businessId] = list()
+                self.businessRatings[businessId].append(review)
+
+        for checkin in self.checkinList:
+            # print(checkin)
+            self.businessCheckins[checkin['business_id']] = checkin
         
             
 
@@ -154,6 +171,34 @@ class MyApp(QMainWindow):
 
             self.ui.populationCount.setText(str(self.zipcodeDataDict[int(zipcode)][2]))
             self.ui.avgIncome.setText(str(self.zipcodeDataDict[int(zipcode)][1]))
+
+    def fillBusinessDisplay(self, businessList):
+        businessList = sorted(businessList, key=lambda x : x['name'])
+        self.ui.BusinessDisplay.clearContents()
+        self.ui.BusinessDisplay.setRowCount(len(businessList))
+        self.ui.BusinessDisplay.verticalHeader().setVisible(False)
+        for index in range(len(businessList)):
+            self.ui.BusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businessList[index]['name'])))
+            self.ui.BusinessDisplay.setItem(index, 1, QTableWidgetItem(str(businessList[index]['address'])))
+            self.ui.BusinessDisplay.setItem(index, 2, QTableWidgetItem(str(businessList[index]['city'])))
+            self.ui.BusinessDisplay.setItem(index, 3, QTableWidgetItem(str(businessList[index]['stars'])))
+            self.ui.BusinessDisplay.setItem(index, 4, QTableWidgetItem(str(len(self.businessRatings[businessList[index]['business_id']]))))\
+            
+            average = 0
+            for review in self.businessRatings[businessList[index]['business_id']]:
+                average = average + review['stars']
+            average = average / len(self.businessRatings[businessList[index]['business_id']])
+            self.ui.BusinessDisplay.setItem(index, 5, QTableWidgetItem(str(average)))
+
+            if businessList[index]['business_id'] in self.businessCheckins:
+                checkins = 0
+                for day in self.businessCheckins[businessList[index]['business_id']]['time']:
+                    for time in self.businessCheckins[businessList[index]['business_id']]['time'][day]:
+                        checkins += self.businessCheckins[businessList[index]['business_id']]['time'][day][time]
+            else:
+                checkins = 0
+            self.ui.BusinessDisplay.setItem(index, 6, QTableWidgetItem(str(checkins)))
+
     
         
 
