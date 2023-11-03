@@ -278,14 +278,14 @@ class MyApp(QMainWindow):
         self.ui.SuccessfulBusinessDisplay.setRowCount(len(businessList))
         self.ui.SuccessfulBusinessDisplay.verticalHeader().setVisible(False)
 
-        for index in range(len(businessList)):
-            self.ui.SuccessfulBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businessList[index]['name'])))
+        for index, business in enumerate(businessList):
+            self.ui.SuccessfulBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(business['name'])))
 
-        review_count = len(self.businessRatings[businessList[index]['business_id']])
-        self.ui.SuccessfulBusinessDisplay.setItem(index, 1, QTableWidgetItem(str(review_count)))
+            review_count = len(self.businessRatings.get(business['business_id'], []))
+            self.ui.SuccessfulBusinessDisplay.setItem(index, 1, QTableWidgetItem(str(review_count)))
 
-        checkin_count = self.calculateTotalCheckins(businessList[index]['business_id'])
-        self.ui.SuccessfulBusinessDisplay.setItem(index, 2, QTableWidgetItem(str(checkin_count)))
+            checkin_count = self.calculateTotalCheckins(business['business_id'])
+            self.ui.SuccessfulBusinessDisplay.setItem(index, 2, QTableWidgetItem(str(checkin_count)))
 
 
     def filterSuccessfulBusinessDisplay(self):
@@ -295,7 +295,7 @@ class MyApp(QMainWindow):
                 zipcode = self.ui.ZipcodeSelector.currentItem().text()
                 businesses = filter(lambda x: category in x['categories'] and
                                   x['business_id'] in self.businessCheckins and
-                                  self.calculateTotalCheckins(x['business_id']) >= 100, self.zipcodetobusiness[zipcode])
+                                  self.calculateTotalCheckins(x['business_id']) >= 100, self.zipcodetobusiness.get(zipcode, []))
             else:
                 businesses = filter(lambda x: category in x['categories'] and
                                   x['business_id'] in self.businessCheckins and
@@ -305,10 +305,7 @@ class MyApp(QMainWindow):
     def calculateTotalCheckins(self, business_id):
         if business_id in self.businessCheckins:
             checkins = self.businessCheckins[business_id]['time']
-            total_checkins = 0
-            for day, times in checkins.items():
-                for time, count in times.items():
-                    total_checkins += count
+            total_checkins = sum(count for times in checkins.values() for count in times.values())
             return total_checkins
         return 0
 
