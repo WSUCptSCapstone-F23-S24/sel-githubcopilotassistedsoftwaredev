@@ -27,9 +27,13 @@ class MyApp(QMainWindow):
         self.ui.CategoryList.addItems(self.businesscategories.keys())
         self.ui.CategoryList.setSortingEnabled(True)
         self.fillBusinessDisplay(self.businessList)
+        self.fillPopularBusinessDisplay(self.businessList)
+        self.fillSuccessfulBusinessDisplay(self.businessList)
 
         # Connecting search and reset buttons to proper functions
         self.ui.SearchButton.clicked.connect(self.filterBusinessDisplay)
+        self.ui.SearchButton.clicked.connect(self.filterPopularBusinessDisplay)
+        self.ui.SearchButton.clicked.connect(self.filterSuccessfulBusinessDisplay)
         self.ui.ResetSearch.clicked.connect(self.updateZipCodeInfo)
 
         
@@ -240,6 +244,86 @@ class MyApp(QMainWindow):
                 # If no selected zipcode, show all businesses of that category
                 businesses = filter(lambda x: category in x['categories'], self.businessList)
             self.fillBusinessDisplay(businesses)
+
+    def fillPopularBusinessDisplay(self, businessList):
+        businessList = sorted(businessList, key=lambda x : x['name'])
+        self.ui.PopularBusinessDisplay.clearContents()
+        self.ui.PopularBusinessDisplay.setRowCount(len(businessList))
+        self.ui.PopularBusinessDisplay.verticalHeader().setVisible(False)
+
+        for index in range(len(businessList)):
+            self.ui.PopularBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businessList[index]['name'])))
+            self.ui.PopularBusinessDisplay.setItem(index, 1, QTableWidgetItem(str(businessList[index]['stars'])))
+            self.ui.PopularBusinessDisplay.setItem(index, 2, QTableWidgetItem(str(len(self.businessRatings[businessList[index]['business_id']]))))
+            
+            average = 0
+            for review in self.businessRatings[businessList[index]['business_id']]:
+                average = average + review['stars']
+            average = average / len(self.businessRatings[businessList[index]['business_id']])
+            self.ui.PopularBusinessDisplay.setItem(index, 3, QTableWidgetItem(str(average)))
+
+    def filterPopularBusinessDisplay(self):
+        if (self.ui.CategoryList.currentItem()):
+            category = self.ui.CategoryList.currentItem().text()
+            if (self.ui.ZipcodeSelector.currentItem()):
+                zipcode = self.ui.ZipcodeSelector.currentItem().text()
+                businesses = filter(lambda x: category in x['categories'] and x['stars'] >= 4.0, self.zipcodetobusiness[zipcode])
+            else:
+                businesses = filter(lambda x: category in x['categories'] and x['stars'] >= 4.0, self.businessList)
+            self.fillPopularBusinessDisplay(businesses)
+
+    def fillSuccessfulBusinessDisplay(self, businessList):
+        businessList = sorted(businessList, key=lambda x : x['name'])
+        self.ui.SuccessfulBusinessDisplay.clearContents()
+        self.ui.SuccessfulBusinessDisplay.setRowCount(len(businessList))
+        self.ui.SuccessfulBusinessDisplay.verticalHeader().setVisible(False)
+
+        for index in range(len(businessList)):
+            self.ui.SuccessfulBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businessList[index]['name'])))
+
+            average = 0
+            for review in self.businessRatings[businessList[index]['business_id']]:
+                average = average + review['stars']
+            average = average / len(self.businessRatings[businessList[index]['business_id']])
+            self.ui.BusinessDisplay.setItem(index, 1, QTableWidgetItem(str(average)))
+
+            # Getting & adding number of checkins
+            if businessList[index]['business_id'] in self.businessCheckins:
+                checkins = 0
+                for day in self.businessCheckins[businessList[index]['business_id']]['time']:
+                    for time in self.businessCheckins[businessList[index]['business_id']]['time'][day]:
+                        checkins += self.businessCheckins[businessList[index]['business_id']]['time'][day][time]
+            else:
+                checkins = 0
+            self.ui.BusinessDisplay.setItem(index, 2, QTableWidgetItem(str(checkins)))
+
+    def filterSuccessfulBusinessDisplay(self):
+        if (self.ui.CategoryList.currentItem()):
+            category = self.ui.CategoryList.currentItem().text()
+            if (self.ui.ZipcodeSelector.currentItem()):
+                zipcode = self.ui.ZipcodeSelector.currentItem().text()
+                businesses = filter(lambda x: category in x['categories'] and
+                                  x['business_id'] in self.businessCheckins and
+                                  self.calculateTotalCheckins(x['business_id']) >= 100, self.zipcodetobusiness[zipcode])
+            else:
+                businesses = filter(lambda x: category in x['categories'] and
+                                  x['business_id'] in self.businessCheckins and
+                                  self.calculateTotalCheckins(x['business_id']) >= 100, self.businessList)
+            self.fillSuccessfulBusinessDisplay(list(businesses))
+
+    def calculateTotalCheckins(self, business_id):
+        if business_id in self.businessCheckins:
+            checkins = self.businessCheckins[business_id]['time']
+            total_checkins = 0
+            for day, times in checkins.items():
+                for time, count in times.items():
+                    total_checkins += count
+            return total_checkins
+        return 0
+
+
+    
+
         
 
 if __name__ == '__main__':
