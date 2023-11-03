@@ -796,7 +796,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QTableWidget" name="tableWidget_3">
+   <widget class="QTableWidget" name="PopularBusinessDisplay">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -951,7 +951,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QTableWidget" name="tableWidget_5">
+   <widget class="QTableWidget" name="SuccessfulBusinessDisplay">
     <property name="geometry">
      <rect>
       <x>540</x>
