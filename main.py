@@ -281,21 +281,12 @@ class MyApp(QMainWindow):
         for index in range(len(businessList)):
             self.ui.SuccessfulBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businessList[index]['name'])))
 
-            average = 0
-            for review in self.businessRatings[businessList[index]['business_id']]:
-                average = average + review['stars']
-            average = average / len(self.businessRatings[businessList[index]['business_id']])
-            self.ui.BusinessDisplay.setItem(index, 1, QTableWidgetItem(str(average)))
+        review_count = len(self.businessRatings[businessList[index]['business_id']])
+        self.ui.SuccessfulBusinessDisplay.setItem(index, 1, QTableWidgetItem(str(review_count)))
 
-            # Getting & adding number of checkins
-            if businessList[index]['business_id'] in self.businessCheckins:
-                checkins = 0
-                for day in self.businessCheckins[businessList[index]['business_id']]['time']:
-                    for time in self.businessCheckins[businessList[index]['business_id']]['time'][day]:
-                        checkins += self.businessCheckins[businessList[index]['business_id']]['time'][day][time]
-            else:
-                checkins = 0
-            self.ui.BusinessDisplay.setItem(index, 2, QTableWidgetItem(str(checkins)))
+        checkin_count = self.calculateTotalCheckins(businessList[index]['business_id'])
+        self.ui.SuccessfulBusinessDisplay.setItem(index, 2, QTableWidgetItem(str(checkin_count)))
+
 
     def filterSuccessfulBusinessDisplay(self):
         if (self.ui.CategoryList.currentItem()):
