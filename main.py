@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QLabel
 from PyQt6 import uic
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QIcon
 import json
 
 
@@ -292,6 +292,17 @@ class MyApp(QMainWindow):
         for i in states:
             self.comboBox.addItem(i)
         self.comboBox.setCurrentIndex(-1)
+
+        #Setting Icon for each button
+        icon = QIcon('./image/Search.PNG')
+        self.pushButton.setIcon(icon)
+        self.pushButton.setIconSize(self.pushButton.size())
+        icon2 = QIcon('./image/Clear.PNG')
+        self.pushButton_2.setIcon(icon2)
+        self.pushButton_2.setIconSize(self.pushButton.size())
+        icon3 = QIcon('./image/Refresh.PNG')
+        self.pushButton_3.setIcon(icon3)
+        self.pushButton_3.setIconSize(self.pushButton.size())
 
         #for each selected state, add the city to the listWidget
         self.comboBox.currentIndexChanged.connect(lambda: updateList(self))

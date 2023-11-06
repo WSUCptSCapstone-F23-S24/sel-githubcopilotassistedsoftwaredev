@@ -476,7 +476,7 @@
      </font>
     </property>
     <property name="text">
-     <string>lookup</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -494,7 +494,7 @@
      </font>
     </property>
     <property name="text">
-     <string>clear</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
@@ -512,7 +512,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Refresh</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_pic">
