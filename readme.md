@@ -18,10 +18,39 @@ Python 3.10+
 PyQt6 - Front-end UI library.
 
 ### Installation Steps
-```python
-pip3 install pyqt6 # Install needed library
-python main.py     # Run code
+This project has two version which are the CoPilot and NoAI. 
+
+To download the CoPilot Version for this most recent sprint:
+```Download the Yelp Reviews.json files, these are too large to be uploaded to github.
+
+Clone the repository
+git clone https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev.git
+
+Navigate to the project directory
+cd CaseStudy2-CoPilot
+
+Install dependencies
+pip install -r Requirements.txt
+
+Add the Yelp .json files to the workspace
+
+Run the application
+python main.py
 ```
+To download the NoAI Version for this most recent sprint:
+```Download the Yelp Reviews.json files, these are too large to be uploaded to github.
+
+Clone the repository
+git clone https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev.git
+
+Navigate to the project directory
+cd CaseStudy2-NoAI
+
+Install dependencies
+pip install -r Requirements.txt
+
+Run the application
+python app.py```
 
 ## Case Study 1: Front-End UI Application
 
@@ -49,6 +78,10 @@ Currently, the application has no database back-end, so data on the front-end is
 [Metric Tracking Document](https://docs.google.com/spreadsheets/d/1ymLoq1peAggIlSSYoW2vvT3tpB8PEj7SNVEC08-0Hpo/edit?usp=sharing)
 
 [Case Study 1 Part 1 Report](https://docs.google.com/document/d/1Tt-thmhBi_Uz75E4v8us9cPoAFDKK6eRIz1PHmFuLgI/edit?usp=sharing).
+
+[Sprint Report 1](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint1Report.md)
+
+[Sprint Report 2](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint2Report.md)
 
 ## License
 Copyright (c) 2023 Joshua Burk, Joshua Maloy, Ryan Luders, Jay-Ar Arsenio
