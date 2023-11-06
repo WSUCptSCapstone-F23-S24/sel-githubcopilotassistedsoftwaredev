@@ -50,7 +50,8 @@ Install dependencies
 pip install -r Requirements.txt
 
 Run the application
-python app.py```
+python app.py
+```
 
 ## Case Study 1: Front-End UI Application
 
