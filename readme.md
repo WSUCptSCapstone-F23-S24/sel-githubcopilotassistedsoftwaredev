@@ -56,6 +56,9 @@ python app.py
 ```
 
 ## Case Study 1: Front-End UI Application
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-Copilot)
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-NoAI)
 
 ### Functionality
 This front-end application serves as a place to gather useful data about business in a certain area. A user of this application can accomplish the following.
@@ -75,7 +78,18 @@ This front-end application serves as a place to gather useful data about busines
 * View businesses within the specified category.
 
 ### Known Problems
-Currently, the application has no database back-end, so data on the front-end is either inaccurate or nonexistant. This will be completed in the future. 
+Currently, the application has no database back-end, so data on the front-end is either inaccurate or nonexistant. The back-end implementation has now been completed in Case Study 1 Part 2, below.
+
+## Case Study 1 Part 2: Backend-End UI Application (no sql)
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-CoPilot)
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI)
+
+### Functionality
+This back-end implementation complements the previously made front-end GUI. All features explained above are now fully implemented using built-in python datatypes.
+
+### Known Problems
+The implementation for this part utilizes dictionaries and other standard python data structures. In the future, we plan on doing this back-end a second time using sql instead.
 
 ## Additional Documentation
 [Metric Tracking Document](https://docs.google.com/spreadsheets/d/1ymLoq1peAggIlSSYoW2vvT3tpB8PEj7SNVEC08-0Hpo/edit?usp=sharing)
