@@ -21,7 +21,7 @@
 This sprint, our sub teams swapped roles. The no AI team for sprint 1 was the CoPilot team for sprint 2, and vice versa. Additionally, we elected to use the no AI team's UI to standardize a starting point for both teams. Once again, the no AI team used no generative AI tools, and the CoPilot team employed the assitance of GitHub Copilot. This second case study has given us more valuable information about the effectiveness of GitHub CoPilot in different situations.
 
 
-[Here]() is a video showing off what we completed in this second sprint aside from documentation.
+[Here](https://www.youtube.com/watch?v=kOO3UDp2ynA) is a video showing off what we completed in this second sprint aside from documentation.
 
 ## Unfinished Work
 This second part of our case study was implementing the back-end of the application. However, instead of using SQL, both teams utilized basic data structures with JSON file formatting. For the next part, we plan to create a database and change the backend to use SQL queries with a database. This is a much more robust and scalable solution. Additionally, this will inform us of how helpful CoPilot can be with SQL statements, both for creating database structures and for querying data.
