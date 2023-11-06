@@ -515,6 +515,28 @@
      <string>Refresh</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_pic">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>60</y>
+      <width>41</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/newPrefix/Cap.PNG);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="image/Image.qrc">:/newPrefix/Cap.PNG</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
@@ -528,6 +550,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="image/Image.qrc"/>
+ </resources>
  <connections/>
 </ui>

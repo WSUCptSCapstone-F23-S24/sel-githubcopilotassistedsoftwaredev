@@ -1,6 +1,7 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QLabel
 from PyQt6 import uic
+from PyQt6.QtGui import QPixmap
 import json
 
 
@@ -318,6 +319,9 @@ class MyApp(QMainWindow):
 
         #when pushButton_2 is pressed clear tableWidget
         self.pushButton_2.clicked.connect(lambda: self.tableWidget.clear())
+        
+        pixmap = QPixmap('./image/Cap.PNG')
+        self.label_pic.setPixmap(pixmap)
 
 
 if __name__ == '__main__':
