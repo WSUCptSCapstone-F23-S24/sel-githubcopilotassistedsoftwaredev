@@ -49,6 +49,8 @@ cd CaseStudy2-NoAI
 Install dependencies
 pip install -r Requirements.txt
 
+Add the Yelp .json files to the workspace
+
 Run the application
 python app.py
 ```
