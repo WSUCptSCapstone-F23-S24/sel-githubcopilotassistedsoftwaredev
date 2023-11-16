@@ -1,10 +1,14 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QLabel
-from PyQt6 import uic
-from PyQt6.QtGui import QPixmap, QIcon
 import json
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+""" NOTES: 
+    -States Table: A table named 'states' is created with 'state_code' as its primary key. 
+     This table stores unique state codes.
+   - Cities Table: A table named 'cities' is created with 'city_id' as its primary key and 
+     'state_code' as a foreign key. This table stores city names along with their corresponding 
+     state codes, establishing a relational link between cities and states. """
 
 def create_database(dbname, user, password):
     conn = psycopg2.connect(dbname="postgres", user=user, password=password)
@@ -16,19 +20,10 @@ def create_database(dbname, user, password):
     exists = cur.fetchone()
     if exists:
         cur.execute(f"DROP DATABASE IF EXISTS {dbname};")
-        cur.execute(f"CREATE DATABASE {dbname};")
-        return True
+    cur.execute(f"CREATE DATABASE {dbname};")
 
-    # Create new database
-    try:
-        cur.execute(f"CREATE DATABASE {dbname};")
-    except psycopg2.Error as e:
-        print(f"An error occurred: {e}")
-        return False
-    finally:
-        cur.close()
-        conn.close()
-    return True
+    cur.close()
+    conn.close()
 
 if __name__ == '__main__':
     # Database credentials
@@ -37,77 +32,53 @@ if __name__ == '__main__':
     password = "0213"
 
     # Create the database
-    if not create_database(dbname, user, password):
-        sys.exit("Failed to create database. Exiting.")
+    create_database(dbname, user, password)
 
     # Connect to the new database
     conn = psycopg2.connect(dbname=dbname, user=user, password=password)
     cur = conn.cursor()
 
-    #------------------LOAD JSON FILE------------------
-    #load json file
+    # Load JSON file
     data = []
     with open('yelp_business.json', 'r', encoding="utf8") as json_file:
         for line in json_file:
             data.append(json.loads(line))
-    
 
-    
+    # Create State Table with Primary Key
+    cur.execute("CREATE TABLE states (state_code varchar PRIMARY KEY NOT NULL UNIQUE);")
 
-
-    #create a postgresql database called 'yelp' with user 'postgres' and password '0213'
-    #create a table called 'STATES' with column 'state'
-    # conn = psycopg2.connect("dbname=yelp user=postgres password=0213")
-    # cur = conn.cursor()
-
-    #delete States table if it already exists
-    cur.execute("DROP TABLE IF EXISTS states;")
-
-    #---------------------Create State Table---------------------
-    cur.execute("CREATE TABLE states (state varchar NOT NULL UNIQUE);")
-
-    #insert unique states into table from the dictionary data
+    # Insert unique states into the table
     for i in data:
-        cur.execute("INSERT INTO states VALUES (%s) ON CONFLICT DO NOTHING;", (i['state'],))
+        cur.execute("INSERT INTO states (state_code) VALUES (%s) ON CONFLICT DO NOTHING;", (i['state'],))
 
-    #sort the table by state
-    cur.execute("SELECT * FROM states ORDER BY state ASC;")
+    # Create a single Cities Table with a Foreign Key
+    cur.execute("""
+        CREATE TABLE cities (
+            city_id SERIAL PRIMARY KEY,
+            city_name varchar NOT NULL,
+            state_code varchar REFERENCES states(state_code)
+        );
+    """)
 
-
-    #---------------------Create City Tables---------------------
-    #for every state in the states table, create a relational table for the cities in that state
-    for i in cur.fetchall():
-        cur.execute("CREATE TABLE " + i[0] + " (city varchar NOT NULL UNIQUE);")
-
-    #insert unique cities into each state table from the dictionary data
+    # Insert cities into the Cities table
     for i in data:
-        cur.execute("INSERT INTO " + i['state'] + " VALUES (%s) ON CONFLICT DO NOTHING;", (i['city'],))
+        # Check if the city already exists in the table for the given state
+        cur.execute("SELECT 1 FROM cities WHERE city_name = %s AND state_code = %s;", (i['city'], i['state']))
+        if not cur.fetchone():
+            # If the city does not exist, insert it
+            cur.execute("INSERT INTO cities (city_name, state_code) VALUES (%s, %s);", (i['city'], i['state']))
 
-    #print out the states table
-    cur.execute("SELECT * FROM states ORDER BY state ASC;")
+    # Commit the transactions
+    conn.commit()
+
+    # Print out the states table
+    cur.execute("SELECT * FROM states ORDER BY state_code ASC;")
     print(cur.fetchall())
 
+    #print out all the cities in the state of Arizona
+    cur.execute("SELECT city_name FROM cities WHERE state_code = 'AZ' ORDER BY city_name ASC;")
+    print(cur.fetchall())
 
-
-    #---------------------Create Zipcode Tables---------------------
-    #for every city in every state, create a relational table for the zipcodes in that city
-    # cur.execute("SELECT * FROM states ORDER BY state ASC;")
-    # for i in cur.fetchall():
-    #     cur.execute("SELECT * FROM " + i[0] + " ORDER BY city ASC;")
-    #     for j in cur.fetchall():
-    #         #replace all spaces with underscores of j[0]
-    #         #create table if table doesnt already exist
-    #         cur.execute("IF NOT EXISTS(CREATE TABLE " + i[0] + "_" + j[0].replace(" ", "_").replace("-","_") + " (zipcode varchar NOT NULL UNIQUE));")
-    #         #cur.execute("CREATE TABLE " + i[0] + "_" + j[0].replace(" ", "_").replace("-","_") + " (zipcode varchar NOT NULL UNIQUE);")
-
-    
-        
-
-
-    
-
-
-    
-
+    # Close cursor and connection
     cur.close()
     conn.close()
