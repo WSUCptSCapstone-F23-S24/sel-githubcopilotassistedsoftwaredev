@@ -6,8 +6,10 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 """ NOTES: 
     - States Table: Stores unique state codes with 'state_code' as the primary key.
     - Cities Table: Contains city names and their state codes, with 'city_id' as the primary key and 'state_code' as a foreign key.
-    - Business Table: Holds details of businesses, including name, rating, and city. It uses 'business_id' as the primary key and links to cities through 'city_id'.
+    - Zipcodes Table: Records zip codes and associates them with cities using 'city_id'. Each entry has a unique 'zipcode_id' as the primary key.
+    - Business Table: Holds details of businesses, including name and rating. Each business is linked to a specific location using 'zipcode_id' as a foreign key. The table uses 'business_id' as the primary key.
 """
+
 
 
 def create_database(dbname, user, password):
@@ -79,43 +81,68 @@ if __name__ == '__main__':
     cur.execute("SELECT city_name FROM cities WHERE state_code = 'AZ' ORDER BY city_name ASC;")
     print(cur.fetchall())
 
-    #Create a single Business Table with a Foreign Key
+    #Create a single zipcode table with a foreign key
     cur.execute("""
-        CREATE TABLE business (
-            business_id varchar PRIMARY KEY NOT NULL UNIQUE,
-            business_name varchar NOT NULL,
+        CREATE TABLE zipcodes (
+            zipcode_id SERIAL PRIMARY KEY,
+            zipcode varchar NOT NULL,
             city_id int REFERENCES cities(city_id),
-            stars float,
-            review_count int,
-            is_open int
+            UNIQUE (zipcode, city_id)
         );
     """)
-
-    # Insert business into the Business table
+    #Insert zipcodes into the zipcode table
     for i in data:
-        # Fetch city_id for the city from the cities table
+        # Fetch city_id for the city in the current data item
         cur.execute("SELECT city_id FROM cities WHERE city_name = %s AND state_code = %s;", (i['city'], i['state']))
-        city_id = cur.fetchone()
-        if city_id:
-            city_id = city_id[0]
-            # Check if the business already exists
-            cur.execute("SELECT 1 FROM business WHERE business_id = %s;", (i['business_id'],))
-            if not cur.fetchone():
-                # If the business does not exist, insert it
-                cur.execute("INSERT INTO business (business_id, business_name, city_id, stars, review_count, is_open) VALUES (%s, %s, %s, %s, %s, %s);", 
-                            (i['business_id'], i['name'], city_id, i['stars'], i['review_count'], i['is_open']))
+        city_id_result = cur.fetchone()
+        if city_id_result:
+            city_id = city_id_result[0]
+            cur.execute("""
+            INSERT INTO zipcodes (zipcode, city_id) 
+            VALUES (%s, %s) 
+            ON CONFLICT (zipcode, city_id) 
+            DO NOTHING;
+            """, (i['postal_code'], city_id))
 
     
-    # Commit the transactions
+    #print out all the zipcodes in the city of Phoenix
+    cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = 1 ORDER BY zipcode ASC;")
+    print(cur.fetchall())
+
+    
+    #create a single business table with a foreign key
+    cur.execute("""
+        DROP TABLE IF EXISTS businesses;
+        CREATE TABLE businesses (
+            business_id SERIAL PRIMARY KEY,
+            business_name varchar NOT NULL,
+            rating float NOT NULL,
+            zipcode_id int REFERENCES zipcodes(zipcode_id),
+            UNIQUE (business_name, zipcode_id)
+        );
+    """)
+    #Insert businesses into the business table
+    for i in data:
+        # Fetch zipcode_id for the zipcode in the current data item
+        cur.execute("SELECT zipcode_id FROM zipcodes WHERE zipcode = %s;", (i['postal_code'],))
+        zipcode_id_result = cur.fetchone()
+        if zipcode_id_result:
+            zipcode_id = zipcode_id_result[0]
+            cur.execute("""
+                INSERT INTO businesses (business_name, rating, zipcode_id) 
+                VALUES (%s, %s, %s) 
+                ON CONFLICT (business_name, zipcode_id) 
+                DO NOTHING;
+                """, (i['name'], i['stars'], zipcode_id))
+
+
+    #Print out all the businesses in the zipcode 85003
+    cur.execute("SELECT business_name FROM businesses WHERE zipcode_id = 1 ORDER BY business_name ASC;")
+    print(cur.fetchall())
+
+    
     conn.commit()
 
-    #Print out the businesses in the city of Phoenix
-    cur.execute("SELECT city_id FROM cities WHERE city_name = 'Phoenix' AND state_code = 'AZ';")
-    phoenix_id = cur.fetchone()
-    if phoenix_id:
-        phoenix_id = phoenix_id[0]
-        cur.execute("SELECT business_name FROM business WHERE city_id = %s ORDER BY business_name ASC;", (phoenix_id,))
-        print(cur.fetchall())
         
 
     # Close cursor and connection
