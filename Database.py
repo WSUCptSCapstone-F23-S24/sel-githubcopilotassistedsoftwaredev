@@ -4,11 +4,11 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 """ NOTES: 
-    -States Table: A table named 'states' is created with 'state_code' as its primary key. 
-     This table stores unique state codes.
-   - Cities Table: A table named 'cities' is created with 'city_id' as its primary key and 
-     'state_code' as a foreign key. This table stores city names along with their corresponding 
-     state codes, establishing a relational link between cities and states. """
+    - States Table: Stores unique state codes with 'state_code' as the primary key.
+    - Cities Table: Contains city names and their state codes, with 'city_id' as the primary key and 'state_code' as a foreign key.
+    - Business Table: Holds details of businesses, including name, rating, and city. It uses 'business_id' as the primary key and links to cities through 'city_id'.
+"""
+
 
 def create_database(dbname, user, password):
     conn = psycopg2.connect(dbname="postgres", user=user, password=password)
@@ -78,6 +78,45 @@ if __name__ == '__main__':
     #print out all the cities in the state of Arizona
     cur.execute("SELECT city_name FROM cities WHERE state_code = 'AZ' ORDER BY city_name ASC;")
     print(cur.fetchall())
+
+    #Create a single Business Table with a Foreign Key
+    cur.execute("""
+        CREATE TABLE business (
+            business_id varchar PRIMARY KEY NOT NULL UNIQUE,
+            business_name varchar NOT NULL,
+            city_id int REFERENCES cities(city_id),
+            stars float,
+            review_count int,
+            is_open int
+        );
+    """)
+
+    # Insert business into the Business table
+    for i in data:
+        # Fetch city_id for the city from the cities table
+        cur.execute("SELECT city_id FROM cities WHERE city_name = %s AND state_code = %s;", (i['city'], i['state']))
+        city_id = cur.fetchone()
+        if city_id:
+            city_id = city_id[0]
+            # Check if the business already exists
+            cur.execute("SELECT 1 FROM business WHERE business_id = %s;", (i['business_id'],))
+            if not cur.fetchone():
+                # If the business does not exist, insert it
+                cur.execute("INSERT INTO business (business_id, business_name, city_id, stars, review_count, is_open) VALUES (%s, %s, %s, %s, %s, %s);", 
+                            (i['business_id'], i['name'], city_id, i['stars'], i['review_count'], i['is_open']))
+
+    
+    # Commit the transactions
+    conn.commit()
+
+    #Print out the businesses in the city of Phoenix
+    cur.execute("SELECT city_id FROM cities WHERE city_name = 'Phoenix' AND state_code = 'AZ';")
+    phoenix_id = cur.fetchone()
+    if phoenix_id:
+        phoenix_id = phoenix_id[0]
+        cur.execute("SELECT business_name FROM business WHERE city_id = %s ORDER BY business_name ASC;", (phoenix_id,))
+        print(cur.fetchall())
+        
 
     # Close cursor and connection
     cur.close()
