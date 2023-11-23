@@ -21,6 +21,7 @@ class MyApp(QMainWindow):
         self.loadStates()
         self.ui.StateSelector.currentTextChanged.connect(self.updateCities)
         self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodes)  
+        self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipcodeStats)
 
     def __del__(self):
         # Closing database connection
@@ -59,6 +60,37 @@ class MyApp(QMainWindow):
             self.cur.execute(query)
             result = [str(r[0]) for r in self.cur.fetchall()]
             self.ui.ZipcodeSelector.addItems(result)
+
+    def updateZipcodeStats(self):
+        if (self.ui.ZipcodeSelector.currentItem()):
+            zipcode = self.ui.ZipcodeSelector.currentItem().text()
+            query = "select population, avg_income from zipcode where zipcode.zipcode = {}".format(zipcode)
+            self.cur.execute(query)
+            result = self.cur.fetchall()[0]
+            self.ui.populationCount.setText(str(result[0]))
+            self.ui.avgIncome.setText(str(result[1]))
+
+            query = "select categories from business where business.zipcode = {}".format(zipcode)
+            self.cur.execute(query)
+            result = [r[0] for r in self.cur.fetchall()]
+
+            self.ui.BusinessCount.setText(str(len(result)))
+
+            categories = dict()
+            for row in result:
+                for category in row:
+                    if category in categories:
+                        categories[category] += 1
+                    else:
+                        categories[category] = 1
+
+            categories = sorted([(k, v) for k, v in categories.items()], key=lambda x : x[1], reverse=True)
+            self.ui.BusinessCategories.clearContents()
+            self.ui.BusinessCategories.setRowCount(len(categories))
+            self.ui.BusinessCategories.verticalHeader().setVisible(False)
+            for index in range(len(categories)):
+                self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
+                self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))            
 
 
 if __name__ == '__main__':
