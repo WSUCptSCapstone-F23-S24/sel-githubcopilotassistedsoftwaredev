@@ -86,11 +86,14 @@ class MyApp(QMainWindow):
 
             categories = sorted([(k, v) for k, v in categories.items()], key=lambda x : x[1], reverse=True)
             self.ui.BusinessCategories.clearContents()
+            self.ui.CategoryList.clearSelection()
+            self.ui.CategoryList.clear()
             self.ui.BusinessCategories.setRowCount(len(categories))
             self.ui.BusinessCategories.verticalHeader().setVisible(False)
             for index in range(len(categories)):
                 self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
-                self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))            
+                self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))
+                self.ui.CategoryList.addItem(categories[index][0])            
 
 
 if __name__ == '__main__':
