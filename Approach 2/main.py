@@ -2,6 +2,7 @@ import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 import psycopg2
+import json
 
 class MyApp(QMainWindow):
     def __init__(self):
@@ -22,6 +23,7 @@ class MyApp(QMainWindow):
         self.ui.StateSelector.currentTextChanged.connect(self.updateCities)
         self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodes)  
         self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipcodeStats)
+        self.ui.CategoryList.currentTextChanged.connect(self.updateBusinessDisplay)
 
     def __del__(self):
         # Closing database connection
@@ -94,6 +96,44 @@ class MyApp(QMainWindow):
                 self.ui.BusinessCategories.setItem(index, 0, QTableWidgetItem(str(categories[index][1])))
                 self.ui.BusinessCategories.setItem(index, 1, QTableWidgetItem(str(categories[index][0])))
                 self.ui.CategoryList.addItem(categories[index][0])            
+
+    def updateBusinessDisplay(self):
+        if (self.ui.CategoryList.currentItem() and self.ui.ZipcodeSelector.currentItem()):
+            zipcode = self.ui.ZipcodeSelector.currentItem().text()
+            category = self.ui.CategoryList.currentItem().text()
+            query = """SELECT name, address, city, business.stars as stars, review_count, 
+                            AVG(review.stars)::numeric(10,2) as rating, (checkins)::text as checkin 
+                        FROM business 
+                        INNER JOIN review ON business.business_id = review.business_id 
+                        WHERE business.categories::jsonb ? '{}' AND zipcode = '{}' 
+                            group by name, address, city, business.stars, review_count, checkin 
+                            order by name""".format(category, zipcode)
+            self.cur.execute(query)
+            businesses = self.cur.fetchall()
+
+            self.ui.BusinessDisplay.clearContents()
+            self.ui.BusinessDisplay.setRowCount(len(businesses))
+            self.ui.BusinessDisplay.verticalHeader().setVisible(False)
+            for index in range(len(businesses)):
+                self.ui.BusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businesses[index][0])))
+                self.ui.BusinessDisplay.setItem(index, 1, QTableWidgetItem(str(businesses[index][1])))
+                self.ui.BusinessDisplay.setItem(index, 2, QTableWidgetItem(str(businesses[index][2])))
+                self.ui.BusinessDisplay.setItem(index, 3, QTableWidgetItem(str(businesses[index][3])))
+                self.ui.BusinessDisplay.setItem(index, 4, QTableWidgetItem(str(businesses[index][4])))
+                self.ui.BusinessDisplay.setItem(index, 5, QTableWidgetItem(str(businesses[index][5])))
+
+
+                checkinList = json.loads(businesses[index][6])
+                checkins = 0
+                for day in checkinList:
+                    for time in checkinList[day]:
+                        checkins += checkinList[day][time]
+
+                print(checkins)
+                self.ui.BusinessDisplay.setItem(index, 6, QTableWidgetItem(str(checkins)))
+
+
+
 
 
 if __name__ == '__main__':

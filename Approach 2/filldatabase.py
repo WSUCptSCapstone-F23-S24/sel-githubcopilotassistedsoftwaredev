@@ -57,7 +57,8 @@ print(len(reviewList))
 #     categories = categories[:-1] + ']'
 #     categories = categories.replace("'","''")
 #     name = business['name'].replace("'", "''")
-#     command = f"INSERT INTO business(business_id, categories, city, name, zipcode, review_count, stars, state, checkins) VALUES ('{business['business_id']}', '{categories}', '{business['city']}', '{name}', {business['postal_code']}, {business['review_count']}, {business['stars']}, '{business['state']}', '{business_checkin}');"
+#     address = business['address'].replace("'", "''")
+#     command = f"INSERT INTO business(business_id, categories, city, name, zipcode, review_count, stars, state, checkins, address) VALUES ('{business['business_id']}', '{categories}', '{business['city']}', '{name}', {business['postal_code']}, {business['review_count']}, {business['stars']}, '{business['state']}', '{business_checkin}','{address}');"
 #     cur.execute(command)
 
 
