@@ -27,6 +27,8 @@ class MyApp(QMainWindow):
         self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipcodeStats)
 
         self.ui.SearchButton.clicked.connect(self.updateBusinessDisplay)
+        self.ui.SearchButton.clicked.connect(self.updatePopular)
+        self.ui.SearchButton.clicked.connect(self.updateSuccessful)
         self.ui.ResetSearch.clicked.connect(self.resetSearch)
 
     def __del__(self):
@@ -139,11 +141,79 @@ class MyApp(QMainWindow):
         self.ui.BusinessDisplay.setRowCount(0)
         self.ui.BusinessDisplay.verticalHeader().setVisible(False)
 
+        self.ui.PopularBusinessDisplay.clearContents()
+        self.ui.PopularBusinessDisplay.setRowCount(0)
+        self.ui.PopularBusinessDisplay.verticalHeader().setVisible(False)
+
+        self.ui.SuccessfulBusinessDisplay.clearContents()
+        self.ui.SuccessfulBusinessDisplay.setRowCount(0)
+        self.ui.SuccessfulBusinessDisplay.verticalHeader().setVisible(False)
+
+
     def clearCategories(self):
         self.ui.CategoryList.clearSelection()
         self.ui.CategoryList.clear()
 
-    
+    def updatePopular(self):
+        if (self.ui.CategoryList.currentItem() and self.ui.ZipcodeSelector.currentItem()):
+            zipcode = self.ui.ZipcodeSelector.currentItem().text()
+            category = self.ui.CategoryList.currentItem().text()
+            query = """SELECT name, business.stars as stars, AVG(review.stars)::numeric(10,2) as rating, review_count
+                        FROM business 
+                        INNER JOIN review ON business.business_id = review.business_id 
+                        WHERE business.categories::jsonb ? '{}' AND zipcode = '{}' and business.stars >= 4
+                            group by name, business.stars, review_count
+                            order by name""".format(category, zipcode)
+            self.cur.execute(query)
+            businesses = self.cur.fetchall()
+
+            self.ui.PopularBusinessDisplay.clearContents()
+            self.ui.PopularBusinessDisplay.setRowCount(len(businesses))
+            self.ui.PopularBusinessDisplay.verticalHeader().setVisible(False)
+
+            for index in range(len(businesses)):
+                self.ui.PopularBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(businesses[index][0])))
+                self.ui.PopularBusinessDisplay.setItem(index, 1, QTableWidgetItem(str(businesses[index][1])))
+                self.ui.PopularBusinessDisplay.setItem(index, 2, QTableWidgetItem(str(businesses[index][2])))
+                self.ui.PopularBusinessDisplay.setItem(index, 3, QTableWidgetItem(str(businesses[index][3])))
+        else:
+            self.ui.PopularBusinessDisplay.clearContents()
+            self.ui.PopularBusinessDisplay.setRowCount(0)
+            self.ui.PopularBusinessDisplay.verticalHeader().setVisible(False)
+
+    def updateSuccessful(self):
+        if (self.ui.CategoryList.currentItem() and self.ui.ZipcodeSelector.currentItem()):
+            zipcode = self.ui.ZipcodeSelector.currentItem().text()
+            category = self.ui.CategoryList.currentItem().text()
+            query = """SELECT name, review_count, checkins FROM business
+                        WHERE business.categories::jsonb ? '{}' AND zipcode = '{}'""".format(category, zipcode)
+            self.cur.execute(query)
+            businesses = self.cur.fetchall()
+
+            successful = list()
+            for index in range(len(businesses)):
+                checkinList = businesses[index][-1]
+                checkins = 0
+                for day in checkinList:
+                    for time in checkinList[day]:
+                        checkins += checkinList[day][time]
+                if checkins >= 100:
+                    successful.append((businesses[index][0], businesses[index][1], checkins))
+
+            successful = sorted(successful, key=lambda x: x[2], reverse=True)
+
+            self.ui.SuccessfulBusinessDisplay.clearContents()
+            self.ui.SuccessfulBusinessDisplay.setRowCount(len(successful))
+            self.ui.SuccessfulBusinessDisplay.verticalHeader().setVisible(False)
+
+            for index in range(len(successful)):
+                self.ui.SuccessfulBusinessDisplay.setItem(index, 0, QTableWidgetItem(str(successful[index][0])))
+                self.ui.SuccessfulBusinessDisplay.setItem(index, 1, QTableWidgetItem(str(successful[index][1])))
+                self.ui.SuccessfulBusinessDisplay.setItem(index, 2, QTableWidgetItem(str(successful[index][2])))
+        else:
+            self.ui.SuccessfulBusinessDisplay.clearContents()
+            self.ui.SuccessfulBusinessDisplay.setRowCount(0)
+            self.ui.SuccessfulBusinessDisplay.verticalHeader().setVisible(False)
 
 
 if __name__ == '__main__':
