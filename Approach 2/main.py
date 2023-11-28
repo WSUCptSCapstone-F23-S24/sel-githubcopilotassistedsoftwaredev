@@ -20,10 +20,14 @@ class MyApp(QMainWindow):
 
         # Connecting location selectors to proper functions
         self.loadStates()
+        self.resetSearch()
+        self.clearCategories()
         self.ui.StateSelector.currentTextChanged.connect(self.updateCities)
         self.ui.CitySelector.currentTextChanged.connect(self.updateZipcodes)  
         self.ui.ZipcodeSelector.currentTextChanged.connect(self.updateZipcodeStats)
-        self.ui.CategoryList.currentTextChanged.connect(self.updateBusinessDisplay)
+
+        self.ui.SearchButton.clicked.connect(self.updateBusinessDisplay)
+        self.ui.ResetSearch.clicked.connect(self.resetSearch)
 
     def __del__(self):
         # Closing database connection
@@ -128,12 +132,18 @@ class MyApp(QMainWindow):
                 for day in checkinList:
                     for time in checkinList[day]:
                         checkins += checkinList[day][time]
-
-                print(checkins)
                 self.ui.BusinessDisplay.setItem(index, 6, QTableWidgetItem(str(checkins)))
 
+    def resetSearch(self):
+        self.ui.BusinessDisplay.clearContents()
+        self.ui.BusinessDisplay.setRowCount(0)
+        self.ui.BusinessDisplay.verticalHeader().setVisible(False)
 
+    def clearCategories(self):
+        self.ui.CategoryList.clearSelection()
+        self.ui.CategoryList.clear()
 
+    
 
 
 if __name__ == '__main__':
