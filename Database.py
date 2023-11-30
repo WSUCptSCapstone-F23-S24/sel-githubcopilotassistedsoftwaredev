@@ -143,8 +143,23 @@ def make():
     
     conn.commit()
 
-        
+    return conn, cur  
 
     # Close cursor and connection
-    cur.close()
-    conn.close()
+    #cur.close()
+    #conn.close()
+
+# make get_states function that returns a sorted list of states from the states table
+def get_states(cur):
+    cur.execute("SELECT state_code FROM states ORDER BY state_code ASC;")
+    return [i[0] for i in cur.fetchall()]
+
+# make a get_cities function that returns a sorted list of cities from the cities table for the given state
+def get_cities(cur, state):
+    cur.execute("SELECT city_name FROM cities WHERE state_code = %s ORDER BY city_name ASC;", (state,))
+    return [i[0] for i in cur.fetchall()]
+
+# make a get_zipcodes function that returns a sorted list of zipcodes from the zipcodes table for the given city
+def get_zipcodes(cur, city):
+    cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = (SELECT city_id FROM cities WHERE city_name = %s) ORDER BY zipcode ASC;", (city,))
+    return [i[0] for i in cur.fetchall()]
