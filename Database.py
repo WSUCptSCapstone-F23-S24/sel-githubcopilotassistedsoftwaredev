@@ -163,3 +163,8 @@ def get_cities(cur, state):
 def get_zipcodes(cur, city):
     cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = (SELECT city_id FROM cities WHERE city_name = %s) ORDER BY zipcode ASC;", (city,))
     return [i[0] for i in cur.fetchall()]
+
+# make a get_num_businesses function that returns the number of businesses in the given zipcode from the buisnesses table
+def get_num_businesses(cur, zipcode, city):
+    cur.execute("SELECT COUNT(*) FROM businesses WHERE zipcode_id = (SELECT zipcode_id FROM zipcodes WHERE zipcode = %s AND city_id = (SELECT city_id FROM cities WHERE city_name = %s));", (zipcode, city))
+    return cur.fetchone()[0]
