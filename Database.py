@@ -27,7 +27,7 @@ def create_database(dbname, user, password):
     cur.close()
     conn.close()
 
-if __name__ == '__main__':
+def make():
     # Database credentials
     dbname = "yelp"
     user = "postgres"
@@ -74,12 +74,12 @@ if __name__ == '__main__':
     conn.commit()
 
     # Print out the states table
-    cur.execute("SELECT * FROM states ORDER BY state_code ASC;")
-    print(cur.fetchall())
+    #cur.execute("SELECT * FROM states ORDER BY state_code ASC;")
+    #print(cur.fetchall())
 
     #print out all the cities in the state of Arizona
-    cur.execute("SELECT city_name FROM cities WHERE state_code = 'AZ' ORDER BY city_name ASC;")
-    print(cur.fetchall())
+    #cur.execute("SELECT city_name FROM cities WHERE state_code = 'AZ' ORDER BY city_name ASC;")
+    #print(cur.fetchall())
 
     #Create a single zipcode table with a foreign key
     cur.execute("""
@@ -106,8 +106,8 @@ if __name__ == '__main__':
 
     
     #print out all the zipcodes in the city of Phoenix
-    cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = 1 ORDER BY zipcode ASC;")
-    print(cur.fetchall())
+    #cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = 1 ORDER BY zipcode ASC;")
+    #print(cur.fetchall())
 
     
     #create a single business table with a foreign key
@@ -137,8 +137,8 @@ if __name__ == '__main__':
 
 
     #Print out all the businesses in the zipcode 85003
-    cur.execute("SELECT business_name FROM businesses WHERE zipcode_id = 1 ORDER BY business_name ASC;")
-    print(cur.fetchall())
+    #cur.execute("SELECT business_name FROM businesses WHERE zipcode_id = 1 ORDER BY business_name ASC;")
+    #print(cur.fetchall())
 
     
     conn.commit()

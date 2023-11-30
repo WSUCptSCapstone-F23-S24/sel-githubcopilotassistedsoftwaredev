@@ -1,12 +1,23 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6 import uic
+import Database
+
 
 
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('myGUI.ui', self)
+
+        # run the make function in Database
+        Database.make()
+
+        # 
+
+
+
+
 
 
 if __name__ == '__main__':
