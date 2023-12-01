@@ -3,6 +3,7 @@ import json
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+
 """ NOTES: 
     - States Table: Stores unique state codes with 'state_code' as the primary key.
     - Cities Table: Contains city names and their state codes, with 'city_id' as the primary key and 'state_code' as a foreign key.
@@ -86,10 +87,24 @@ def make():
         CREATE TABLE zipcodes (
             zipcode_id SERIAL PRIMARY KEY,
             zipcode varchar NOT NULL,
+            mean_income int NOT NULL,
+            population int NOT NULL,
             city_id int REFERENCES cities(city_id),
-            UNIQUE (zipcode, city_id)
+            UNIQUE (zipcode, mean_income, population, city_id)
         );
     """)
+
+    #make a dictionary of zipcodes with their mean income and population from zipData.sql
+    zipdata = {}
+    with open('zipData.sql', 'r', encoding="utf8") as zip_file:
+        next(zip_file)
+        for line in zip_file:
+            #trim the starting '(' and ending ');\n' from each line
+            line = line[1:-3]
+            zipcode, medianIncome, meanIncome, population  = line.split(',')[:4]
+            zipcode = zipcode.strip("'")
+            zipdata[zipcode] = {'meanIncome': meanIncome, 'population': population}
+
     #Insert zipcodes into the zipcode table
     for i in data:
         # Fetch city_id for the city in the current data item
@@ -98,12 +113,11 @@ def make():
         if city_id_result:
             city_id = city_id_result[0]
             cur.execute("""
-            INSERT INTO zipcodes (zipcode, city_id) 
-            VALUES (%s, %s) 
-            ON CONFLICT (zipcode, city_id) 
+            INSERT INTO zipcodes (zipcode, mean_income, population, city_id) 
+            VALUES (%s, %s, %s, %s) 
+            ON CONFLICT (zipcode, mean_income, population, city_id) 
             DO NOTHING;
-            """, (i['postal_code'], city_id))
-
+            """, (i['postal_code'], zipdata[i['postal_code']]['meanIncome'], zipdata[i['postal_code']]['population'], city_id) if i['postal_code'] in zipdata else (i['postal_code'], 0, 0, city_id))
     
     #print out all the zipcodes in the city of Phoenix
     #cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = 1 ORDER BY zipcode ASC;")
@@ -167,4 +181,15 @@ def get_zipcodes(cur, city):
 # make a get_num_businesses function that returns the number of businesses in the given zipcode from the buisnesses table
 def get_num_businesses(cur, zipcode, city):
     cur.execute("SELECT COUNT(*) FROM businesses WHERE zipcode_id = (SELECT zipcode_id FROM zipcodes WHERE zipcode = %s AND city_id = (SELECT city_id FROM cities WHERE city_name = %s));", (zipcode, city))
+    return cur.fetchone()[0]
+
+# make a get_population function that returns the population of the given zipcode from the zipcodes table
+def get_population(cur, zipcode):
+    cur.execute("SELECT population FROM zipcodes WHERE zipcode = %s;", (zipcode,))
+    return cur.fetchone()[0]
+
+
+# make a get_mean_income function that returns the mean income of the given zipcode from the zipcodes table
+def get_mean_income(cur, zipcode):
+    cur.execute("SELECT mean_income FROM zipcodes WHERE zipcode = %s;", (zipcode,))
     return cur.fetchone()[0]
