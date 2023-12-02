@@ -29,11 +29,17 @@ def make_tableWidget_2(self, cur, zipcode, city):
     for i in categories:
         #count the number of times the category appears in the lisT
         num_businesses.append(str(categories_list.count(i)))
+    categories_list = []
+    # fill categories list with a tuple (category, # of businesses)
+    for i in range(len(categories)):
+        categories_list.append((categories[i], num_businesses[i]))
+    # sort categories list by # of businesses
+    categories_list.sort(key=lambda x: int(x[1]), reverse=True)
     self.tableWidget_2.setRowCount(len(categories))
     self.tableWidget_2.setHorizontalHeaderLabels(['# of Businesses', 'Category'])
     for i in range(len(categories)):
-        self.tableWidget_2.setItem(i, 1, QTableWidgetItem(categories[i]))
-        self.tableWidget_2.setItem(i, 0, QTableWidgetItem(num_businesses[i]))
+        self.tableWidget_2.setItem(i, 1, QTableWidgetItem(categories_list[i][0]))
+        self.tableWidget_2.setItem(i, 0, QTableWidgetItem(categories_list[i][1]))
 
 
 class MyApp(QMainWindow):
