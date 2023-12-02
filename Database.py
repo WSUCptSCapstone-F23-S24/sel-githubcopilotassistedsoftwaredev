@@ -131,6 +131,7 @@ def make():
             business_id SERIAL PRIMARY KEY,
             business_name varchar NOT NULL,
             rating float NOT NULL,
+            categories varchar NOT NULL,
             zipcode_id int REFERENCES zipcodes(zipcode_id),
             UNIQUE (business_name, zipcode_id)
         );
@@ -143,11 +144,11 @@ def make():
         if zipcode_id_result:
             zipcode_id = zipcode_id_result[0]
             cur.execute("""
-                INSERT INTO businesses (business_name, rating, zipcode_id) 
-                VALUES (%s, %s, %s) 
+                INSERT INTO businesses (business_name, rating, categories,zipcode_id) 
+                VALUES (%s, %s, %s, %s) 
                 ON CONFLICT (business_name, zipcode_id) 
                 DO NOTHING;
-                """, (i['name'], i['stars'], zipcode_id))
+                """, (i['name'], i['stars'], i['categories'],zipcode_id))
 
 
     #Print out all the businesses in the zipcode 85003
@@ -193,3 +194,8 @@ def get_population(cur, zipcode):
 def get_mean_income(cur, zipcode):
     cur.execute("SELECT mean_income FROM zipcodes WHERE zipcode = %s;", (zipcode,))
     return cur.fetchone()[0]
+
+# make a function that finds unique categories in the businesses table of the given city and zipcode
+def get_categories(cur, zipcode, city):
+    cur.execute("SELECT DISTINCT categories FROM businesses WHERE zipcode_id = (SELECT zipcode_id FROM zipcodes WHERE zipcode = %s AND city_id = (SELECT city_id FROM cities WHERE city_name = %s));", (zipcode, city))
+    return [i[0] for i in cur.fetchall()]

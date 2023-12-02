@@ -1,8 +1,39 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QLabel
 from PyQt6 import uic
+from PyQt6.QtGui import QPixmap, QIcon
+import json
 import Database
 
+
+
+def make_tableWidget_2(self, cur, zipcode, city):
+    self.tableWidget_2.setColumnCount(2)
+    # remove vertical header
+    self.tableWidget_2.verticalHeader().setVisible(False)
+    categories = []
+    categories_list = []
+    num_businesses = []
+    #display categories_list
+    for i in Database.get_categories(cur, zipcode, city):
+        #split by ", " and "," and remove '"' and "{" and "}"
+        i = i.replace('"', '')
+        i = i.replace('{', '')
+        i = i.replace('}', '')
+        i = i.replace(',', ', ')
+        i = i.split(', ')
+        for j in i:
+            categories_list.append(j)
+            if j not in categories:
+                categories.append(j)
+    for i in categories:
+        #count the number of times the category appears in the lisT
+        num_businesses.append(str(categories_list.count(i)))
+    self.tableWidget_2.setRowCount(len(categories))
+    self.tableWidget_2.setHorizontalHeaderLabels(['# of Businesses', 'Category'])
+    for i in range(len(categories)):
+        self.tableWidget_2.setItem(i, 1, QTableWidgetItem(categories[i]))
+        self.tableWidget_2.setItem(i, 0, QTableWidgetItem(num_businesses[i]))
 
 
 class MyApp(QMainWindow):
@@ -38,7 +69,10 @@ class MyApp(QMainWindow):
         self.listWidget_2.currentTextChanged.connect(lambda: self.label_12.clear())
         self.listWidget_2.currentTextChanged.connect(lambda: self.label_12.setText(str(Database.get_mean_income(cur, self.listWidget_2.currentItem().text()))) if self.listWidget_2.currentItem() else None)
 
-        # fill in tablewidget_2 with
+        # fill in the 2nd collumn of tableWidget_2 with the categories from the businesses table using fill_categories that takes a cursor and returns a list
+        self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget_2.clear())
+        self.listWidget_2.currentTextChanged.connect(lambda: make_tableWidget_2(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text()) if self.listWidget_2.currentItem() else None)
+            
         
         # close the cursor
         self.pushButton.clicked.connect(lambda: cur.close())
