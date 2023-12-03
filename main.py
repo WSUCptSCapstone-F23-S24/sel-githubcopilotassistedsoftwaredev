@@ -41,7 +41,6 @@ def make_tableWidget_2(self, cur, zipcode, city):
         self.tableWidget_2.setItem(i, 1, QTableWidgetItem(categories_list[i][0]))
         self.tableWidget_2.setItem(i, 0, QTableWidgetItem(categories_list[i][1]))
     # fill listwidget_4 with the categories
-    self.listWidget_4.clear()
     self.listWidget_4.addItems(categories)
 
 # make a function that takes (cur, zipcode, city) and fills tableWidget's 7 columns (business name, address, city, stars, review count, review rating, number of checkins)
@@ -165,9 +164,11 @@ class MyApp(QMainWindow):
 
         # fill in the 2nd collumn of tableWidget_2 with the categories from the businesses table using fill_categories that takes a cursor and returns a list
         self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget_2.clear())
+        self.listWidget_2.currentTextChanged.connect(lambda: self.listWidget_4.clear())
         self.listWidget_2.currentTextChanged.connect(lambda: make_tableWidget_2(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text()) if self.listWidget_2.currentItem() else None)
         
         # fill in tablewidget with  (business name, address, city, stars, review count, review rating, number of checkins) from the businesses table using fill_business
+        self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget.clear())
         self.listWidget_4.currentTextChanged.connect(lambda: make_tableWidget(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text(), self.listWidget_4.currentItem().text()) if self.listWidget_4.currentItem() else None)
         
         #fill in table_widget_3 with businesses in the current zipcode. The first column is business name, the second is stars, the third is review rating, and the last column is number of reviews
