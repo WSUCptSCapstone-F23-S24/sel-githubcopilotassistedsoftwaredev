@@ -44,6 +44,58 @@ def make_tableWidget_2(self, cur, zipcode, city):
     self.listWidget_4.clear()
     self.listWidget_4.addItems(categories)
 
+#make tableWidget_3 that fills in the table with businesses in the current zipcode. The first column is business name, the second is stars, the third is review rating, and the last column is number of reviews
+def make_tableWidget_3(self, cur, zipcode, city):
+    self.tableWidget_3.setColumnCount(4)
+    # remove vertical header
+    self.tableWidget_3.verticalHeader().setVisible(False)
+    # fill tableWidget_3 with a list of tuples (business name, stars, review rating, number of reviews)
+    self.tableWidget_3.setRowCount(len(Database.get_business(cur, zipcode, city)))
+    self.tableWidget_3.setHorizontalHeaderLabels(['Business Name', 'Stars', 'Review Rating', '# of Reviews'])
+    temp = [];
+
+    for i in (Database.get_business(cur, zipcode, city)):
+        # self.tableWidget_3.setItem(i, 0, QTableWidgetItem(Database.get_business(cur, zipcode, city)[i][0]))
+        # self.tableWidget_3.setItem(i, 1, QTableWidgetItem(str(Database.get_business(cur, zipcode, city)[i][3])))
+        # self.tableWidget_3.setItem(i, 2, QTableWidgetItem(str(Database.get_business(cur, zipcode, city)[i][5])))
+        # self.tableWidget_3.setItem(i, 3, QTableWidgetItem(str(Database.get_business(cur, zipcode, city)[i][4])))
+        #make a list of tuples (business name, stars, review rating, number of reviews)
+        temp.append((i[0], i[3], i[5], i[4]))
+    #sort the list of tuples by review rating
+    temp.sort(key=lambda x: x[2], reverse=True)
+    for i in range(len(temp)):
+        self.tableWidget_3.setItem(i, 0, QTableWidgetItem(temp[i][0]))
+        self.tableWidget_3.setItem(i, 1, QTableWidgetItem(str(temp[i][1])))
+        self.tableWidget_3.setItem(i, 2, QTableWidgetItem(str(temp[i][2])))
+        self.tableWidget_3.setItem(i, 3, QTableWidgetItem(str(temp[i][3])))
+
+#make tableWidget_4 that fills in the table with businesses in the current zipcode. The first column is business name, the second is review count, the third is number of checkins
+def make_tableWidget_4(self, cur, zipcode, city):
+    self.tableWidget_4.setColumnCount(3)
+    # remove vertical header
+    self.tableWidget_4.verticalHeader().setVisible(False)
+    # fill tableWidget_4 with a list of tuples (business name, review count, number of checkins)
+    self.tableWidget_4.setRowCount(len(Database.get_business(cur, zipcode, city)))
+    self.tableWidget_4.setHorizontalHeaderLabels(['Business Name', 'Review Count', '# of Checkins'])
+    temp = [];
+    for i in (Database.get_business(cur, zipcode, city)):
+        # self.tableWidget_4.setItem(i, 0, QTableWidgetItem(Database.get_business(cur, zipcode, city)[i][0]))
+        # self.tableWidget_4.setItem(i, 1, QTableWidgetItem(str(Database.get_business(cur, zipcode, city)[i][4])))
+        # self.tableWidget_4.setItem(i, 2, QTableWidgetItem(str(Database.get_business(cur, zipcode, city)[i][6])))
+        #make a list of tuples (business name, review count, number of checkins)
+        temp.append((i[0], i[4], i[6]))
+    #sort the list of tuples by checkins
+    temp.sort(key=lambda x: x[2], reverse=True)
+    for i in range(len(temp)):
+        self.tableWidget_4.setItem(i, 0, QTableWidgetItem(temp[i][0]))
+        self.tableWidget_4.setItem(i, 1, QTableWidgetItem(str(temp[i][1])))
+        self.tableWidget_4.setItem(i, 2, QTableWidgetItem(str(temp[i][2])))
+    #increase first column by 200px
+    self.tableWidget_4.setColumnWidth(0, 200)
+
+
+
+
 
 class MyApp(QMainWindow):
     def __init__(self):
@@ -100,7 +152,15 @@ class MyApp(QMainWindow):
         #fill tableWidget 7 columns (business name, address, city, stars, review count, review rating, number of checkins)
         print(Database.get_business(cur, '85248', 'Chandler'))
         
-        
+
+        #fill in table_widget_3 with businesses in the current zipcode. The first column is business name, the second is stars, the third is review rating, and the last column is number of reviews
+        self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget_3.clear())
+        self.listWidget_2.currentTextChanged.connect(lambda: make_tableWidget_3(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text()) if self.listWidget_2.currentItem() else None)
+        #fill in table_widget_4 with businesses in the current zipcode. The first column is business name, the second is review count, the third is number of checkins
+        self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget_4.clear())
+        self.listWidget_2.currentTextChanged.connect(lambda: make_tableWidget_4(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text()) if self.listWidget_2.currentItem() else None)
+
+
         # close the cursor
         self.pushButton.clicked.connect(lambda: cur.close())
         

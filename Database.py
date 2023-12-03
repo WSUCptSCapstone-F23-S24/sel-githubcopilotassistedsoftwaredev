@@ -163,6 +163,8 @@ def make():
             DO NOTHING;
             """, (i['postal_code'], zipdata[i['postal_code']]['meanIncome'], zipdata[i['postal_code']]['population'], city_id) if i['postal_code'] in zipdata else (i['postal_code'], 0, 0, city_id))
     
+
+
     #print out all the zipcodes in the city of Phoenix
     #cur.execute("SELECT zipcode FROM zipcodes WHERE city_id = 1 ORDER BY zipcode ASC;")
     #print(cur.fetchall())
