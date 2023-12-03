@@ -250,7 +250,12 @@ def get_categories(cur, zipcode, city):
     cur.execute("SELECT DISTINCT categories FROM businesses WHERE zipcode_id = (SELECT zipcode_id FROM zipcodes WHERE zipcode = %s AND city_id = (SELECT city_id FROM cities WHERE city_name = %s));", (zipcode, city))
     return [i[0] for i in cur.fetchall()]
 
-# make a function that returns from the business tabel the business name, address, city, stars, review count, review rating, and number of checkins for the given city and zipcode
+# make a function that returns from the business tabel the business name, address, city, stars, review count, review rating, and number of checkins, and categories for the given city and zipcode
 def get_business(cur, zipcode, city):
     cur.execute("SELECT business_name, address, city_name, stars, review_count, review_rating, num_checkins FROM businesses JOIN zipcodes USING (zipcode_id) JOIN cities USING (city_id) WHERE zipcode = %s AND city_name = %s;", (zipcode, city))
+    return cur.fetchall()
+
+# make a function that returns from the business tabel the business name, address, city, stars, review count, review rating, and number of checkins and categorys for the given city and zipcode
+def get_businesses(cur, zipcode, city):
+    cur.execute("SELECT business_name, address, city_name, stars, review_count, review_rating, num_checkins, categories FROM businesses JOIN zipcodes USING (zipcode_id) JOIN cities USING (city_id) WHERE zipcode = %s AND city_name = %s;", (zipcode, city))
     return cur.fetchall()
