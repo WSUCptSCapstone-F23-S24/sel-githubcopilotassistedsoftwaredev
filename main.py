@@ -40,12 +40,30 @@ def make_tableWidget_2(self, cur, zipcode, city):
     for i in range(len(categories)):
         self.tableWidget_2.setItem(i, 1, QTableWidgetItem(categories_list[i][0]))
         self.tableWidget_2.setItem(i, 0, QTableWidgetItem(categories_list[i][1]))
+    # fill listwidget_4 with the categories
+    self.listWidget_4.clear()
+    self.listWidget_4.addItems(categories)
 
 
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('myGUI.ui', self)
+
+        #Setting Icon for each button
+        icon = QIcon('./image/Search.PNG')
+        self.pushButton.setIcon(icon)
+        self.pushButton.setIconSize(self.pushButton.size())
+        icon2 = QIcon('./image/Clear.PNG')
+        self.pushButton_2.setIcon(icon2)
+        self.pushButton_2.setIconSize(self.pushButton.size())
+        icon3 = QIcon('./image/Refresh.PNG')
+        self.pushButton_3.setIcon(icon3)
+        self.pushButton_3.setIconSize(self.pushButton.size())
+
+        #image for zipcode statistics
+        pixmap = QPixmap('./image/Cap.PNG')
+        self.label_pic.setPixmap(pixmap)
 
         # run the make function in Database
         conn, cur = Database.make()
@@ -78,13 +96,17 @@ class MyApp(QMainWindow):
         # fill in the 2nd collumn of tableWidget_2 with the categories from the businesses table using fill_categories that takes a cursor and returns a list
         self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget_2.clear())
         self.listWidget_2.currentTextChanged.connect(lambda: make_tableWidget_2(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text()) if self.listWidget_2.currentItem() else None)
-            
+        
+        #fill tableWidget 7 columns (business name, address, city, stars, review count, review rating, number of checkins)
+        print(Database.get_business(cur, '85248', 'Chandler'))
+        
         
         # close the cursor
         self.pushButton.clicked.connect(lambda: cur.close())
         
         # close the connection
         self.pushButton.clicked.connect(lambda: conn.close())
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

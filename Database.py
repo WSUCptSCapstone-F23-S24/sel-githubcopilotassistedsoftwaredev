@@ -47,6 +47,50 @@ def make():
         for line in json_file:
             data.append(json.loads(line))
 
+    data2 = []
+    with open('yelp_review.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data2.append(json.loads(line))
+    
+    data3 = []
+    with open('yelp_checkin.json', 'r', encoding="utf8") as json_file:
+        for line in json_file:
+            data3.append(json.loads(line))
+
+    # append a review rating to each business in data using business id and data2
+    review_rating_by_business = {}
+    for i in data2:
+        if i['business_id'] in review_rating_by_business:
+            #add the stars
+            review_rating_by_business[i['business_id']].append(i['stars'])
+        else:
+            review_rating_by_business[i['business_id']] = [i['stars']]
+    
+    mean_rating = {}
+    for i in review_rating_by_business:
+        mean_rating[i] = sum(review_rating_by_business[i])/len(review_rating_by_business[i])
+
+    for i in data:
+        if i['business_id'] in mean_rating:
+            i['review_rating'] = mean_rating[i['business_id']]
+        else:
+            i['review_rating'] = 0
+    
+    # append a number of checkins to each business in data using business id and data3
+    checkins_by_business = {}
+    for i in data3:
+        count = 0
+        for day in i['time']:
+            for hour in i['time'][day]:
+                count += i['time'][day][hour]
+        checkins_by_business[i['business_id']] = count
+
+    for i in data:
+        if i['business_id'] in checkins_by_business:
+            i['num_checkins'] = checkins_by_business[i['business_id']]
+        else:
+            i['num_checkins'] = 0
+
     # Create State Table with Primary Key
     cur.execute("CREATE TABLE states (state_code varchar PRIMARY KEY NOT NULL UNIQUE);")
 
@@ -130,12 +174,17 @@ def make():
         CREATE TABLE businesses (
             business_id SERIAL PRIMARY KEY,
             business_name varchar NOT NULL,
-            rating float NOT NULL,
+            address varchar NOT NULL,
+            stars float NOT NULL,
+            review_count int NOT NULL,
+            review_rating float NOT NULL,
+            num_checkins int NOT NULL,
             categories varchar NOT NULL,
             zipcode_id int REFERENCES zipcodes(zipcode_id),
             UNIQUE (business_name, zipcode_id)
         );
     """)
+
     #Insert businesses into the business table
     for i in data:
         # Fetch zipcode_id for the zipcode in the current data item
@@ -144,12 +193,11 @@ def make():
         if zipcode_id_result:
             zipcode_id = zipcode_id_result[0]
             cur.execute("""
-                INSERT INTO businesses (business_name, rating, categories,zipcode_id) 
-                VALUES (%s, %s, %s, %s) 
+                INSERT INTO businesses (business_name, address, stars, review_count, review_rating, num_checkins, categories, zipcode_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s) 
                 ON CONFLICT (business_name, zipcode_id) 
                 DO NOTHING;
-                """, (i['name'], i['stars'], i['categories'],zipcode_id))
-
+                """, (i['name'], i['address'], i['stars'], i['review_count'], "{:.1f}".format(i['review_rating']), i['num_checkins'], i['categories'], zipcode_id))
 
     #Print out all the businesses in the zipcode 85003
     #cur.execute("SELECT business_name FROM businesses WHERE zipcode_id = 1 ORDER BY business_name ASC;")
@@ -199,3 +247,8 @@ def get_mean_income(cur, zipcode):
 def get_categories(cur, zipcode, city):
     cur.execute("SELECT DISTINCT categories FROM businesses WHERE zipcode_id = (SELECT zipcode_id FROM zipcodes WHERE zipcode = %s AND city_id = (SELECT city_id FROM cities WHERE city_name = %s));", (zipcode, city))
     return [i[0] for i in cur.fetchall()]
+
+# make a function that returns from the business tabel the business name, address, city, stars, review count, review rating, and number of checkins for the given city and zipcode
+def get_business(cur, zipcode, city):
+    cur.execute("SELECT business_name, address, city_name, stars, review_count, review_rating, num_checkins FROM businesses JOIN zipcodes USING (zipcode_id) JOIN cities USING (city_id) WHERE zipcode = %s AND city_name = %s;", (zipcode, city))
+    return cur.fetchall()
