@@ -1,4 +1,4 @@
-# Sprint 1 Report (10/06/23 - 11/05/2023)
+# Sprint 2 Report (10/06/23 - 11/05/2023)
 
 ## What's New
  * Back-end implementation for both the no AI team and the CoPilot team
