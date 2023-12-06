@@ -89,7 +89,18 @@ Currently, the application has no database back-end, so data on the front-end is
 This back-end implementation complements the previously made front-end GUI. All features explained above are now fully implemented using built-in python datatypes.
 
 ### Known Problems
-The implementation for this part utilizes dictionaries and other standard python data structures. In the future, we plan on doing this back-end a second time using sql instead.
+The implementation for this approach utilizes dictionaries and other standard python data structures. 
+
+## Case Study 1 Part 2: Backend-End UI Application (PostgreSQL)
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-approach2-CoPilot)
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI/Approach%202)
+
+### Functionality
+This back-end implementation complements the previously made front-end GUI. All features explained above are now fully implemented using a PostgreSQL database.
+
+### Known Problems
+The implementation for this approach utilizes a PostgreSQL database. Check each branch to see specifics on the structure of the database.
 
 ## Additional Documentation
 [Metric Tracking Document](https://docs.google.com/spreadsheets/d/1ymLoq1peAggIlSSYoW2vvT3tpB8PEj7SNVEC08-0Hpo/edit?usp=sharing)
@@ -99,6 +110,10 @@ The implementation for this part utilizes dictionaries and other standard python
 [Sprint Report 1](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint1Report.md)
 
 [Sprint Report 2](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint2Report.md)
+
+[Sprint Report 3](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint3Report.md)
+
+
 
 ## License
 Copyright (c) 2023 Joshua Burk, Joshua Maloy, Ryan Luders, Jay-Ar Arsenio

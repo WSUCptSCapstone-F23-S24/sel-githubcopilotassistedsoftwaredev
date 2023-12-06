@@ -21,7 +21,7 @@
 This sprint, our CoPilot and NoAI teams remained the same. We completed a second approach of the backend implementation of the same application we have been working on. This provided us valuable information on how effective CoPilot is with assisting SQL development.
 
 
-[Here]() is a video showing off what we completed in this third sprint aside from documentation.
+[Here](https://www.youtube.com/watch?v=9CS6FW5AKY4) is a video showing off what we completed in this second sprint aside from documentation.
 
 ## Unfinished Work
 Our teams have wrapped up all planned work this sprint, and we have are ready to proceed onto case study 2 in which we will examine how efficient CoPilot is in building a compiler. 
