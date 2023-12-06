@@ -27,7 +27,7 @@ Clone the repository
 git clone https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev.git
 
 Navigate to the project directory
-cd CaseStudy2-CoPilot
+cd CaseStudy2-approach2-CoPilot
 
 Install dependencies
 pip install -r Requirements.txt
@@ -44,7 +44,7 @@ Clone the repository
 git clone https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev.git
 
 Navigate to the project directory
-cd CaseStudy2-NoAI
+cd CaseStudy2-approach2-NoAI
 
 Install dependencies
 pip install -r Requirements.txt
