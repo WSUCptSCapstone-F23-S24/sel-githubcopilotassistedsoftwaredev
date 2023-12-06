@@ -21,10 +21,10 @@
 This sprint, our CoPilot and NoAI teams remained the same. We completed a second approach of the backend implementation of the same application we have been working on. This provided us valuable information on how effective CoPilot is with assisting SQL development.
 
 
-[Here]() is a video showing off what we completed in this second sprint aside from documentation.
+[Here]() is a video showing off what we completed in this third sprint aside from documentation.
 
 ## Unfinished Work
-Our teams have wrapped up all planned work this sprint, and we have yet to fully plan out what our future case studies looks like. 
+Our teams have wrapped up all planned work this sprint, and we have are ready to proceed onto case study 2 in which we will examine how efficient CoPilot is in building a compiler. 
 
 ## Completed Issues
 Both teams completed duplicate issues. These issues can be found at the links below. Additionally, the issues are labeled with the team members who completed the issues as well as which issues are associated with approach 2.
@@ -40,5 +40,7 @@ Here's what went well:
 Here's what we'd like to improve:
    * Improve issue usage - marking as in progress, done, etc
    * Increasing communication between subteams
+   * Improve consistency for weekly meeting
+   * Further improve the prepatory and planning phase for future case studies
 
 
