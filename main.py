@@ -45,23 +45,18 @@ def make_tableWidget_2(self, cur, zipcode, city):
 
 # make a function that takes (cur, zipcode, city) and fills tableWidget's 7 columns (business name, address, city, stars, review count, review rating, number of checkins)
 def make_tableWidget(self, cur, zipcode, city, category):
-    print("here1")
     # make the table 7 columns
     self.tableWidget.setColumnCount(7)
     # remove vertical header
     self.tableWidget.verticalHeader().setVisible(False)
-    print("here2")
     # fill in the table header
     self.tableWidget.setHorizontalHeaderLabels(['Business Name', 'Address', 'City', 'Stars', 'Review Count', 'Review Rating', '# of Checkins'])
-    print("here3")
     businesses = Database.get_businesses(cur, zipcode, city)
     # sort businesses by [0]
-    print("here4")
     businesses.sort(key=lambda x: x[0])
 
     #reset row count
     self.tableWidget.setRowCount(0)
-    print("here5")
     for i in businesses:
         #tokenize the categories [6] and remove '"' and "{" and "}"  add to a list and replace [7] with the list
         processed = i[7].replace('"', '').replace('{', '').replace('}', '').replace(', ', ',').split(',')
@@ -172,10 +167,6 @@ class MyApp(QMainWindow):
         self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget_2.clear())
         self.listWidget_2.currentTextChanged.connect(lambda: self.listWidget_4.clear())
         self.listWidget_2.currentTextChanged.connect(lambda: make_tableWidget_2(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text()) if self.listWidget_2.currentItem() else None)
-        
-        # fill in tablewidget with  (business name, address, city, stars, review count, review rating, number of checkins) from the businesses table using fill_business
-        #self.listWidget_2.currentTextChanged.connect(lambda: self.tableWidget.clear())
-        #self.listWidget_4.currentTextChanged.connect(lambda: make_tableWidget(self, cur, self.listWidget_2.currentItem().text(), self.listWidget.currentItem().text(), self.listWidget_4.currentItem().text()) if self.listWidget_4.currentItem() else None)
         
         #when pushbutton is clicked, fill tablewidget with businesses in the current zipcode. The first column is business name, the second is address, the third is city, the fourth is stars, the fifth is review count, the sixth is review rating, and the last column is number of checkins
         self.pushButton.clicked.connect(lambda: self.tableWidget.clear())

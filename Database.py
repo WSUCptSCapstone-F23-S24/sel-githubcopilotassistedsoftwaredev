@@ -12,7 +12,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 """
 
 
-
+ # make a function that creates a database with the given name, user, and password
 def create_database(dbname, user, password):
     conn = psycopg2.connect(dbname="postgres", user=user, password=password)
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
