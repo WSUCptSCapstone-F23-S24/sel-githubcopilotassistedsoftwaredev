@@ -103,6 +103,8 @@ This back-end implementation complements the previously made front-end GUI. All 
 The implementation for this approach utilizes a PostgreSQL database. Check each branch to see specifics on the structure of the database.
 
 ## Additional Documentation
+[Project Report](https://1drv.ms/w/s!AtV6T549EE8KhMxf6vPN9ng4BZY9ig?e=nBTRYv)
+
 [Metric Tracking Document](https://docs.google.com/spreadsheets/d/1ymLoq1peAggIlSSYoW2vvT3tpB8PEj7SNVEC08-0Hpo/edit?usp=sharing)
 
 [Case Study 1 Part 1 Report](https://docs.google.com/document/d/1Tt-thmhBi_Uz75E4v8us9cPoAFDKK6eRIz1PHmFuLgI/edit?usp=sharing).
