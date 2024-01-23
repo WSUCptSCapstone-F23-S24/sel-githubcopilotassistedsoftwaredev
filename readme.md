@@ -107,7 +107,7 @@ The implementation for this approach utilizes a PostgreSQL database. Check each 
 
 [Metric Tracking Document](https://docs.google.com/spreadsheets/d/1ymLoq1peAggIlSSYoW2vvT3tpB8PEj7SNVEC08-0Hpo/edit?usp=sharing)
 
-[Case Study Summaries]([https://docs.google.com/document/d/1Tt-thmhBi_Uz75E4v8us9cPoAFDKK6eRIz1PHmFuLgI/edit?usp=sharing](https://docs.google.com/document/d/17b-JeKfkEkzT6vpQcVrDUf18a8jq0FybYlhqRsI1-eY/edit?usp=sharing)).
+[Case Study Summaries]([[https://docs.google.com/document/d/1Tt-thmhBi_Uz75E4v8us9cPoAFDKK6eRIz1PHmFuLgI/edit?usp=sharing](https://docs.google.com/document/d/17b-JeKfkEkzT6vpQcVrDUf18a8jq0FybYlhqRsI1-eY/edit?usp=sharing)](https://docs.google.com/document/d/17b-JeKfkEkzT6vpQcVrDUf18a8jq0FybYlhqRsI1-eY/edit?usp=sharing)).
 
 [Sprint Report 1](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint1Report.md)
 
