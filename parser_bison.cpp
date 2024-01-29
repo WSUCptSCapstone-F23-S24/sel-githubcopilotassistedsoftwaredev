@@ -48,8 +48,8 @@ int main(int argc, char **argv) {
                     i = end;
                 }
             }
-            else if (c == '\'')
-            {
+            //possible character
+            else if (c == '\'') {
                 int end = findEndOfToken(line, i+1, '\'');
                 if (end != -1) {
                     // found end of string
@@ -57,10 +57,36 @@ int main(int argc, char **argv) {
                     i = end;
                 }
             }
+            // possible id/variable
+            else if (isalpha(c)) {
+                //id value
+                int j = i;
+                // iterate until next whitespace or non alphabetical character
+                while (j < line.size() && isalpha(line[j])) {
+                    j++;
+                }
+                token = line.substr(i, j-i);
+                i = j-1;
+            }
+            // possible number
+            else if (isdigit(c)){
+                //id value
+                int j = i;
+                // iterate until next whitespace or non alphabetical character
+                while (j < line.size() && isdigit(line[j])) {
+                    j++;
+                }
+                token = line.substr(i, j-i);
+                i = j-1;
+            }
 
             // single character case
             if (token == "") {
                 token = std::string(1, c);
+            }
+            //if character is whitespace, continue
+            if (std::all_of(token.begin(), token.end(), ::isspace)) {
+                continue;
             }
             // std::cout << token << std::endl;
             TokenData result = FlexScanner().scan(token, line_number);
@@ -82,7 +108,7 @@ int findEndOfToken(std::string line, int index, char c) {
         return -1;
     }
     // check if character is escaped
-    if (found > 0 && line[found-1] == '\\') {
+    if (found > 0 && line[found-1] == '\\' && line[found-2] != '\\') {
         // character is escaped
         return findEndOfToken(line, found+1, c);
     }

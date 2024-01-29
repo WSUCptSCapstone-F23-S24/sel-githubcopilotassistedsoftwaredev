@@ -7,7 +7,6 @@
 
 #include <iostream>
 
-
 // 
 //  SCANNER TOKENDATA
 // 
@@ -27,7 +26,10 @@ struct TokenData {
                 std::cout << "Line " << linenum << " Token: STRINGCONST Value: \"" << svalue << "\" Len: " << nvalue << " Input: " << tokenstr << std::endl;
                 break;
             case CHARCONST:
-                std::cout << "Line " << linenum << " Token: CHARCONST Value: '" << cvalue << "' Len: " << nvalue << " Input: " << tokenstr << std::endl;
+                std::cout << "Line " << linenum << " Token: CHARCONST Value: '" << cvalue << "' Input: " << tokenstr << std::endl;
+                break;
+            case ID:
+                std::cout << "Line " << linenum << " Token: ID Value: " << svalue << " Input: " << tokenstr << std::endl;
                 break;
             default:
                 std::cout << "Line " << linenum << " Token: " << tokenstr << std::endl;
