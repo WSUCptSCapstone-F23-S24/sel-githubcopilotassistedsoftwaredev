@@ -9,6 +9,7 @@
 #include "scanType.h"
 #include "parser_flex.cpp"
 
+
 int main(int argc, char **argv) {
 
     std::istream *input;
@@ -29,13 +30,22 @@ int main(int argc, char **argv) {
     }
 
     // read input token by token and print it
-    std::string token;
-    while (*input >> token) {
-        TokenData result = FlexScanner().scan(token);
-        std::cout << "Token: " << result.tokenstr << std::endl;
-        std::getline(*input, token);
+    int line_number = 1;
+    std::string line;
+    while (std::getline(*input, line)) {
+        for (char& c : line) {
+            std::string token(1, c);
+            TokenData result = FlexScanner().scan(token, line_number);
+            if (result.tokenstr != nullptr) {
+                std::cout << " Line " << result.linenum << " Token: " << result.tokenstr  << std::endl;
+            }
+        }
+        ++line_number;
     }
+
 }
+
+
 
 
 
