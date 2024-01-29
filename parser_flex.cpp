@@ -23,6 +23,14 @@ TokenData scan(std::string token, int lineNumber) {
         return result;
     }
 
+    // Handle strings
+    if (token.size() > 1 && token[0] == '"' && token[token.size() - 1] == '"') {
+        result.tokenstr = strdup(token.c_str());
+        result.svalue = strdup(token.substr(1, token.size() - 2).c_str());
+        result.linenum = lineNumber;
+        return result;
+    }
+
     // Handle comments
     if (token[0] == '#') {
         return result;

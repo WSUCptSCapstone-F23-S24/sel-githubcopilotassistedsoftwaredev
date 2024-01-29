@@ -32,13 +32,38 @@ int main(int argc, char **argv) {
     // read input token by token and print it
     int line_number = 1;
     std::string line;
+    std::string token;
     while (std::getline(*input, line)) {
-        for (char& c : line) {
+        for (int i = 0; i<line.size(); i++) {
+            char c = line[i];
+            // possible string
+            if (c == '"') {
+                // look for end of string (next ")
+                int end = line.find('"', i+1);
+                if (end != std::string::npos) {
+                    // found end of string
+                    token = line.substr(i, end-i+1);
+                    TokenData result = FlexScanner().scan(token, line_number);
+
+                    if (result.tokenstr != nullptr) {
+                        std::cout << " Line " << result.linenum << " Token: " << result.tokenstr  << std::endl;
+                    }
+
+                    i = end;
+                    continue;
+                }
+            }
+
+            // single character case
             std::string token(1, c);
             TokenData result = FlexScanner().scan(token, line_number);
             if (result.tokenstr != nullptr) {
                 std::cout << " Line " << result.linenum << " Token: " << result.tokenstr  << std::endl;
             }
+            
+
+
+            
         }
         ++line_number;
     }
