@@ -17,6 +17,7 @@ class FlexScanner {
 public:
 TokenData scan(std::string token, int lineNumber) {
     TokenData result = TokenData();
+    result.nvalue = -1;
 
     // Ignore whitespace
     if (token.empty() || std::all_of(token.begin(), token.end(), ::isspace)) {
@@ -25,9 +26,20 @@ TokenData scan(std::string token, int lineNumber) {
 
     // Handle strings
     if (token.size() > 1 && token[0] == '"' && token[token.size() - 1] == '"') {
+        result.tokenclass = STRINGCONST;
         result.tokenstr = strdup(token.c_str());
         result.svalue = strdup(token.substr(1, token.size() - 2).c_str());
         result.linenum = lineNumber;
+        result.nvalue = token.size() - 2;
+        return result;
+    }
+
+    if (token.size() > 1 && token[0] == '\'' && token[token.size() - 1] == '\'') {
+        result.tokenclass = CHARCONST;
+        result.tokenstr = strdup(token.c_str());
+        result.svalue = strdup(token.substr(1, token.size() - 2).c_str());
+        result.linenum = lineNumber;
+        result.nvalue = token.size() - 2;
         return result;
     }
 

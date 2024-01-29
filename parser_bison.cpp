@@ -10,6 +10,8 @@
 #include "parser_flex.cpp"
 
 
+int findEndOfToken(std::string line, int index, char c);
+
 int main(int argc, char **argv) {
 
     std::istream *input;
@@ -32,45 +34,58 @@ int main(int argc, char **argv) {
     // read input token by token and print it
     int line_number = 1;
     std::string line;
-    std::string token;
+    std::string token = "";
     while (std::getline(*input, line)) {
         for (int i = 0; i<line.size(); i++) {
+            token = "";
             char c = line[i];
             // possible string
             if (c == '"') {
-                // look for end of string (next ")
-                int end = line.find('"', i+1);
-                if (end != std::string::npos) {
+                int end = findEndOfToken(line, i+1, '"');
+                if (end != -1) {
                     // found end of string
                     token = line.substr(i, end-i+1);
-                    TokenData result = FlexScanner().scan(token, line_number);
-
-                    if (result.tokenstr != nullptr) {
-                        std::cout << " Line " << result.linenum << " Token: " << result.tokenstr  << std::endl;
-                    }
-
                     i = end;
-                    continue;
+                }
+            }
+            else if (c == '\'')
+            {
+                int end = findEndOfToken(line, i+1, '\'');
+                if (end != -1) {
+                    // found end of string
+                    token = line.substr(i, end-i+1);
+                    i = end;
                 }
             }
 
             // single character case
-            std::string token(1, c);
-            TokenData result = FlexScanner().scan(token, line_number);
-            if (result.tokenstr != nullptr) {
-                std::cout << " Line " << result.linenum << " Token: " << result.tokenstr  << std::endl;
+            if (token == "") {
+                token = std::string(1, c);
             }
-            
-
-
-            
+            // std::cout << token << std::endl;
+            TokenData result = FlexScanner().scan(token, line_number);
+            result.print();
         }
         ++line_number;
     }
 
 }
 
-
-
-
-
+// findEndOfToken function takes a string, an index, and a character and returns the index of the next occurence of the character in the string
+// the next occurrance must not have a backslash before it
+// if the character is not found, the function returns -1
+int findEndOfToken(std::string line, int index, char c) {
+    // check if character is in string
+    int found = line.find(c, index);
+    if (found == std::string::npos) {
+        // character not found
+        return -1;
+    }
+    // check if character is escaped
+    if (found > 0 && line[found-1] == '\\') {
+        // character is escaped
+        return findEndOfToken(line, found+1, c);
+    }
+    // character is not escaped
+    return found;
+}
