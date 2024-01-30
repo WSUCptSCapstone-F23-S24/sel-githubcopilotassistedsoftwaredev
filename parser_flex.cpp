@@ -88,7 +88,15 @@ TokenData scan(std::string rawToken, int lineNumber) {
             std::cout << "WARNING(" << lineNumber << "): character is " << rawToken.size() - 2 << " characters long and not a single character: '" << rawToken << "'.  The first char will be used." << std::endl;
         }
         result.tokenstr = strdup(rawToken.c_str());
-        result.cvalue = escapedToken[1];
+        if (rawToken == "'\\n'") {
+            result.cvalue = '\n';
+        } else if (rawToken == "'\\t'") {
+            result.cvalue = '\t';
+        } else if (rawToken == "'\\0'") {
+            result.cvalue = '\0';
+        } else {
+            result.cvalue = rawToken[1];
+        }
         result.linenum = lineNumber;
         result.tokenclass = CHARCONST;
         return result;
@@ -114,7 +122,6 @@ TokenData scan(std::string rawToken, int lineNumber) {
     return result;
 }
 };
-
 
 
 
