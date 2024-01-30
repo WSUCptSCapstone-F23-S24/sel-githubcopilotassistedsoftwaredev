@@ -1,72 +1,58 @@
 %{ 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include "scanType.h"
 
-#ifdef CPLUSPLUS
 extern int yylex();
-#endif
+extern FILE *yyin;
+extern int yydebug;
 
-void yyerror(const char *msg)
-{
-      printf("ERROR(PARSER): %s\n", msg);
+#define YYERROR_VERBOSE
+//// any C/C++ functions you want here that might be used in grammar actions below
+//// any C/C++ globals you want here that might be used in grammar actions below
+extern int yylex();
+void yyerror(const char *msg) {
+    fprintf(stderr, "Error(PARSER): Invalid or misplace input character: '%s'. Character Ignored.\n", msg);
 }
 
-// variable storage
-double vars[26];
 %}
-
+//// your %union statement
 %union {
     TokenData *tokenData;
-    double value;
 }
+//// your %token statements defining token classes
+%token <tokenData> NUMBER ID BOOLFALSE BOOLTRUE QUIT CHARCONST NUMCONST STRINGCONST
+%type <tokenData> token
 
-// token specifies the token classes from the scanner
-%token <tokenData> NUMBER ID BOOLFALSE BOOLTRUE QUIT CHARCONST NUMCONST STRINGCONST 
-
-// type specifies the token classes used only in the parser
-%type <value> expression term varornum statement
 %%
-statementlist : statement '\n' 
-              | statement '\n' statementlist
-              ;
-
-statement : ID '=' statement       { vars[$1->idValue] = $3; $$=$3; }  // NOTE assign not expression
-      | expression              { printf("ANS: %f\n", $1);  }
-          | QUIT                    { exit(0); }
-          ;
-
-expression: expression '+' term     { $$ = $1 + $3; }
-          | expression '-' term     { $$ = $1 - $3; }
-          | term                    { $$ = $1; }
-          ;
-
-term : term '*' varornum            { $$ = $1 * $3; }
-     | term '/' varornum            { if ($3==0) {
-                                      printf("ERROR: Divide %f by zero\n", $1);
-                                  }   
-                                      else {
-                                      $$ = $1 / $3; 
-                                  }
-                                }
-     | varornum                     { $$ = $1; }
-     ;
-
-varornum : NUMBER                   { $$ = $1->numValue; }
-     | ID                       { $$ = vars[$1->idValue]; }
-     | '(' expression ')'       { $$ = $2; }
-         | '-' varornum             { $$ = -$2; }  // unary minus
+tokenlist: tokenlist token
+         | token
          ;
 
+//// put all your tokens here and individual actions 
+//// DO NOT DO THE C- GRAMMAR (this is a test program) 
+//// the grammar for assignment 1 is super simple
+token: NUMBER { printf("Line %d Token: NUMBER Value: %f\n", $1->linenum, $1->nvalue); }
+     | ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
+     | BOOLFALSE { printf("Line %d Token: BOOLFALSE\n", $1->linenum); }
+     | BOOLTRUE { printf("Line %d Token: BOOLTRUE\n", $1->linenum); }
+     | QUIT { printf("Line %d Token: QUIT\n", $1->linenum); exit(0); }
+     | CHARCONST { printf("Line %d Token: CHARCONST Value: %c\n", $1->linenum, $1->cvalue); }
+     | NUMCONST { printf("Line %d Token: NUMCONST Value: %d\n", $1->linenum, $1->nvalue); }
+     | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s\n", $1->linenum, $1->svalue); }
+     ;
 %%
 
-int main()
+//// any functions for main here
+
+int main(int argc, char *argv[]) 
 {
-        int i;
-//        yydebug=1;
+    ////  some of your stuff here
+    //yydebug = 1;
+    while(1)
+        yyparse(); // Start the parsing process
 
-        //for (i=0; i<26; i++) vars[i] = 0.0;
-        yyparse();   // call the parser
-
-        return 0;
+    return 0;
 }

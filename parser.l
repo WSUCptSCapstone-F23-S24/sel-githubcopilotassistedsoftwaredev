@@ -28,6 +28,9 @@ static int setValue(int linenum, int tokenClass, char *svalue)
         yylval.tokenData->nvalue = 1; 
     case BOOLFALSE:
         yylval.tokenData->nvalue = 0; 
+    case NUMCONST:
+        yylval.tokenData->nvalue = atof(svalue); 
+        break;
     }
     // return token class
     return tokenClass;
@@ -66,14 +69,19 @@ return                                 { return setValue(line, yytext[0], yytext
 [a-zA-Z][a-zA-Z0-9]*                    { return setValue(line, ID, yytext); }
 [0-9]*                                  { return setValue(line, NUMCONST, yytext); }
 
-[\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, Character, yytext); }
+
+[\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, yytext[0], yytext); }
 [ \t]                                 ;  // white space
-\n                                      { line++; return setValue(line, yytext[0], yytext); }
+\n                                      { line++; return 0; }
+.                       { return setValue(line, yytext[0], yytext); }
 .+                                       { return setValue(line, yytext[0], yytext); }
 
 
-[0-9]                   { return setValue(line, Digit, yytext); }
-[a-zA-Z]                   { return setValue(line, Letter, yytext); }
-[0-9]|[a-zA-Z]  { return setValue(line, Letdig, yytext); }
+
+[0-9]                   { return setValue(line, yytext[0], yytext); }
+[a-zA-Z]                   { return setValue(line, yytext[0], yytext); }
+[0-9]|[a-zA-Z]  { return setValue(line, yytext[0], yytext); }
+
+
 %%
 
