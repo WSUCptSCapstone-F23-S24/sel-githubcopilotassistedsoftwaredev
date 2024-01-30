@@ -23,7 +23,7 @@ void yyerror(const char *msg) {
     TokenData *tokenData;
 }
 //// your %token statements defining token classes
-%token <tokenData> NUMBER ID BOOLFALSE BOOLTRUE QUIT CHARCONST NUMCONST STRINGCONST
+%token <tokenData> NUMBER ID BOOLFALSE BOOLTRUE QUIT CHARCONST NUMCONST STRINGCONST NOTYPE
 %type <tokenData> token
 
 %%
@@ -42,6 +42,7 @@ token: NUMBER { printf("Line %d Token: NUMBER Value: %f\n", $1->linenum, $1->nva
      | CHARCONST { printf("Line %d Token: CHARCONST Value: %c\n", $1->linenum, $1->cvalue); }
      | NUMCONST { printf("Line %d Token: NUMCONST Value: %d\n", $1->linenum, $1->nvalue); }
      | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s\n", $1->linenum, $1->svalue); }
+     | NOTYPE { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
      ;
 %%
 
