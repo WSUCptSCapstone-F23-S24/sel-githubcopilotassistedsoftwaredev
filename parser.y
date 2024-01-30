@@ -22,7 +22,7 @@ double vars[26];
 }
 
 // token specifies the token classes from the scanner
-%token <tokenData> NUMBER ID QUIT
+%token <tokenData> NUMBER ID BOOLFALSE BOOLTRUE QUIT CHARCONST NUMCONST STRINGCONST 
 
 // type specifies the token classes used only in the parser
 %type <value> expression term varornum statement
@@ -65,7 +65,7 @@ int main()
         int i;
 //        yydebug=1;
 
-        for (i=0; i<26; i++) vars[i] = 0.0;
+        //for (i=0; i<26; i++) vars[i] = 0.0;
         yyparse();   // call the parser
 
         return 0;

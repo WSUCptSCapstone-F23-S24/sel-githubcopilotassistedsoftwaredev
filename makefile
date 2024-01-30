@@ -1,4 +1,4 @@
-BIN  = calc
+BIN  = parser
 CC   = g++
 CFLAGS = -DCPLUSPLUS -g     # for use with C++ if file ext is .c
 
