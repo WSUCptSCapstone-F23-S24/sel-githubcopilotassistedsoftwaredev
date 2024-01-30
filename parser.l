@@ -24,15 +24,25 @@ static int setValue(int linenum, int tokenClass, char *svalue)
     case ID:
          yylval.tokenData->svalue = strdup(svalue);         
          break;
-    case BOOLTRUE:
-        yylval.tokenData->nvalue = 1; 
-    case BOOLFALSE:
-        yylval.tokenData->nvalue = 0; 
+    case BOOLCONST:
+        yylval.tokenData->svalue = strdup(svalue);
+        if (strcmp(yylval.tokenData->svalue,"true") == 0) 
+            yylval.tokenData->nvalue = 1;
+        else
+            yylval.tokenData->nvalue = 0; 
+        break;
     case NUMCONST:
         yylval.tokenData->nvalue = atof(svalue); 
         break;
-    case NOTYPE:
-        yylval.tokenData->svalue = strdup(svalue);         
+    case STRINGCONST:
+        yylval.tokenData->svalue = strdup(svalue);
+        yylval.tokenData->nvalue = strlen(strdup(svalue))-2;         
+        break;
+    case CHARCONST:
+        yylval.tokenData->cvalue = strdup(svalue)[1];         
+        break;
+    case KEYWORD:
+        yylval.tokenData->cvalue = strdup(svalue)[1];         
         break;
     }
     // return token class
@@ -46,27 +56,27 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 %%
 "quit"|"stop"|"exit"    { return setValue(line, QUIT, yytext); }
 [/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]*[\n]                  ;  // ignore comments
-if                                      { return setValue(line, NOTYPE, yytext); }
-or                                      { return setValue(line, NOTYPE, yytext); }
-and                                     { return setValue(line, NOTYPE, yytext); }
-else                                    { return setValue(line, NOTYPE, yytext); }
-with                                    { return setValue(line, NOTYPE, yytext); }
-int                                     { return setValue(line, NOTYPE, yytext); }
-str                                     { return setValue(line, NOTYPE, yytext); }
-bool                                  { return setValue(line, NOTYPE, yytext); }
-then                                  { return setValue(line, NOTYPE, yytext); }
-by                                  { return setValue(line, NOTYPE, yytext); }
-do                                  { return setValue(line, NOTYPE, yytext); }
-break                                  { return setValue(line, NOTYPE, yytext); }
-static                                  { return setValue(line, NOTYPE, yytext); }
-char                                  { return setValue(line, NOTYPE, yytext); }
-true                                  { return setValue(line, NOTYPE, yytext); }
-false                                 { return setValue(line, NOTYPE, yytext); }
-for                                 { return setValue(line, NOTYPE, yytext); }
-to                                { return setValue(line, NOTYPE, yytext); }
-return                                 { return setValue(line, NOTYPE, yytext); }
+if                                      { return setValue(line, KEYWORD, yytext); }
+or                                      { return setValue(line, KEYWORD, yytext); }
+and                                     { return setValue(line, KEYWORD, yytext); }
+else                                    { return setValue(line, KEYWORD, yytext); }
+with                                    { return setValue(line, KEYWORD, yytext); }
+int                                     { return setValue(line, KEYWORD, yytext); }
+str                                     { return setValue(line, KEYWORD, yytext); }
+bool                                  { return setValue(line, KEYWORD, yytext); }
+then                                  { return setValue(line, KEYWORD, yytext); }
+by                                  { return setValue(line, KEYWORD, yytext); }
+do                                  { return setValue(line, KEYWORD, yytext); }
+break                                  { return setValue(line, KEYWORD, yytext); }
+static                                  { return setValue(line, KEYWORD, yytext); }
+char                                  { return setValue(line, KEYWORD, yytext); }
+true                                  { return setValue(line, BOOLCONST, yytext); }
+false                                 { return setValue(line, BOOLCONST, yytext); }
+for                                 { return setValue(line, KEYWORD, yytext); }
+to                                { return setValue(line, KEYWORD, yytext); }
+return                                 { return setValue(line, KEYWORD, yytext); }
 
-[=]{2}                                  { return setValue(line, NOTYPE, yytext); }
+[=]{2}                                  { return setValue(line, KEYWORD, yytext); }
 ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']                  { return setValue(line, CHARCONST, yytext); }
 ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]                      { return setValue(line, STRINGCONST, yytext); }
 [a-zA-Z][a-zA-Z0-9]*                    { return setValue(line, ID, yytext); }
@@ -76,14 +86,7 @@ return                                 { return setValue(line, NOTYPE, yytext); 
 [\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, ID, yytext); }
 [ \t]                                 ;  // white space
 \n                                      { line++; return 0; }
-.                       { return setValue(line, NOTYPE, yytext); }
-.+                                       { return setValue(line, NOTYPE, yytext); }
-
-
-
-[0-9]                   { return setValue(line, NOTYPE, yytext); }
-[a-zA-Z]                   { return setValue(line, NOTYPE, yytext); }
-[0-9]|[a-zA-Z]  { return setValue(line, NOTYPE, yytext); }
+.                       { return setValue(line, yytext[0], yytext); }
 
 
 %%
