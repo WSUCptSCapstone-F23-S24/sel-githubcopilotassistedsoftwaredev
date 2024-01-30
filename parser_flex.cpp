@@ -110,12 +110,14 @@ TokenData scan(std::string rawToken, int lineNumber) {
     }
 
     // Handle special characters
-    std::string specialChars = "%*()+=-{}[]:;<>,/";
-    if (rawToken.size() == 1 && specialChars.find(rawToken[0]) != std::string::npos) {
-        result.tokenstr = strdup(rawToken.c_str());
-        result.linenum = lineNumber;
-        return result;
-    }
+// Handle special characters
+std::string specialChars = "%*()+=-{}[]:;<>,/";
+if (rawToken.size() == 1 && specialChars.find(rawToken[0]) != std::string::npos) {
+    result.tokenstr = strdup(rawToken.c_str());
+    result.linenum = lineNumber;
+    result.tokenclass = SPECIALCHAR;
+    return result;
+}
 
     // Handle illegal characters
     // std::cerr << "ERROR(" << lineNumber << "): Invalid or misplaced input character: '" << rawToken << "'. Character Ignored." << std::endl;
