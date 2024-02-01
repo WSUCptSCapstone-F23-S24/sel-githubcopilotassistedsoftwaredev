@@ -1,10 +1,15 @@
 #ifndef _SCANTYPE_H_
 #define _SCANTYPE_H_
 
+#define ERRORTYPE  -1
 #define STRINGCONST 0
 #define CHARCONST   1
 #define ID          2
 #define SPECIALCHAR 3
+#define NUMCONST    4
+#define BOOLCONST   5
+#define INC         6
+#define DEC         7
 
 #include <iostream>
 
@@ -34,8 +39,19 @@ void print()
         case SPECIALCHAR:
             std::cout << "Line " << linenum << " Token: " << tokenstr << std::endl;
             break;
+        case NUMCONST:
+            std::cout << "Line " << linenum << " Token: NUMCONST Value: " << nvalue << " Input: " << tokenstr << std::endl;
+            break;
+        case BOOLCONST:
+            std::cout << "Line " << linenum << " Token: BOOLCONST Value: " << nvalue << " Input: " << tokenstr << std::endl;
+            break;
+        case INC:
+            std::cout << "Line " << linenum << " Token: INC" << std::endl;
+            break;
+        case DEC:
+            std::cout << "Line " << linenum << " Token: DEC" << std::endl;
+            break;
         default:
-            std::cout << "Line " << linenum << " Token: " << tokenstr << std::endl;
             break;
     }   
 }

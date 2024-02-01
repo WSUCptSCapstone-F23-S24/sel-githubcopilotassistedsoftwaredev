@@ -57,17 +57,6 @@ int main(int argc, char **argv) {
                     i = end;
                 }
             }
-            // possible id/variable
-            else if (isalpha(c)) {
-                //id value
-                int j = i;
-                // iterate until next whitespace or non alphabetical character
-                while (j < line.size() && isalpha(line[j])) {
-                    j++;
-                }
-                token = line.substr(i, j-i);
-                i = j-1;
-            }
             // possible number
             else if (isdigit(c)){
                 //id value
@@ -79,10 +68,32 @@ int main(int argc, char **argv) {
                 token = line.substr(i, j-i);
                 i = j-1;
             }
+            // possible id/variable
+            else if (isalnum(c)) {
+                //id value
+                int j = i;
+                // iterate until next whitespace or non alphabetical character
+                while (j < line.size() && isalnum(line[j])) {
+                    j++;
+                }
+                token = line.substr(i, j-i);
+                i = j-1;
+            }
+            // get ++ and --
+            else if (c == '+' || c == '-') {
+                if (i+1 < line.size() && line[i+1] == c) {
+                    token = line.substr(i, 2);
+                    i++;
+                }
+            }
 
             // single character case
             if (token == "") {
                 token = std::string(1, c);
+            }
+            // ignore comments
+            if (token == "/" && i+1 < line.size() && line[i+1] == '/') {
+                break;
             }
             //if character is whitespace, continue
             if (std::all_of(token.begin(), token.end(), ::isspace)) {
