@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
             if (std::all_of(token.begin(), token.end(), ::isspace)) {
                 continue;
             }
-            // std::cout << token << std::endl;
+            
             TokenData result = FlexScanner().scan(token, line_number);
             result.print();
         }

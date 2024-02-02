@@ -52,7 +52,26 @@ class FlexScanner {
         else if (escapedToken.size() > 1 && escapedToken[0] == '"' && escapedToken[escapedToken.size() - 1] == '"') {
             result.tokenclass = STRINGCONST;
             result.tokenstr = strdup(rawToken.c_str());
-            result.svalue = strdup(escapedToken.substr(1, escapedToken.size() - 2).c_str());
+            // make temp string to process escape characters
+            std::string temp = rawToken.substr(1, rawToken.size() - 2);
+            // \\n -> \n \\t -> \t \\0 -> \0
+            for (int i = 0; i < temp.size(); i++) {
+                if (temp[i] == '\\') {
+                    if (i + 1 < temp.size()) {
+                        if (temp[i + 1] == 'n') {
+                            temp[i] = '\n';
+                            temp.erase(i + 1, 1);
+                        } else if (temp[i + 1] == 't') {
+                            temp[i] = '\t';
+                            temp.erase(i + 1, 1);
+                        } else if (temp[i + 1] == '0') {
+                            temp[i] = '\0';
+                            temp.erase(i + 1, 1);
+                        }
+                    }
+                }
+            }
+            result.svalue = strdup(temp.c_str());
             result.linenum = lineNumber;
             result.nvalue = escapedToken.size() - 2;
             return result;
