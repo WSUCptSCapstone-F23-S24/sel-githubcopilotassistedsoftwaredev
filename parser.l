@@ -68,7 +68,7 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 %option noyywrap
 
 %%
-<<EOF>>     { return 0;}
+
 "quit"|"stop"|"exit"    { return setValue(line, QUIT, yytext); }
 [/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
 "if"|"or"|"and"|"else"|"with"|"int"|"str"|"bool"|"then"|"by"|"do"|"break"  { return setValue(line, KEYWORD, yytext); }
@@ -76,13 +76,15 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']                  { return setValue(line, CHARCONST, yytext); }
 ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]                      { return setValue(line, STRINGCONST, yytext); }
 [a-zA-Z][a-zA-Z0-9]*                    { return setValue(line, ID, yytext); }
-[0-9]*                                  { return setValue(line, NUMCONST, yytext); }
+[0-9]+                                  { return setValue(line, NUMCONST, yytext); }
 
 
 [\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, SYMBOL, yytext); }
 [ \t]                                 ;  // white space
-\n                                      { line++; return 0; }
-.                       { return setValue(line, yytext[0], yytext); }
+\n                                      { line++;}
+. { fprintf(stderr, "Error(%d): Invalid or misplace input character: '%s'. Character Ignored.\n", line, yytext); }
+<<EOF>> {return EOF;}
+
 
 %%
 

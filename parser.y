@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
         }
     }
     //yydebug = 1;
-    while(yyparse() != 0);
+    yyparse();
 
     return 0;
 }
