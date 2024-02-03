@@ -62,8 +62,6 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
-    else
-        yyparse();
     //yydebug = 1;
 
     return 0;
