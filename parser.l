@@ -69,7 +69,6 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 
 %%
 
-"quit"|"stop"|"exit"    { return setValue(line, QUIT, yytext); }
 [/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
 "if"|"or"|"and"|"else"|"with"|"int"|"str"|"bool"|"then"|"by"|"do"|"break"  { return setValue(line, KEYWORD, yytext); }
 "static"|"char"|"true"|"false"|"for"|"to"|"return"|"str"|[=]{2}|"+="    { return setValue(line, KEYWORD, yytext); }
