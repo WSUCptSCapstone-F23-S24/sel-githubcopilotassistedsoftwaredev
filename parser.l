@@ -1,5 +1,6 @@
 %{
-#include <stdlib.h>
+#include <stdlib.h> 
+#include <ctype.h>
 // must come before parser.tab.h because it refers to this datatype
 #include "scanType.h"     // shared token value struct
 #include "parser.tab.h"     // token defs
@@ -42,8 +43,20 @@ static int setValue(int linenum, int tokenClass, char *svalue)
         yylval.tokenData->cvalue = strdup(svalue)[1];         
         break;
     case KEYWORD:
-        yylval.tokenData->cvalue = strdup(svalue)[1];         
+        if(strcmp(svalue, "==") == 0)
+            yylval.tokenData->svalue = strdup("eq");
+        else if(strcmp(svalue, "+=") == 0)
+            yylval.tokenData->svalue = strdup("addass");
+        else
+            yylval.tokenData->svalue = strdup(svalue);
+        for(char *p = yylval.tokenData->svalue; *p; p++) {
+            *p = toupper((unsigned char)*p);
+        }
         break;
+    case SYMBOL:
+        yylval.tokenData->svalue = strdup(svalue);         
+        break;
+    
     }
     // return token class
     return tokenClass;
@@ -55,35 +68,16 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 
 %%
 "quit"|"stop"|"exit"    { return setValue(line, QUIT, yytext); }
-[/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]*[\n]                  ;  // ignore comments
-if                                      { return setValue(line, KEYWORD, yytext); }
-or                                      { return setValue(line, KEYWORD, yytext); }
-and                                     { return setValue(line, KEYWORD, yytext); }
-else                                    { return setValue(line, KEYWORD, yytext); }
-with                                    { return setValue(line, KEYWORD, yytext); }
-int                                     { return setValue(line, KEYWORD, yytext); }
-str                                     { return setValue(line, KEYWORD, yytext); }
-bool                                  { return setValue(line, KEYWORD, yytext); }
-then                                  { return setValue(line, KEYWORD, yytext); }
-by                                  { return setValue(line, KEYWORD, yytext); }
-do                                  { return setValue(line, KEYWORD, yytext); }
-break                                  { return setValue(line, KEYWORD, yytext); }
-static                                  { return setValue(line, KEYWORD, yytext); }
-char                                  { return setValue(line, KEYWORD, yytext); }
-true                                  { return setValue(line, BOOLCONST, yytext); }
-false                                 { return setValue(line, BOOLCONST, yytext); }
-for                                 { return setValue(line, KEYWORD, yytext); }
-to                                { return setValue(line, KEYWORD, yytext); }
-return                                 { return setValue(line, KEYWORD, yytext); }
-
-[=]{2}                                  { return setValue(line, KEYWORD, yytext); }
+[/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
+"if"|"or"|"and"|"else"|"with"|"int"|"str"|"bool"|"then"|"by"|"do"|"break"  { return setValue(line, KEYWORD, yytext); }
+"static"|"char"|"true"|"false"|"for"|"to"|"return"|"str"|[=]{2}|"+="    { return setValue(line, KEYWORD, yytext); }
 ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']                  { return setValue(line, CHARCONST, yytext); }
 ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]                      { return setValue(line, STRINGCONST, yytext); }
 [a-zA-Z][a-zA-Z0-9]*                    { return setValue(line, ID, yytext); }
 [0-9]*                                  { return setValue(line, NUMCONST, yytext); }
 
 
-[\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, ID, yytext); }
+[\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, SYMBOL, yytext); }
 [ \t]                                 ;  // white space
 \n                                      { line++; return 0; }
 .                       { return setValue(line, yytext[0], yytext); }
