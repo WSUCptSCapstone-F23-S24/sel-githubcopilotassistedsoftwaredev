@@ -61,8 +61,7 @@ int main(int argc, char *argv[])
         }
     }
     //yydebug = 1;
-    while(1)
-        yyparse(); // Start the parsing process
+    while(yyparse() != 0);
 
     return 0;
 }

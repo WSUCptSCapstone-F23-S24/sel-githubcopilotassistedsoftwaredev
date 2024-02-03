@@ -56,6 +56,7 @@ static int setValue(int linenum, int tokenClass, char *svalue)
     case SYMBOL:
         yylval.tokenData->svalue = strdup(svalue);         
         break;
+
     
     }
     // return token class
@@ -67,6 +68,7 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 %option noyywrap
 
 %%
+<<EOF>>     { return 0;}
 "quit"|"stop"|"exit"    { return setValue(line, QUIT, yytext); }
 [/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
 "if"|"or"|"and"|"else"|"with"|"int"|"str"|"bool"|"then"|"by"|"do"|"break"  { return setValue(line, KEYWORD, yytext); }
@@ -81,7 +83,6 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 [ \t]                                 ;  // white space
 \n                                      { line++; return 0; }
 .                       { return setValue(line, yytext[0], yytext); }
-
 
 %%
 
