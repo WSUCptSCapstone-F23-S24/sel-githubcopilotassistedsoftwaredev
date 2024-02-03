@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
     if (argc > 1) {
         if ((yyin = fopen(argv[1], "r"))) {
             // file open successful
+            yyparse();
+            fclose(yyin);
         }
         else {
             // failed to open file
@@ -60,8 +62,9 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
+    else
+        yyparse();
     //yydebug = 1;
-    yyparse();
 
     return 0;
 }
