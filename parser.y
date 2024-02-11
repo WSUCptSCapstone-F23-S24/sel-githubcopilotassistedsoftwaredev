@@ -47,25 +47,45 @@ token: ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
 
 //// any functions for main here
 
+
 int main(int argc, char *argv[]) 
 {
-    ////  some of your stuff here
-    if (argc > 1) {
-        if ((yyin = fopen(argv[1], "r"))) {
+    int c;
+    bool printTreeFlag = false;
+    
+    // parse command line options
+    while ((c = getopt(argc, argv, "p"))	!= EOF) {
+        switch (c) {
+        case	'p':
+            printTreeFlag = true;
+            break;
+        }
+    }
+
+    // open file or stdin
+    if (argc == optind + 1)
+    {
+        if ((yyin = fopen(argv[optind], "r")))
+        {
             // file open successful
             yyparse();
             fclose(yyin);
         }
-        else {
+        else
+        {
             // failed to open file
-            printf("ERROR: failed to open \'%s\'\n", argv[1]);
+            printf("ERROR: failed to open \'%s\'\n", argv[optind]);
             exit(1);
         }
     }
-    else{
+    else
+    {
         yyparse();
     }
     //yydebug = 1;
 
+    if (printTreeFlag) printf("printTreeFlag=True\n");
+    else printf("printTreeFlag=False\n");
+    
     return 0;
 }
