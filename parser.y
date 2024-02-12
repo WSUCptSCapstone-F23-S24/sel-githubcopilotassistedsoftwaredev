@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "scanType.h"
+#include "ourGetopt.cpp"
 
 extern int yylex();
 extern FILE *yyin;
@@ -16,6 +17,7 @@ extern int yylex();
 void yyerror(const char *msg) {
     fprintf(stderr, "Error(PARSER): Invalid or misplace input character: '%s'. Character Ignored.\n", msg);
 }
+extern int ourGetopt( int, char **, char*);
 
 %}
 //// your %union statement
@@ -54,10 +56,13 @@ int main(int argc, char *argv[])
     bool printTreeFlag = false;
     
     // parse command line options
-    while ((c = getopt(argc, argv, "p"))	!= EOF) {
+    while ((c = ourGetopt(argc, argv, (char *)"pd")) != -1) {
         switch (c) {
         case	'p':
             printTreeFlag = true;
+            break;
+        case	'd':
+            yydebug = 1;
             break;
         }
     }
