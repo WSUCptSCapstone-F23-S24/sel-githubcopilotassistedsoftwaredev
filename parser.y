@@ -24,25 +24,170 @@ void yyerror(const char *msg) {
     TokenData *tokenData;
 }
 //// your %token statements defining token classes
-%token <tokenData> NUMBER ID BOOLCONST QUIT CHARCONST NUMCONST STRINGCONST KEYWORD SYMBOL
-%type <tokenData> token
+%token IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK OR AND NOT STATIC BOOL CHAR INT
+%token ID NUMCONST CHARCONST STRINGCONST TRUE FALSE ASSIGN EQ LT PLUS LTEQ GT GTEQ
+%token MINUS TIMES OVER LPAREN RPAREN SEMI COMMA COLON ERROR LBRACK RBRACK NOTHING
+%token LCURLY RCURLY PLUSEQ MINUSEQ TIMESEQ DIVEQ PLUSPLUS MINUSMINUS EQEQ NOTEQ
+%token SEMIGT SEMILT MOD QUESTION DIVIDE
 
 %%
-tokenlist: tokenlist token
-         | token
-         ;
+/* Grammar for C- */
 
-//// put all your tokens here and individual actions 
-//// DO NOT DO THE C- GRAMMAR (this is a test program) 
-//// the grammar for assignment 1 is super simple
-token: ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
-     | BOOLCONST { printf("Line %d Token: BOOLCONST Value: %d Input: %s\n", $1->linenum, $1->nvalue, $1->svalue); }
-     | CHARCONST { printf("Line %d Token: CHARCONST Value: %c\n", $1->linenum, $1->cvalue); }
-     | NUMCONST { printf("Line %d Token: NUMCONST Value: %d  Input: %d\n", $1->linenum, $1->nvalue, $1->nvalue); }
-     | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s Len: %d Input: %s\n", $1->linenum, $1->svalue, $1->nvalue, $1->svalue); }
-     | KEYWORD { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
-     | SYMBOL { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
-     ;
+program     : declList
+            ;
+declList    : declList decl
+            | decl
+            ;
+decl        : varDecl
+            | funDecl
+            ;
+varDecl     : typeSpec varDeclList SEMI
+            ;
+scopedVarDecl : STATIC typeSpec varDeclList SEMI
+              | typeSpec varDeclList SEMI
+              ;
+varDeclList : varDeclList COMMA varDeclInit
+            | varDeclInit
+            ;
+varDeclInit : varDeclId
+            | varDeclId COLON simpleExp
+            ;
+varDeclId   : ID
+            | ID LBRACK NUMCONST RBRACK
+            ;
+typeSpec    : INT
+            | BOOL
+            | CHAR
+            ;
+funDecl     : typeSpec ID LPAREN parms RPAREN stmt
+            | ID LPAREN parms RPAREN stmt
+            ;
+parms       : parmList
+            | NOTHING
+            ;
+parmList    : parmList SEMI parmTypeList
+            | parmTypeList
+            ;
+parmTypeList : typeSpec parmIdList
+             ;
+parmIdList  : parmIdList COMMA parmId 
+            | parmId 
+            ;
+parmId      : ID
+            | ID LBRACK RBRACK
+            ;
+stmt        : expStmt
+            | compoundStmt
+            | selectStmt
+            | iterStmt
+            | returnStmt
+            | breakStmt
+            ;
+expStmt     : exp SEMI
+            | SEMI
+            ;
+compoundStmt : LCURLY localDecls stmtList RCURLY
+             ;
+localDecls  : localDecls scopedVarDecl
+            | NOTHING
+            ;
+stmtList    : stmtList stmt
+            | NOTHING
+            ;
+selectStmt  : IF simpleExp THEN stmt
+            | IF simpleExp THEN stmt ELSE stmt
+            ;
+iterStmt    : WHILE simpleExp DO stmt
+            | FOR ID EQ iterRange DO stmt
+            ;
+iterRange   : simpleExp TO simpleExp
+            | simpleExp TO simpleExp BY simpleExp
+            ;
+returnStmt  : RETURN SEMI
+            | RETURN exp SEMI
+            ;
+breakStmt   : BREAK SEMI
+            ;
+exp         : mutable EQ exp
+            | mutable PLUSEQ exp
+            | mutable MINUSEQ exp
+            | mutable TIMESEQ exp
+            | mutable DIVEQ exp
+            | mutable PLUSPLUS
+            | mutable MINUSMINUS
+            | simpleExp
+            ;
+simpleExp   : simpleExp OR andExp
+            | andExp
+            ;
+andExp      : andExp AND unaryRelExp
+            | unaryRelExp
+            ;
+unaryRelExp : NOT unaryRelExp
+            | relExp 
+            ;
+relExp      : minmaxExp relop minmaxExp
+            | minmaxExp
+            ;
+relop       : LTEQ
+            | LT
+            | GT
+            | GTEQ
+            | EQEQ
+            | NOTEQ
+            ;
+minmaxExp   : minmaxExp minmaxop sumExp
+            | sumExp
+            ;
+minmaxop    : SEMIGT
+            | SEMILT
+            ;
+sumExp      : sumExp sumop mulExp
+            | mulExp
+            ;
+sumop       : PLUS
+            | MINUS
+            ;
+mulExp      : mulExp mulop unaryExp
+            | unaryExp
+            ;
+mulop       : TIMES    
+            | DIVIDE    
+            | MOD       
+            ;
+unaryExp    : unaryop unaryExp
+            | factor
+            ;
+unaryop     : MINUS
+            | TIMES
+            | QUESTION
+            ;
+factor      : immutable
+            | mutable
+            ;
+mutable     : ID
+            | ID LBRACK exp RBRACK
+            ;
+immutable   : RPAREN exp LPAREN
+            | call
+            | constant
+            ;
+call        : ID RPAREN args LPAREN
+            ;
+args        : argList
+            | NOTHING
+            ;
+argList     : argList COMMA exp
+            | exp
+            ;
+constant    : NUMCONST
+            | CHARCONST
+            | STRINGCONST
+            | TRUE
+            | FALSE
+            ;
+
+
 %%
 
 //// any functions for main here

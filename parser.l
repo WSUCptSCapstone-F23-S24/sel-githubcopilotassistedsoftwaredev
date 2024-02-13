@@ -16,48 +16,20 @@ static int setValue(int linenum, int tokenClass, char *svalue)
     yylval.tokenData->tokenclass = tokenClass;
     yylval.tokenData->linenum = linenum;
     yylval.tokenData->tokenstr = strdup(svalue);
+    yylval.tokenData->svalue = strdup(svalue);
 
     // handle special conversions
     switch (tokenClass) {
-    case NUMBER:
-        yylval.tokenData->nvalue = atof(svalue); 
-        break;
-    case ID:
-         yylval.tokenData->svalue = strdup(svalue);         
-         break;
-    case BOOLCONST:
-        yylval.tokenData->svalue = strdup(svalue);
-        if (strcmp(yylval.tokenData->svalue,"true") == 0) 
-            yylval.tokenData->nvalue = 1;
-        else
-            yylval.tokenData->nvalue = 0; 
-        break;
     case NUMCONST:
         yylval.tokenData->nvalue = atof(svalue); 
         break;
     case STRINGCONST:
-        yylval.tokenData->svalue = strdup(svalue);
         yylval.tokenData->nvalue = strlen(strdup(svalue))-2;         
         break;
     case CHARCONST:
         yylval.tokenData->cvalue = strdup(svalue)[1];         
         break;
-    case KEYWORD:
-        if(strcmp(svalue, "==") == 0)
-            yylval.tokenData->svalue = strdup("eq");
-        else if(strcmp(svalue, "+=") == 0)
-            yylval.tokenData->svalue = strdup("addass");
-        else
-            yylval.tokenData->svalue = strdup(svalue);
-        for(char *p = yylval.tokenData->svalue; *p; p++) {
-            *p = toupper((unsigned char)*p);
-        }
-        break;
-    case SYMBOL:
-        yylval.tokenData->svalue = strdup(svalue);         
-        break;
-
-    
+  
     }
     // return token class
     return tokenClass;
@@ -65,25 +37,76 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 
 %}
 
+newline     \n
+whitespace  [ \t]+
+comments    [/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]
+charconst   ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']
+numconst    [0-9]+
+strconst    ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]
+id          [a-zA-Z][a-zA-Z0-9]*
+
+
 %option noyywrap
 
 %%
 
-[/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
-"if"|"or"|"and"|"else"|"with"|"int"|"str"|"bool"|"then"|"by"|"do"|"break"  { return setValue(line, KEYWORD, yytext); }
-"static"|"char"|"true"|"false"|"for"|"to"|"return"|"str"|[=]{2}|"+="    { return setValue(line, KEYWORD, yytext); }
-['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']                  { return setValue(line, CHARCONST, yytext); }
-["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]                      { return setValue(line, STRINGCONST, yytext); }
-[a-zA-Z][a-zA-Z0-9]*                    { return setValue(line, ID, yytext); }
-[0-9]+                                  { return setValue(line, NUMCONST, yytext); }
-
-
-[\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, SYMBOL, yytext); }
-[ \t]                                 ;  // white space
-\n                                      { line++;}
+{comments}  { line++;}  // ignore comments
+"if"        { return setValue(line, IF, yytext); }
+"or"        { return setValue(line, OR, yytext); }
+"and"       { return setValue(line, AND, yytext); }
+"else"      { return setValue(line, ELSE, yytext); }
+"int"       { return setValue(line, INT, yytext); }
+"bool"      { return setValue(line, BOOL, yytext); }
+"then"      { return setValue(line, THEN, yytext); }
+"by"        { return setValue(line, BY, yytext); }
+"do"        { return setValue(line, DO, yytext); }
+"break"     { return setValue(line, BREAK, yytext); }
+"static"    { return setValue(line, STATIC, yytext); }
+"char"      { return setValue(line, CHAR, yytext); }
+"true"      { return setValue(line, TRUE, yytext); }
+"false"     { return setValue(line, FALSE, yytext); }
+"for"       { return setValue(line, FOR, yytext); }
+"to"        { return setValue(line, TO, yytext); }
+"return"    { return setValue(line, RETURN, yytext); }
+"not"       { return setValue(line, NOT, yytext); }
+{charconst} { return setValue(line, CHARCONST, yytext); }
+{strconst}  { return setValue(line, STRINGCONST, yytext); }
+{id}        { return setValue(line, ID, yytext); }
+{numconst}  { return setValue(line, NUMCONST, yytext); }
+"%"         { return setValue(line, MOD, yytext); }
+[=]{2}      { return setValue(line, EQEQ, yytext); }
+"!="        { return setValue(line, NOTEQ, yytext); }
+"="         { return setValue(line, ASSIGN, yytext); }
+"+"         { return setValue(line, PLUS, yytext); }
+"++"        { return setValue(line, PLUSPLUS, yytext); }
+"+="        { return setValue(line, PLUSEQ, yytext); }
+"-"         { return setValue(line, MINUS, yytext); }
+"--"        { return setValue(line, MINUSMINUS, yytext); }
+"-="        { return setValue(line, MINUSEQ, yytext); }
+"*"         { return setValue(line, TIMES, yytext); }
+"*="        { return setValue(line, TIMESEQ, yytext); }
+"/"         { return setValue(line, DIVIDE, yytext); }
+"/="        { return setValue(line, DIVEQ, yytext); }
+"<"         { return setValue(line, LT, yytext); }
+":<:"       { return setValue(line, SEMILT, yytext); }
+"<="        { return setValue(line, LTEQ, yytext); }
+">"         { return setValue(line, GT, yytext); }
+":>:"       { return setValue(line, SEMIGT, yytext); } 
+">="        { return setValue(line, GTEQ, yytext); }
+"("         { return setValue(line, LPAREN, yytext); }
+")"         { return setValue(line, RPAREN, yytext); }
+"{"         { return setValue(line, LCURLY, yytext); }   
+"}"         { return setValue(line, RCURLY, yytext); }
+"["         { return setValue(line, LBRACK, yytext); }   
+"]"         { return setValue(line, RBRACK, yytext); }
+":"         { return setValue(line, COLON, yytext); }
+";"         { return setValue(line, SEMI, yytext); }
+"?"         { return setValue(line, QUESTION, yytext); }
+","         { return setValue(line, COMMA, yytext); }
+{newline}   { line++;}
+{whitespace};  // white space
 . { fprintf(stderr, "Error(%d): Invalid or misplace input character: '%s'. Character Ignored.\n", line, yytext); }
-<<EOF>> {return EOF;}
+<<EOF>>     {return EOF;}
 
 
 %%
-
