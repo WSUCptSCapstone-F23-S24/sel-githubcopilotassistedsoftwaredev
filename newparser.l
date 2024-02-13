@@ -92,8 +92,10 @@ id          [a-zA-Z][a-zA-Z0-9]*
 "/"         { return setValue(line, Divide, yytext); }
 "/="        { return setValue(line, DIVEQ, yytext); }
 "<"         { return setValue(line, LT, yytext); }
+":<:"       { return setValue(line, SEMILT, yytext); }
 "<="        { return setValue(line, LTEQ, yytext); }
 ">"         { return setValue(line, GT, yytext); }
+":>:"       { return setValue(line, SEMIGT, yytext); } 
 ">="        { return setValue(line, GTEQ, yytext); }
 "("         { return setValue(line, LPAREN, yytext); }{ return setValue(line, ASSIGN, yytext); }
 ")"         { return setValue(line, RPAREN, yytext); }
