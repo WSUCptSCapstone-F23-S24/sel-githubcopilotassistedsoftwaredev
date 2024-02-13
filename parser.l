@@ -69,6 +69,7 @@ id          [a-zA-Z][a-zA-Z0-9]*
 "to"        { return setValue(line, TO, yytext); }
 "return"    { return setValue(line, RETURN, yytext); }
 "not"       { return setValue(line, NOT, yytext); }
+"end"       { return setValue(line, END, yytext); }
 {charconst} { return setValue(line, CHARCONST, yytext); }
 {strconst}  { return setValue(line, STRINGCONST, yytext); }
 {id}        { return setValue(line, ID, yytext); }

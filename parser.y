@@ -28,7 +28,7 @@ void yyerror(const char *msg) {
 %token ID NUMCONST CHARCONST STRINGCONST TRUE FALSE ASSIGN EQ LT PLUS LTEQ GT GTEQ
 %token MINUS TIMES OVER LPAREN RPAREN SEMI COMMA COLON ERROR LBRACK RBRACK NOTHING
 %token LCURLY RCURLY PLUSEQ MINUSEQ TIMESEQ DIVEQ PLUSPLUS MINUSMINUS EQEQ NOTEQ
-%token SEMIGT SEMILT MOD QUESTION DIVIDE
+%token SEMIGT SEMILT MOD QUESTION DIVIDE END
 
 %%
 /* Grammar for C- */
@@ -94,10 +94,10 @@ localDecls  : localDecls scopedVarDecl
 stmtList    : stmtList stmt
             | NOTHING
             ;
-selectStmt  : IF simpleExp THEN stmt
-            | IF simpleExp THEN stmt ELSE stmt
+selectStmt  : IF simpleExp THEN stmt END
+            | IF simpleExp THEN stmt ELSE stmt END
             ;
-iterStmt    : WHILE simpleExp DO stmt
+iterStmt    : WHILE simpleExp DO stmt END
             | FOR ID EQ iterRange DO stmt
             ;
 iterRange   : simpleExp TO simpleExp
@@ -234,6 +234,7 @@ int main(int argc, char *argv[])
     }
 
     ////  some of your stuff here
+    //yydebug = 1;
     if (argc > 1) {
         if (filename != NULL)
         {
@@ -253,7 +254,7 @@ int main(int argc, char *argv[])
     else{
         yyparse();
     }
-    //yydebug = 1;
+
 
     return 0;
 }
