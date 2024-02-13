@@ -1,8 +1,15 @@
 // utilities to build the tree
 #include "TreeUtils.h"
-
+#include "treeNodes.h"
+/****************************************************/
+/* File: util.c                                     */
+/* Utility function implementation                  */
+/* for the TINY compiler                            */
+/* Compiler Construction: Principles and Practice   */
+/* Kenneth C. Louden                                */
+/****************************************************/
 /* Procedure printToken prints a token 
- * and its lexeme to the listing file
+ * and its lexeme to the  file
  */
 void printToken( TokenType token, const char* tokenString )
 { switch (token)
@@ -10,38 +17,28 @@ void printToken( TokenType token, const char* tokenString )
     case THEN:
     case ELSE:
     case END:
-    case REPEAT:
-    case UNTIL:
-    case READ:
-    case WRITE:
-      fprintf(listing,
-         "reserved word: %s\n",tokenString);
-      break;
-    case ASSIGN: fprintf(listing,":=\n"); break;
-    case LT: fprintf(listing,"<\n"); break;
-    case EQ: fprintf(listing,"=\n"); break;
-    case LPAREN: fprintf(listing,"(\n"); break;
-    case RPAREN: fprintf(listing,")\n"); break;
-    case SEMI: fprintf(listing,";\n"); break;
-    case PLUS: fprintf(listing,"+\n"); break;
-    case MINUS: fprintf(listing,"-\n"); break;
-    case TIMES: fprintf(listing,"*\n"); break;
-    case OVER: fprintf(listing,"/\n"); break;
-    case ENDFILE: fprintf(listing,"EOF\n"); break;
+    case ASSIGN: printf(":=\n"); break;
+    case LT: printf("<\n"); break;
+    case EQ: printf("=\n"); break;
+    case LPAREN: printf("(\n"); break;
+    case RPAREN: printf(")\n"); break;
+    case SEMI: printf(";\n"); break;
+    case PLUS: printf("+\n"); break;
+    case MINUS: printf("-\n"); break;
+    case TIMES: printf("*\n"); break;
+    case OVER: printf("/\n"); break;
+    case ENDFILE: printf("EOF\n"); break;
     case NUM:
-      fprintf(listing,
-          "NUM, val= %s\n",tokenString);
+      printf("NUM, val= %s\n",tokenString);
       break;
     case ID:
-      fprintf(listing,
-          "ID, name= %s\n",tokenString);
+      printf("ID, name= %s\n",tokenString);
       break;
     case ERROR:
-      fprintf(listing,
-          "ERROR: %s\n",tokenString);
+      printf("ERROR: %s\n",tokenString);
       break;
     default: /* should never happen */
-      fprintf(listing,"Unknown token: %d\n",token);
+      printf("Unknown token: %d\n",token);
   }
 }
 
@@ -52,12 +49,12 @@ TreeNode * newStmtNode(StmtKind kind)
 { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
   int i;
   if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
+    printf("Out of memory error at line %d\n",lineno);
   else {
     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
     t->sibling = NULL;
     t->nodekind = StmtK;
-    t->kind.stmt = kind;
+    t->subkind.stmt = kind;
     t->lineno = lineno;
   }
   return t;
@@ -70,14 +67,14 @@ TreeNode * newExpNode(ExpKind kind)
 { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
   int i;
   if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
+    printf("Out of memory error at line %d\n",lineno);
   else {
     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
     t->sibling = NULL;
     t->nodekind = ExpK;
-    t->kind.exp = kind;
+    t->subkind.exp = kind;
     t->lineno = lineno;
-    t->type = Void;
+    t->expType = Void;
   }
   return t;
 }
@@ -92,7 +89,7 @@ char * copyString(char * s)
   n = strlen(s)+1;
   t = malloc(n);
   if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
+    printf("Out of memory error at line %d\n",lineno);
   else strcpy(t,s);
   return t;
 }
@@ -110,11 +107,11 @@ static indentno = 0;
 static void printSpaces(void)
 { int i;
   for (i=0;i<indentno;i++)
-    fprintf(listing," ");
+    printf(" ");
 }
 
 /* procedure printTree prints a syntax tree to the 
- * listing file using indentation to indicate subtrees
+ *  file using indentation to indicate subtrees
  */
 void printTree( TreeNode * tree )
 { int i;
@@ -122,45 +119,42 @@ void printTree( TreeNode * tree )
   while (tree != NULL) {
     printSpaces();
     if (tree->nodekind==StmtK)
-    { switch (tree->kind.stmt) {
+    { switch (tree->subkind.stmt) {
         case IfK:
-          fprintf(listing,"If\n");
+          printf("If\n");
           break;
         case RepeatK:
-          fprintf(listing,"Repeat\n");
+          printf("Repeat\n");
           break;
         case AssignK:
-          fprintf(listing,"Assign to: %s\n",tree->attr.name);
-          break;
-        case ReadK:
-          fprintf(listing,"Read: %s\n",tree->attr.name);
+          printf("Assign to: %s\n",tree->attr.name);
           break;
         case WriteK:
-          fprintf(listing,"Write\n");
+          printf("Write\n");
           break;
         default:
-          fprintf(listing,"Unknown ExpNode kind\n");
+          printf("Unknown ExpNode kind\n");
           break;
       }
     }
     else if (tree->nodekind==ExpK)
-    { switch (tree->kind.exp) {
+    { switch (tree->subkind.exp) {
         case OpK:
-          fprintf(listing,"Op: ");
+          printf("Op: ");
           printToken(tree->attr.op,"\0");
           break;
         case ConstK:
-          fprintf(listing,"Const: %d\n",tree->attr.val);
+          printf("Const: %d\n",tree->attr.value);
           break;
         case IdK:
-          fprintf(listing,"Id: %s\n",tree->attr.name);
+          printf("Id: %s\n",tree->attr.name);
           break;
         default:
-          fprintf(listing,"Unknown ExpNode kind\n");
+          printf("Unknown ExpNode kind\n");
           break;
       }
     }
-    else fprintf(listing,"Unknown node kind\n");
+    else printf("Unknown node kind\n");
     for (i=0;i<MAXCHILDREN;i++)
          printTree(tree->child[i]);
     tree = tree->sibling;

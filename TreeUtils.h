@@ -1,6 +1,9 @@
 #include "treeNodes.h"
 #include "scanType.h"
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 #ifndef _UTIL_H_
 #define _UTIL_H_
 typedef enum 
