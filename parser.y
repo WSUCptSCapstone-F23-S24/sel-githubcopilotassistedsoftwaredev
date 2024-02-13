@@ -197,19 +197,22 @@ int main(int argc, char *argv[])
     int c;
     extern char *optarg;
     extern int optind;
-    int pflg;
+    int pflg, dflg;
     int errflg;
-
-    pflg = errflg = 0;
+    yydebug = 0;
+    pflg = errflg = dflg= 0;
     char *filename;
     
     while (1)
     {
         /// hunt for a string of options
-        while ((c = ourGetopt(argc, argv, (char *)":p")) != EOF)
+        while ((c = ourGetopt(argc, argv, (char *)":pd")) != EOF)
             switch (c) {
             case        'p':
 		        pflg = 1;
+                break;
+            case        'd':
+		        dflg = 1;
                 break;
             case        '?':
                 errflg = 1;
@@ -234,27 +237,26 @@ int main(int argc, char *argv[])
     }
 
     ////  some of your stuff here
-    //yydebug = 1;
-    if (argc > 1) {
-        if (filename != NULL)
+    if (pflg) ;
+    if (dflg) yydebug = 1;
+
+    if (filename != NULL)
+    {
+        if ((yyin = fopen(filename, "r"))) 
         {
-            if ((yyin = fopen(filename, "r"))) {
-                // file open successful
-                yyparse();
-                fclose(yyin);
-            }
-            else {
-                // failed to open file
-                printf("ERROR: failed to open \'%s\'\n", filename);
-                exit(1);
-        }  
+            // file open successful
+            yyparse();
+            fclose(yyin);
         }
-        
+        else 
+        {
+            // failed to open file
+            printf("ERROR: failed to open \'%s\'\n", filename);
+            exit(1);
+        }         
     }
     else{
         yyparse();
     }
-
-
     return 0;
 }
