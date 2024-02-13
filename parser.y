@@ -36,7 +36,6 @@ tokenlist: tokenlist token
 //// the grammar for assignment 1 is super simple
 token: ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
      | BOOLCONST { printf("Line %d Token: BOOLCONST Value: %d Input: %s\n", $1->linenum, $1->nvalue, $1->svalue); }
-     | QUIT { printf("Line %d Token: QUIT\n", $1->linenum); exit(0); }
      | CHARCONST { printf("Line %d Token: CHARCONST Value: %c\n", $1->linenum, $1->cvalue); }
      | NUMCONST { printf("Line %d Token: NUMCONST Value: %d  Input: %d\n", $1->linenum, $1->nvalue, $1->nvalue); }
      | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s Len: %d Input: %s\n", $1->linenum, $1->svalue, $1->nvalue, $1->svalue); }
