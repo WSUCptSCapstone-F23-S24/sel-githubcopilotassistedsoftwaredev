@@ -1,28 +1,39 @@
 BIN  = parser
+BINS  = c- # name of the final executable
 CC   = g++
-CFLAGS = -DCPLUSPLUS -g     # for use with C++ if file ext is .c
+CFLAGS = -DCPLUSPLUS -g -I. # Add necessary flags and include directories
 
 SRCS = $(BIN).y $(BIN).l
-HDRS = scanType.h
-OBJS = lex.yy.o $(BIN).tab.o
+HDRS = scanType.h ourgetopt.h
+OBJS = lex.yy.o $(BIN).tab.o ourgetopt.o 
 LIBS = -lm 
 
-$(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(BIN)
+# Rule for final executable
+$(BINS): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(BINS)
 
+# Bison generates both .c file and header
 $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 	bison -v -t -d $(BIN).y  
 
+# Flex lexer
 lex.yy.c: $(BIN).l $(BIN).tab.h
 	flex $(BIN).l
 
+# Rule for compiling ourgetopt.c
+ourgetopt.o: ourgetopt.c
+	$(CC) $(CFLAGS) -c ourgetopt.c
+
+# Default rule to build everything
 all:    
-	touch $(SRCS)
-	make
+	touch $(SRCS) 
+	make $(BINS)
 
+# Clean rule to remove generated files
 clean:
-	rm -f $(OBJS) $(BIN) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar $(BIN).output *~
+	rm -f $(OBJS) $(BINS) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar $(BIN).output *~
 
+# Rule to create a tarball of your source and headers
 tar:
 	tar -cvf $(BIN).tar $(SRCS) $(HDRS) makefile 
 	ls -l $(BIN).tar

@@ -50,26 +50,7 @@
 //      }                                                               
 //
 //
-
-#include	<string.h>
-#include	<stdio.h>
-
-#if	M_I8086 || M_I286 || MSDOS	/* test Microsoft C definitions */
-#define 	SWITCH	'/'	/* /: only used for DOS */
-#else
-#define 	SWITCH	'-'	/* -: always recognized */
-#endif
-
-/* ------------ EXPORT variables -------------------------------------- */
-
-char *optarg;			/* option argument if : in opts */
-int optind = 1;			/* next argv index              */
-int opterr = 1;			/* show error message if not 0  */
-int optopt;			/* last option (export dubious) */
-
-/* ------------ private section --------------------------------------- */
-
-static int sp = 1;		/* offset within option word    */
+#include "ourgetopt.h"
 
 static int badopt(char *name, char *text)
 {
@@ -132,69 +113,4 @@ int ourGetopt(int argc, char **argv, char *opts)
     }
 
     return optopt;
-}
-
-//Main
-int main(int argc, char **argv)
-{
-    int c;
-    extern char *optarg;
-    extern int optind;
-    int aflg, bflg, zflg;
-    int errflg;
-    char *ofile;
-
-    aflg = bflg = zflg = errflg = 0;
-    ofile = NULL;
-
-    while (1) {
-
-        // hunt for a string of options
-        while ((c = ourGetopt(argc, argv, (char *)"abo:z")) != EOF)
-            switch (c) {
-            case        'a':
-                if (bflg) errflg = 1;
-                else aflg = 1;
-                break;
-            case        'b':
-                if (aflg) errflg = 1;
-                else bflg = 1;
-                break;
-            case        'o':
-		if (ofile) {
-		    printf("-o option can be used only once.  Last use is used.\n");
-		}
-                ofile = strdup(optarg);
-                printf("ofile = %s\n", ofile);
-                break;
-            case        'z':
-		zflg = 1;
-                printf("option Z!\n");
-                break;
-            case        '?':
-                errflg = 1;
-            }
-
-        // report any errors or usage request
-        if (errflg) {
-            (void)fprintf(stderr, "usage: cmd [-a|-b] [-z] [-o <filename>] files...\n");
-            exit(2);
-        }
-
-        // pick off a nonoption
-        if (optind < argc) {
-            (void)printf("file: %s\n", argv[optind]);
-            optind++;
-        }
-        else {
-            break;
-        }
-    }
-
-    if (aflg) printf("option 'a' was found\n");
-    if (bflg) printf("option 'b' was found\n");
-    if (zflg) printf("option 'z' was found\n");
-    if (ofile) printf("option 'o' was found for file %s\n", ofile);
-
-    return 0;
 }

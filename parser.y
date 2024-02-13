@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "scanType.h"
+#include "ourgetopt.h"
 
 extern int yylex();
 extern FILE *yyin;
@@ -48,18 +49,61 @@ token: ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
 
 int main(int argc, char *argv[]) 
 {
-    ////  some of your stuff here
-    if (argc > 1) {
-        if ((yyin = fopen(argv[1], "r"))) {
-            // file open successful
-            yyparse();
-            fclose(yyin);
+    int c;
+    extern char *optarg;
+    extern int optind;
+    int pflg;
+    int errflg;
+
+    pflg = errflg = 0;
+    char *filename;
+    
+    while (1)
+    {
+        /// hunt for a string of options
+        while ((c = ourGetopt(argc, argv, (char *)":p")) != EOF)
+            switch (c) {
+            case        'p':
+		        pflg = 1;
+                break;
+            case        '?':
+                errflg = 1;
+            }
+
+        // report any errors or usage request
+        if (errflg) {
+            (void)fprintf(stderr, "usage: cmd [-p] [ <filename>] files...\n");
+            exit(2);
+        }
+
+        // pick off a nonoption
+        if (optind < argc) {
+            printf("file: %s\n", argv[optind]);
+
+            filename = argv[optind];
+            optind++;
         }
         else {
-            // failed to open file
-            printf("ERROR: failed to open \'%s\'\n", argv[1]);
-            exit(1);
+            break;
         }
+    }
+
+    ////  some of your stuff here
+    if (argc > 1) {
+        if (filename != NULL)
+        {
+            if ((yyin = fopen(filename, "r"))) {
+                // file open successful
+                yyparse();
+                fclose(yyin);
+            }
+            else {
+                // failed to open file
+                printf("ERROR: failed to open \'%s\'\n", filename);
+                exit(1);
+        }  
+        }
+        
     }
     else{
         yyparse();

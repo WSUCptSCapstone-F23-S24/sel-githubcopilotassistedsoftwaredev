@@ -62,5 +62,8 @@
       "binaryPath": "/home/burkjoshua/sel-githubcopilotassistedsoftwaredev-1/calc",
       "binaryArgs": []
     }
-  ]
+  ],
+  "files.associations": {
+    "stdio.h": "c"
+  }
 }

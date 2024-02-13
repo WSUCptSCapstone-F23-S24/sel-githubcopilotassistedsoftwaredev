@@ -1,0 +1,10 @@
+int walace, gromit;
+char preston;
+
+int dog(bool corgi) {
+    char cat;
+    cat = 666;
+
+    return cat;
+}
+
