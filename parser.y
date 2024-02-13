@@ -18,10 +18,26 @@ void yyerror(const char *msg) {
     fprintf(stderr, "Error(PARSER): Invalid or misplace input character: '%s'. Character Ignored.\n", msg);
 }
 
+// 
+//  UTILS
+// 
+
+//TreeNode *addSibling(TreeNode *t, TreeNode *s)
+//{
+//        return;
+//}
+
+
+//void setType(TreeNode *t, ExpType type, bool isStatic)
+//{
+//        return;
+//}
 %}
-//// your %union statement
+// these types here will appear in the parser.tab.h!!!  So the includes for them
+// MUST come before parser.tab.h!  You may have other types in here if you like
 %union {
     TokenData *tokenData;
+    //TreeNode *tree;
 }
 //// your %token statements defining token classes
 %token IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK OR AND NOT STATIC BOOL CHAR INT
@@ -29,6 +45,8 @@ void yyerror(const char *msg) {
 %token MINUS TIMES OVER LPAREN RPAREN SEMI COMMA COLON ERROR LBRACK RBRACK NOTHING
 %token LCURLY RCURLY PLUSEQ MINUSEQ TIMESEQ DIVEQ PLUSPLUS MINUSMINUS EQEQ NOTEQ
 %token SEMIGT SEMILT MOD QUESTION DIVIDE END
+//%type <tree> ...   // nonterminals
+//%token <tokenData> ...  // terminals and maybe some nonterminals
 
 %%
 /* Grammar for C- */
@@ -200,46 +218,41 @@ int main(int argc, char *argv[])
     int pflg, dflg;
     int errflg;
     yydebug = 0;
-    pflg = errflg = dflg= 0;
+    pflg = dflg= 0;
     char *filename;
     
     while (1)
     {
         /// hunt for a string of options
-        while ((c = ourGetopt(argc, argv, (char *)":pd")) != EOF)
-            switch (c) {
-            case        'p':
-		        pflg = 1;
-                break;
-            case        'd':
-		        dflg = 1;
-                break;
-            case        '?':
-                errflg = 1;
+        while ((c = ourGetopt(argc, argv, (char *)"pd")) != EOF)
+            switch (c) 
+            {
+                case 'd': 
+                    yydebug=1;
+                    break;
+                case 'p': 
+                    //printSyntaxTree=true;
+                    break;
+                //default:
+                //    usage();
+                //    exit(1);
             }
 
-        // report any errors or usage request
-        if (errflg) {
-            (void)fprintf(stderr, "usage: cmd [-p] [ <filename>] files...\n");
-            exit(2);
-        }
 
         // pick off a nonoption
-        if (optind < argc) {
-            printf("file: %s\n", argv[optind]);
-
-            filename = argv[optind];
+        // pick off a nonoption
+        if (optind<argc) 
+        {
+            filename = strdup(argv[optind]);
             optind++;
         }
-        else {
+        else 
+        {
             break;
         }
     }
 
     ////  some of your stuff here
-    if (pflg) ;
-    if (dflg) yydebug = 1;
-
     if (filename != NULL)
     {
         if ((yyin = fopen(filename, "r"))) 
@@ -258,5 +271,6 @@ int main(int argc, char *argv[])
     else{
         yyparse();
     }
+    //if (printSyntaxTree) printTree(stdout, syntaxTree, false, false);
     return 0;
 }

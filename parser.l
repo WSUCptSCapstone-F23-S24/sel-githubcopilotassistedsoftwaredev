@@ -2,6 +2,7 @@
 #include <stdlib.h> 
 #include <ctype.h>
 // must come before parser.tab.h because it refers to this datatype
+#include "treeNodes.h"    // tree node stuff needed by parser.tab.h (do before tab.h file)
 #include "scanType.h"     // shared token value struct
 #include "parser.tab.h"     // token defs
 
