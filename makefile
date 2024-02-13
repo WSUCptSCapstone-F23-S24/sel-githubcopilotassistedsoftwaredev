@@ -3,7 +3,7 @@ CC   = g++
 CFLAGS = -DCPLUSPLUS -g     # for use with C++ if file ext is .c
 
 SRCS = $(BIN).y $(BIN).l ourgetopt.cpp
-HDRS = scanType.h
+HDRS = scanType.h ourgetopt.h
 OBJS = lex.yy.o $(BIN).tab.o
 LIBS = -lm 
 
