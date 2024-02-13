@@ -77,7 +77,7 @@ id          [a-zA-Z][a-zA-Z0-9]*
 {strconst}  { return setValue(line, STRINGCONST, yytext); }
 {id}        { return setValue(line, ID, yytext); }
 {numconst}  { return setValue(line, NUMCONST, yytext); }
-"%"         { return setValue(line, MOD, yytext); }{ return setValue(line, ASSIGN, yytext); }
+"%"         { return setValue(line, MOD, yytext); }
 [=]{2}      { return setValue(line, EQEQ, yytext); }
 "!="        { return setValue(line, NOTEQ, yytext); }
 "="         { return setValue(line, ASSIGN, yytext); }
@@ -97,7 +97,7 @@ id          [a-zA-Z][a-zA-Z0-9]*
 ">"         { return setValue(line, GT, yytext); }
 ":>:"       { return setValue(line, SEMIGT, yytext); } 
 ">="        { return setValue(line, GTEQ, yytext); }
-"("         { return setValue(line, LPAREN, yytext); }{ return setValue(line, ASSIGN, yytext); }
+"("         { return setValue(line, LPAREN, yytext); }
 ")"         { return setValue(line, RPAREN, yytext); }
 "{"         { return setValue(line, LCURLY, yytext); }   
 "}"         { return setValue(line, RCURLY, yytext); }
