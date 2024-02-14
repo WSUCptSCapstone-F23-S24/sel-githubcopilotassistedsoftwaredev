@@ -24,27 +24,164 @@ extern int ourGetopt( int, char **, char*);
 %union {
     TokenData *tokenData;
 }
+
 //// your %token statements defining token classes
-%token <tokenData> NUMBER ID BOOLCONST QUIT CHARCONST NUMCONST STRINGCONST KEYWORD SYMBOL
-%type <tokenData> token
+%token ID NUMCONST CHARCONST LPAREN RPAREN
+%token LBRACE RBRACE LBRACKET RBRACKET SEMICOLON
+%token COMMA COLON NOTHING
+%token IF THEN ELSE WHILE DO FOR TO RETURN BREAK
+%token INT VOID BOOL STRING CHAR
+%token PLUS MINUS TIMES DIVIDE MOD
+%token AND OR NOT 
+%token LESS_THAN GREATER_THAN LESS_THAN_EQUAL GREATER_THAN_EQUAL
+%token EQUAL NOT_EQUAL ASSIGN
+%token QUTI BOOLCONST STRINGCONST
+%token KEYWORD SYMBOL ERROR END_OF_FILE
+
+
+
 
 %%
-tokenlist: tokenlist token
-         | token
-         ;
 
-//// put all your tokens here and individual actions 
-//// DO NOT DO THE C- GRAMMAR (this is a test program) 
-//// the grammar for assignment 1 is super simple
-token: ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
-     | BOOLCONST { printf("Line %d Token: BOOLCONST Value: %d Input: %s\n", $1->linenum, $1->nvalue, $1->svalue); }
-     | QUIT { printf("Line %d Token: QUIT\n", $1->linenum); exit(0); }
-     | CHARCONST { printf("Line %d Token: CHARCONST Value: %c\n", $1->linenum, $1->cvalue); }
-     | NUMCONST { printf("Line %d Token: NUMCONST Value: %d  Input: %d\n", $1->linenum, $1->nvalue, $1->nvalue); }
-     | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s Len: %d Input: %s\n", $1->linenum, $1->svalue, $1->nvalue, $1->svalue); }
-     | KEYWORD { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
-     | SYMBOL { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
-     ;
+//// your grammar rules for C- language
+program: declarationList
+    ;
+
+declarationList: declarationList declaration
+    | declaration
+    ;
+
+declaration: varDeclaration
+    | funDeclaration
+    ;
+
+varDeclaration: typeSpecifier ID SEMICOLON
+    | typeSpecifier ID LBRACKET NUMCONST RBRACKET SEMICOLON
+    ;
+
+typeSpecifier: INT
+    | VOID
+    | BOOL
+    | STRING
+    | CHAR
+    ;
+
+funDeclaration: typeSpecifier ID LPAREN params RPAREN compoundStmt
+    ;
+
+params: paramList
+    | NOTHING
+    ;
+
+paramList: paramList COMMA param
+    | param
+    ;   
+
+param: typeSpecifier ID
+    | typeSpecifier ID LBRACKET RBRACKET
+    ;
+
+compoundStmt: LBRACE localDeclarations statementList RBRACE
+    ;
+
+localDeclarations: localDeclarations varDeclaration
+    | NOTHING
+    ; 
+
+statementList: statementList statement
+    | NOTHING
+    ;
+
+statement: expressionStmt
+    | compoundStmt
+    | selectionStmt
+    | iterationStmt
+    | returnStmt
+    | breakStmt
+    ;   
+
+expressionStmt: expression SEMICOLON
+    | SEMICOLON
+    ;
+
+selectionStmt: IF LPAREN expression RPAREN statement ELSE statement
+    | IF LPAREN expression RPAREN statement
+    ;
+
+iterationStmt: WHILE LPAREN expression RPAREN statement
+    | FOR LPAREN expressionStmt expressionStmt expression RPAREN statement
+    ;
+
+returnStmt: RETURN SEMICOLON
+    | RETURN expression SEMICOLON
+    ;
+
+breakStmt: BREAK SEMICOLON
+    ;
+
+expression: var ASSIGN expression
+    | simpleExpression
+    ;
+
+var: ID
+    | ID LBRACKET expression RBRACKET
+    ;
+
+simpleExpression: additiveExpression relop additiveExpression
+    | additiveExpression
+    ;
+
+relop: LESS_THAN
+    | GREATER_THAN
+    | LESS_THAN_EQUAL
+    | GREATER_THAN_EQUAL
+    | EQUAL
+    | NOT_EQUAL
+    ;
+
+additiveExpression: additiveExpression addop term
+    | term
+    ;
+
+addop: PLUS
+    | MINUS
+    ;
+
+term: term mulop factor
+    | factor
+    ;
+
+mulop: TIMES
+    | DIVIDE
+    | MOD
+    ;
+
+factor: LPAREN expression RPAREN
+    | var
+    | call
+    | NUMCONST
+    | CHARCONST
+    | BOOLCONST
+    | STRINGCONST
+    | NOT factor
+    | MINUS factor
+    ;
+
+call: ID LPAREN args RPAREN
+    ;
+
+args: argList
+    | NOTHING
+    ;
+
+argList: argList COMMA expression
+    | expression
+    ;
+
+
+
+
+
 %%
 
 //// any functions for main here
