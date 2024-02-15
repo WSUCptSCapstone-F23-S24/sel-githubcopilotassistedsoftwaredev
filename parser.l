@@ -20,11 +20,11 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 
     // handle special conversions
     switch (tokenClass) {
-        case BOOLCONST:
-            if (strcmp(yylval.tokenData->svalue,"true") == 0) 
-                yylval.tokenData->nvalue = 1;
-            else
-                yylval.tokenData->nvalue = 0; 
+        case TRUE:
+            yylval.tokenData->nvalue = 1;
+            break;
+        case FALSE:
+            yylval.tokenData->nvalue = 0;
             break;
         case NUMCONST:
             yylval.tokenData->nvalue = atof(svalue);
@@ -47,6 +47,8 @@ ID             [a-zA-Z][a-zA-Z0-9]*
 NUMCONST       [0-9]+
 CHARCONST      ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']
 STRINGCONST    ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]
+TRUE           "true"
+FALSE          "false"
 
 LPAREN         "("
 RPAREN         ")"
@@ -66,18 +68,21 @@ WHILE          "while"
 DO             "do"
 FOR            "for"
 TO             "to"
+BY             "by"
 RETURN         "return"
 BREAK          "break"
 
 INT            "int"
-VOID           "void"
-BOOLCONST      "bool"
+BOOL           "bool"
+CHAR           "char"
+STATIC         "static"
 
 ADD            "+"
 SUBTRACT       "-"
 MULTIPLY       "*"
 DIVIDE         "/"
 MOD            "%"
+QUEST          "?"
 
 AND            "and"
 OR             "or"
@@ -90,6 +95,15 @@ LE             "<="
 GT             ">"
 GE             ">="
 ASSIGN         "="
+MIN            ":<:"
+MAX            ":>:"
+
+ADDEQ          "+="
+SUBEQ          "-="
+MULEQ          "*="
+DIVEQ          "/="
+INC            "++"
+DEC            "--"
 
 NEWLINE        "\n"
 WHITESPACE     [ \t]+ 
@@ -118,18 +132,21 @@ ERROR          .
 {DO}          { return setValue(line, DO, yytext); }
 {FOR}         { return setValue(line, FOR, yytext); }
 {TO}          { return setValue(line, TO, yytext); }
+{BY}          { return setValue(line, BY, yytext); }
 {RETURN}      { return setValue(line, RETURN, yytext); }
 {BREAK}       { return setValue(line, BREAK, yytext); }
 
 {INT}         { return setValue(line, INT, yytext); }
-{VOID}        { return setValue(line, VOID, yytext); }
-{BOOLCONST}   { return setValue(line, BOOLCONST, yytext); }
+{BOOL}        { return setValue(line, BOOL, yytext); }
+{CHAR}        { return setValue(line, CHAR, yytext); }
+{STATIC}      { return setValue(line, STATIC, yytext); }
 
 {ADD}         { return setValue(line, ADD, yytext); }
 {SUBTRACT}    { return setValue(line, SUBTRACT, yytext); }
 {MULTIPLY}    { return setValue(line, MULTIPLY, yytext); }
 {DIVIDE}      { return setValue(line, DIVIDE, yytext); }
 {MOD}         { return setValue(line, MOD, yytext); }
+{QUEST}       { return setValue(line, QUEST, yytext); }
 
 {AND}         { return setValue(line, AND, yytext); }
 {OR}          { return setValue(line, OR, yytext); }
@@ -142,7 +159,19 @@ ERROR          .
 {GT}          { return setValue(line, GT, yytext); }
 {GE}          { return setValue(line, GE, yytext); }
 {ASSIGN}      { return setValue(line, ASSIGN, yytext); }
+{MIN}         { return setValue(line, MIN, yytext); }
+{MAX}         { return setValue(line, MAX, yytext); }
 
+
+{ADDEQ}       { return setValue(line, ADDEQ, yytext); }
+{SUBEQ}       { return setValue(line, SUBEQ, yytext); }
+{MULEQ}       { return setValue(line, MULEQ, yytext); }
+{DIVEQ}       { return setValue(line, DIVEQ, yytext); }
+{INC}         { return setValue(line, INC, yytext); }
+{DEC}         { return setValue(line, DEC, yytext); }
+
+{TRUE}        { return setValue(line, TRUE, yytext); }
+{FALSE}       { return setValue(line, FALSE, yytext); }
 {ID}          { return setValue(line, ID, yytext); }
 {NUMCONST}    { return setValue(line, NUMCONST, yytext); }
 {CHARCONST}   { return setValue(line, CHARCONST, yytext); }

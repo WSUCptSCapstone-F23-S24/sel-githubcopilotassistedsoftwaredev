@@ -28,158 +28,261 @@ extern int ourGetopt( int, char **, char*);
 //// your %token statements defining token classes
 %token LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET
 %token COMMA COLON SEMICOLON NOTHING
-%token IF THEN ELSE WHILE DO FOR TO RETURN BREAK
-%token INT VOID BOOLCONST 
-%token ADD SUBTRACT MULTIPLY DIVIDE MOD
+%token IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK
+%token INT BOOL CHAR STATIC
+%token ADD SUBTRACT MULTIPLY DIVIDE MOD QUEST
 %token AND OR NOT 
-%token EQ NEQ LT LE GT GE ASSIGN
-%token ID NUMCONST CHARCONST STRINGCONST
-%token END_OF_FILE
+%token EQ NEQ LT LE GT GE ASSIGN MIN MAX
+%token ADDEQ SUBEQ MULEQ DIVEQ INC DEC
+%token ID NUMCONST CHARCONST STRINGCONST TRUE FALSE
 
 
 
 
 %%
 
-//// your grammar rules for C- language
-program: declarationList
+// 1
+program: decList
     ;
 
-declarationList: declarationList declaration
-    | declaration
+// 2
+decList: decList decl
+    | decl
     ;
 
-declaration: varDeclaration
-    | funDeclaration
+// 3
+decl: varDecl
+    | funcDecl
     ;
 
-varDeclaration: typeSpecifier ID SEMICOLON
-    | typeSpecifier ID LBRACKET NUMCONST RBRACKET SEMICOLON
+// 4
+varDecl: typeSpec varDeclList SEMICOLON
     ;
 
-typeSpecifier: INT
-    | VOID
-    | BOOLCONST
-    | STRINGCONST
-    | CHARCONST
+// 5
+scopedVarDecl: STATIC typeSpec varDeclList SEMICOLON
+    | typeSpec varDeclList SEMICOLON
     ;
 
-funDeclaration: typeSpecifier ID LPAREN params RPAREN compoundStmt
-    | ID LPAREN params RPAREN compoundStmt
+// 6 
+varDeclList: varDeclList COMMA varDeclInit
+    | varDeclInit
     ;
 
-params: paramList
+// 7
+varDeclInit: varDeclId 
+    | varDeclId COLON simpleExp
+    ;
+
+// 8 
+varDeclId: ID
+    | ID LBRACKET NUMCONST RBRACKET
+
+// 9
+typeSpec: INT
+    | BOOL
+    | CHAR
+    ;
+
+// 10
+funcDecl: typeSpec ID LPAREN parms RPAREN stmt
+    | ID LPAREN parms RPAREN stmt
+    ;
+
+// 11 
+parms: parmList 
     | NOTHING
     ;
 
-paramList: paramList COMMA param
-    | param
-    ;   
-
-param: typeSpecifier ID
-    | typeSpecifier ID LBRACKET RBRACKET
+// 12
+parmList: parmList SEMICOLON parmTypeList
+    | parmTypeList
     ;
 
-compoundStmt: LBRACE localDeclarations statementList RBRACE
+// 13
+parmTypeList: typeSpec parmIdList
     ;
 
-localDeclarations: localDeclarations varDeclaration
-    | NOTHING
-    ; 
-
-statementList: statementList statement
-    | NOTHING
+// 14
+parmIdList: parmIdList COMMA parmId 
+    | parmId
     ;
 
-statement: expressionStmt
+// 15
+parmId: ID | ID LBRACKET RBRACKET
+    ;
+
+// 16
+stmt: expStmt
     | compoundStmt
-    | selectionStmt
-    | iterationStmt
+    | selectStmt
+    | iterStmt
     | returnStmt
     | breakStmt
-    ;   
-
-expressionStmt: expression SEMICOLON
+    ;
+    
+// 17
+expStmt: exp SEMICOLON
     | SEMICOLON
     ;
 
-selectionStmt: IF LPAREN expression RPAREN statement ELSE statement
-    | IF LPAREN expression RPAREN statement
+// 18
+compoundStmt: LBRACE localDecls stmtList RBRACE
     ;
 
-iterationStmt: WHILE LPAREN expression RPAREN statement
-    | FOR LPAREN expressionStmt expressionStmt expression RPAREN statement
+// 19
+localDecls: localDecls scopedVarDecl 
+    | NOTHING
+    ;  
+
+// 20
+stmtList: stmtList stmt
+    | NOTHING
     ;
 
+// 21
+selectStmt: IF simpleExp THEN stmt
+    | IF simpleExp THEN stmt ELSE stmt
+    ;
+
+// 22 
+iterStmt: WHILE simpleExp DO stmt
+    | FOR ID ASSIGN iterRange DO stmt
+    ;
+
+// 23
+iterRange: simpleExp TO simpleExp
+    | simpleExp TO simpleExp BY simpleExp
+    ;
+
+// 24
 returnStmt: RETURN SEMICOLON
-    | RETURN expression SEMICOLON
+    | RETURN exp SEMICOLON
     ;
 
+// 25
 breakStmt: BREAK SEMICOLON
     ;
 
-expression: var ASSIGN expression
-    | simpleExpression
+// 26
+exp: mutable ASSIGN exp
+    | mutable ADDEQ exp
+    | mutable SUBEQ exp
+    | mutable MULEQ exp
+    | mutable DIVEQ exp
+    | mutable INC exp
+    | mutable DEC exp
+    | simpleExp
     ;
 
-var: ID
-    | ID LBRACKET expression RBRACKET
+// 27
+simpleExp: simpleExp OR andExp
+    | andExp
     ;
 
-simpleExpression: additiveExpression relop additiveExpression
-    | additiveExpression
+// 28
+andExp: andExp AND unaryRelExp
+    | unaryRelExp
+    ;  
+
+// 29
+unaryRelExp: NOT unaryRelExp
+    | relExp
     ;
 
-relop: LT
+// 30
+relExp: minmaxExp relop minmaxExp
+    | minmaxExp
+    ;
+
+// 31
+relop: LE
+    | LT
     | GT
-    | LE
     | GE
     | EQ
     | NEQ
     ;
 
-additiveExpression: additiveExpression addop term
-    | term
+// 32
+minmaxExp: minmaxExp minmaxOp sumExp
+    | sumExp
     ;
 
-addop: ADD
+// 33 
+minmaxOp: MIN
+    | MAX
+    ;
+
+// 34
+sumExp: sumExp sumOp mulExp
+    | mulExp
+    ;
+
+// 35
+sumOp: ADD
     | SUBTRACT
     ;
 
-term: term mulop factor
-    | factor
+// 36
+mulExp: mulExp mulOp unaryExp
+    | unaryExp
     ;
 
-mulop: MULTIPLY
+// 37
+mulOp: MULTIPLY
     | DIVIDE
     | MOD
     ;
 
-factor: LPAREN expression RPAREN
-    | var
-    | call
-    | NUMCONST
-    | CHARCONST
-    | BOOLCONST
-    | STRINGCONST
-    | NOT factor
-    | SUBTRACT factor
+// 38
+unaryExp: unaryOp unaryExp
+    | factor
     ;
 
+// 39
+unaryOp: SUBTRACT
+    | MULTIPLY
+    | QUEST
+    ;
+
+// 40
+factor: immutable
+    | mutable
+    ;
+
+// 41
+mutable: ID
+    | ID LBRACKET exp RBRACKET
+    ;
+
+// 42
+immutable: LPAREN exp RPAREN
+    | call
+    | constant
+    ;
+
+// 43
 call: ID LPAREN args RPAREN
     ;
 
+// 44
 args: argList
     | NOTHING
     ;
 
-argList: argList COMMA expression
-    | expression
+// 45
+argList: argList COMMA exp
+    | exp
     ;
 
-
-
-
+// 46
+constant: NUMCONST
+    | CHARCONST
+    | STRINGCONST
+    | TRUE
+    | FALSE
+    ;
 
 %%
 
