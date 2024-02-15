@@ -19,9 +19,6 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 
     // handle special conversions
     switch (tokenClass) {
-    case NUMBER:
-        yylval.tokenData->nvalue = atof(svalue); 
-        break;
     case ID:
          yylval.tokenData->svalue = strdup(svalue);         
          break;
@@ -35,7 +32,7 @@ static int setValue(int linenum, int tokenClass, char *svalue)
     case NUMCONST:
         yylval.tokenData->nvalue = atof(svalue); 
         break;
-    case STRINGCONST:
+    case STRING:
         yylval.tokenData->svalue = strdup(svalue);
         yylval.tokenData->nvalue = strlen(strdup(svalue))-2;         
         break;
@@ -69,21 +66,57 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 
 %%
 
+[a-zA-Z][a-zA-Z0-9]* { return setValue(line, ID, yytext); }
+[0-9]+               { return setValue(line, NUMCONST, yytext); }
+['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']  { return setValue(line, CHARCONST, yytext); }
+"("     { return setValue(line, LPAREN, yytext); }
+")"     { return setValue(line, RPAREN, yytext); }
+
+"{"     { return setValue(line, LBRACE, yytext); }
+"}"     { return setValue(line, RBRACE, yytext); }
+"["     { return setValue(line, LBRACKET, yytext); }
+"]"     { return setValue(line, RBRACKET, yytext); }
+";"     { return setValue(line, SEMICOLON, yytext); }
+
+","     { return setValue(line, COMMA, yytext); }
+":"     { return setValue(line, COLON, yytext); }
+
+"if"    { return setValue(line, IF, yytext); }
+"then"  { return setValue(line, THEN, yytext); }
+"else"  { return setValue(line, ELSE, yytext); }
+"while" { return setValue(line, WHILE, yytext); }
+"do"    { return setValue(line, DO, yytext); }
+"for"   { return setValue(line, FOR, yytext); }
+"to"    { return setValue(line, TO, yytext); }
+"return" { return setValue(line, RETURN, yytext); }
+"break" { return setValue(line, BREAK, yytext); }
+
+"int"   { return setValue(line, INT, yytext); }
+
+"bool"  { return setValue(line, BOOL, yytext); }
+["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]     { return setValue(line, STRING, yytext); }
+
+
+
 [/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
-"if"|"or"|"and"|"else"|"with"|"int"|"str"|"bool"|"then"|"by"|"do"|"break"  { return setValue(line, KEYWORD, yytext); }
-"static"|"char"|"true"|"false"|"for"|"to"|"return"|"str"|[=]{2}|"+="    { return setValue(line, KEYWORD, yytext); }
-['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']                  { return setValue(line, CHARCONST, yytext); }
-["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]                      { return setValue(line, STRINGCONST, yytext); }
-[a-zA-Z][a-zA-Z0-9]*                    { return setValue(line, ID, yytext); }
-[0-9]+                                  { return setValue(line, NUMCONST, yytext); }
+"or"    { return setValue(line, OR, yytext); }
+"and"   { return setValue(line, AND, yytext); }
+"with"  { return setValue(line, WITH, yytext); }
+"str"   { return setValue(line, STR, yytext); }
+"by"    { return setValue(line, BY, yytext); }
+"static" { return setValue(line, STATIC, yytext); }
+"char"  { return setValue(line, CHAR, yytext); }
+"true"  { return setValue(line, TRUE, yytext); }
+"false" { return setValue(line, FALSE, yytext); }
+"=="    { return setValue(line, EQ, yytext); }
+"+="    { return setValue(line, ADDASS, yytext); }
 
 
 [\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, SYMBOL, yytext); }
-[ \t]                                 ;  // white space
+[ \t]+                                 ;  // white space
 \n                                      { line++;}
 . { fprintf(stderr, "Error(%d): Invalid or misplace input character: '%s'. Character Ignored.\n", line, yytext); }
 <<EOF>> {return EOF;}
 
 
 %%
-

@@ -35,7 +35,7 @@ extern int ourGetopt( int, char **, char*);
 %token AND OR NOT 
 %token LESS_THAN GREATER_THAN LESS_THAN_EQUAL GREATER_THAN_EQUAL
 %token EQUAL NOT_EQUAL ASSIGN
-%token QUTI BOOLCONST STRINGCONST
+%token QUTI BOOLCONST
 %token KEYWORD SYMBOL ERROR END_OF_FILE
 
 
@@ -162,7 +162,7 @@ factor: LPAREN expression RPAREN
     | NUMCONST
     | CHARCONST
     | BOOLCONST
-    | STRINGCONST
+    | STRING
     | NOT factor
     | MINUS factor
     ;
