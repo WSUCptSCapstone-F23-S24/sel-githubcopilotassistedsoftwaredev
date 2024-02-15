@@ -26,17 +26,15 @@ extern int ourGetopt( int, char **, char*);
 }
 
 //// your %token statements defining token classes
-%token ID NUMCONST CHARCONST LPAREN RPAREN
-%token LBRACE RBRACE LBRACKET RBRACKET SEMICOLON
-%token COMMA COLON NOTHING
+%token LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET
+%token COMMA COLON SEMICOLON NOTHING
 %token IF THEN ELSE WHILE DO FOR TO RETURN BREAK
-%token INT VOID BOOL STRING CHAR
-%token PLUS MINUS TIMES DIVIDE MOD
+%token INT VOID BOOLCONST 
+%token ADD SUBTRACT MULTIPLY DIVIDE MOD
 %token AND OR NOT 
-%token LESS_THAN GREATER_THAN LESS_THAN_EQUAL GREATER_THAN_EQUAL
-%token EQUAL NOT_EQUAL ASSIGN
-%token QUTI BOOLCONST
-%token KEYWORD SYMBOL ERROR END_OF_FILE
+%token EQ NEQ LT LE GT GE ASSIGN
+%token ID NUMCONST CHARCONST STRINGCONST
+%token END_OF_FILE
 
 
 
@@ -61,12 +59,13 @@ varDeclaration: typeSpecifier ID SEMICOLON
 
 typeSpecifier: INT
     | VOID
-    | BOOL
-    | STRING
-    | CHAR
+    | BOOLCONST
+    | STRINGCONST
+    | CHARCONST
     ;
 
 funDeclaration: typeSpecifier ID LPAREN params RPAREN compoundStmt
+    | ID LPAREN params RPAREN compoundStmt
     ;
 
 params: paramList
@@ -131,27 +130,27 @@ simpleExpression: additiveExpression relop additiveExpression
     | additiveExpression
     ;
 
-relop: LESS_THAN
-    | GREATER_THAN
-    | LESS_THAN_EQUAL
-    | GREATER_THAN_EQUAL
-    | EQUAL
-    | NOT_EQUAL
+relop: LT
+    | GT
+    | LE
+    | GE
+    | EQ
+    | NEQ
     ;
 
 additiveExpression: additiveExpression addop term
     | term
     ;
 
-addop: PLUS
-    | MINUS
+addop: ADD
+    | SUBTRACT
     ;
 
 term: term mulop factor
     | factor
     ;
 
-mulop: TIMES
+mulop: MULTIPLY
     | DIVIDE
     | MOD
     ;
@@ -162,9 +161,9 @@ factor: LPAREN expression RPAREN
     | NUMCONST
     | CHARCONST
     | BOOLCONST
-    | STRING
+    | STRINGCONST
     | NOT factor
-    | MINUS factor
+    | SUBTRACT factor
     ;
 
 call: ID LPAREN args RPAREN

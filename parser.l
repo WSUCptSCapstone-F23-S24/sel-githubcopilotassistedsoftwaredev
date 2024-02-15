@@ -16,107 +16,142 @@ static int setValue(int linenum, int tokenClass, char *svalue)
     yylval.tokenData->tokenclass = tokenClass;
     yylval.tokenData->linenum = linenum;
     yylval.tokenData->tokenstr = strdup(svalue);
+    yylval.tokenData->svalue = strdup(svalue);
 
     // handle special conversions
     switch (tokenClass) {
-    case ID:
-         yylval.tokenData->svalue = strdup(svalue);         
-         break;
-    case BOOLCONST:
-        yylval.tokenData->svalue = strdup(svalue);
-        if (strcmp(yylval.tokenData->svalue,"true") == 0) 
-            yylval.tokenData->nvalue = 1;
-        else
-            yylval.tokenData->nvalue = 0; 
-        break;
-    case NUMCONST:
-        yylval.tokenData->nvalue = atof(svalue); 
-        break;
-    case STRING:
-        yylval.tokenData->svalue = strdup(svalue);
-        yylval.tokenData->nvalue = strlen(strdup(svalue))-2;         
-        break;
-    case CHARCONST:
-        yylval.tokenData->cvalue = strdup(svalue)[1];         
-        break;
-    case KEYWORD:
-        if(strcmp(svalue, "==") == 0)
-            yylval.tokenData->svalue = strdup("eq");
-        else if(strcmp(svalue, "+=") == 0)
-            yylval.tokenData->svalue = strdup("addass");
-        else
-            yylval.tokenData->svalue = strdup(svalue);
-        for(char *p = yylval.tokenData->svalue; *p; p++) {
-            *p = toupper((unsigned char)*p);
-        }
-        break;
-    case SYMBOL:
-        yylval.tokenData->svalue = strdup(svalue);         
-        break;
-
-    
+        case BOOLCONST:
+            if (strcmp(yylval.tokenData->svalue,"true") == 0) 
+                yylval.tokenData->nvalue = 1;
+            else
+                yylval.tokenData->nvalue = 0; 
+            break;
+        case NUMCONST:
+            yylval.tokenData->nvalue = atof(svalue);
+            break;
+        case STRINGCONST:
+            yylval.tokenData->nvalue = strlen(strdup(svalue))-2;         
+            break;
+        case CHARCONST:
+            yylval.tokenData->cvalue = strdup(svalue)[1];         
+            break;
     }
+
     // return token class
     return tokenClass;
 }
 
 %}
+COMMENT        \/\/.*
+ID             [a-zA-Z][a-zA-Z0-9]*
+NUMCONST       [0-9]+
+CHARCONST      ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']
+STRINGCONST    ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]
+
+LPAREN         "("
+RPAREN         ")"
+LBRACE         "{"
+RBRACE         "}"
+LBRACKET       "["
+RBRACKET       "]"
+
+COMMA          ","
+COLON          ":"
+SEMICOLON      ";"
+
+IF             "if"
+THEN           "then"
+ELSE           "else"
+WHILE          "while"
+DO             "do"
+FOR            "for"
+TO             "to"
+RETURN         "return"
+BREAK          "break"
+
+INT            "int"
+VOID           "void"
+BOOLCONST      "bool"
+
+ADD            "+"
+SUBTRACT       "-"
+MULTIPLY       "*"
+DIVIDE         "/"
+MOD            "%"
+
+AND            "and"
+OR             "or"
+NOT            "not"
+
+EQ             "=="
+NEQ            "!="
+LT             "<"
+LE             "<="
+GT             ">"
+GE             ">="
+ASSIGN         "="
+
+NEWLINE        "\n"
+WHITESPACE     [ \t]+ 
+ERROR          .
+
 
 %option noyywrap
 
 %%
 
-[a-zA-Z][a-zA-Z0-9]* { return setValue(line, ID, yytext); }
-[0-9]+               { return setValue(line, NUMCONST, yytext); }
-['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']  { return setValue(line, CHARCONST, yytext); }
-"("     { return setValue(line, LPAREN, yytext); }
-")"     { return setValue(line, RPAREN, yytext); }
+{LPAREN}      { return setValue(line, LPAREN, yytext); }
+{RPAREN}      { return setValue(line, RPAREN, yytext); }
+{LBRACE}      { return setValue(line, LBRACE, yytext); }
+{RBRACE}      { return setValue(line, RBRACE, yytext); }
+{LBRACKET}    { return setValue(line, LBRACKET, yytext); }
+{RBRACKET}    { return setValue(line, RBRACKET, yytext); }
 
-"{"     { return setValue(line, LBRACE, yytext); }
-"}"     { return setValue(line, RBRACE, yytext); }
-"["     { return setValue(line, LBRACKET, yytext); }
-"]"     { return setValue(line, RBRACKET, yytext); }
-";"     { return setValue(line, SEMICOLON, yytext); }
+{COMMA}       { return setValue(line, COMMA, yytext); }
+{COLON}       { return setValue(line, COLON, yytext); }
+{SEMICOLON}   { return setValue(line, SEMICOLON, yytext); }
 
-","     { return setValue(line, COMMA, yytext); }
-":"     { return setValue(line, COLON, yytext); }
+{IF}          { return setValue(line, IF, yytext); }
+{THEN}        { return setValue(line, THEN, yytext); }
+{ELSE}        { return setValue(line, ELSE, yytext); }
+{WHILE}       { return setValue(line, WHILE, yytext); }
+{DO}          { return setValue(line, DO, yytext); }
+{FOR}         { return setValue(line, FOR, yytext); }
+{TO}          { return setValue(line, TO, yytext); }
+{RETURN}      { return setValue(line, RETURN, yytext); }
+{BREAK}       { return setValue(line, BREAK, yytext); }
 
-"if"    { return setValue(line, IF, yytext); }
-"then"  { return setValue(line, THEN, yytext); }
-"else"  { return setValue(line, ELSE, yytext); }
-"while" { return setValue(line, WHILE, yytext); }
-"do"    { return setValue(line, DO, yytext); }
-"for"   { return setValue(line, FOR, yytext); }
-"to"    { return setValue(line, TO, yytext); }
-"return" { return setValue(line, RETURN, yytext); }
-"break" { return setValue(line, BREAK, yytext); }
+{INT}         { return setValue(line, INT, yytext); }
+{VOID}        { return setValue(line, VOID, yytext); }
+{BOOLCONST}   { return setValue(line, BOOLCONST, yytext); }
 
-"int"   { return setValue(line, INT, yytext); }
+{ADD}         { return setValue(line, ADD, yytext); }
+{SUBTRACT}    { return setValue(line, SUBTRACT, yytext); }
+{MULTIPLY}    { return setValue(line, MULTIPLY, yytext); }
+{DIVIDE}      { return setValue(line, DIVIDE, yytext); }
+{MOD}         { return setValue(line, MOD, yytext); }
 
-"bool"  { return setValue(line, BOOL, yytext); }
-["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]     { return setValue(line, STRING, yytext); }
+{AND}         { return setValue(line, AND, yytext); }
+{OR}          { return setValue(line, OR, yytext); }
+{NOT}         { return setValue(line, NOT, yytext); }
 
+{EQ}          { return setValue(line, EQ, yytext); }
+{NEQ}         { return setValue(line, NEQ, yytext); }
+{LT}          { return setValue(line, LT, yytext); }
+{LE}          { return setValue(line, LE, yytext); }
+{GT}          { return setValue(line, GT, yytext); }
+{GE}          { return setValue(line, GE, yytext); }
+{ASSIGN}      { return setValue(line, ASSIGN, yytext); }
 
+{ID}          { return setValue(line, ID, yytext); }
+{NUMCONST}    { return setValue(line, NUMCONST, yytext); }
+{CHARCONST}   { return setValue(line, CHARCONST, yytext); }
+{STRINGCONST} { return setValue(line, STRINGCONST, yytext); }
 
-[/]{2}[a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/ \t]*[\n]                  {line++;}  // ignore comments
-"or"    { return setValue(line, OR, yytext); }
-"and"   { return setValue(line, AND, yytext); }
-"with"  { return setValue(line, WITH, yytext); }
-"str"   { return setValue(line, STR, yytext); }
-"by"    { return setValue(line, BY, yytext); }
-"static" { return setValue(line, STATIC, yytext); }
-"char"  { return setValue(line, CHAR, yytext); }
-"true"  { return setValue(line, TRUE, yytext); }
-"false" { return setValue(line, FALSE, yytext); }
-"=="    { return setValue(line, EQ, yytext); }
-"+="    { return setValue(line, ADDASS, yytext); }
-
-
-[\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/]      { return setValue(line, SYMBOL, yytext); }
-[ \t]+                                 ;  // white space
-\n                                      { line++;}
-. { fprintf(stderr, "Error(%d): Invalid or misplace input character: '%s'. Character Ignored.\n", line, yytext); }
-<<EOF>> {return EOF;}
-
+{NEWLINE}     { line++; }
+{WHITESPACE}  {} // ignore whitespace
+{COMMENT}     {} // ignore comments
+<<EOF>>       { return setValue(line, EOF, yytext); }
+{ERROR}       { fprintf(stderr, "Error(%d): Invalid or misplaced input character: '%s'. Character Ignored.\n", line, yytext); }
 
 %%
