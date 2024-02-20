@@ -26,7 +26,7 @@ typedef enum {Void, Integer, Boolean, Char, CharInt, Equal, UndefinedType} ExpTy
 // What kind of scoping is used?  (decided during typing)
 typedef enum {None, Local, Global, Parameter, LocalStatic} VarKind;
 
-typedef enum { FALSE, TRUE } bool;
+typedef enum { MY_FALSE, MY_TRUE } MyBool;
 
 #define MAXCHILDREN 3                      // no more than 3 children allowed
 
@@ -56,8 +56,8 @@ typedef struct treeNode
         char *name;                        // used when IdK
     } attr;                                 
     ExpType expType;		           // used when ExpK for type checking
-    bool isArray;                          // is this an array
-    bool isStatic;                         // is staticly allocated?
+    MyBool isArray;                          // is this an array
+    MyBool isStatic;                         // is staticly allocated?
 
     // even more semantic stuff will go here in later assignments.
 } TreeNode;

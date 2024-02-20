@@ -70,7 +70,7 @@ id          [a-zA-Z][a-zA-Z0-9]*
 "to"        { return setValue(line, TO, yytext); }
 "return"    { return setValue(line, RETURN, yytext); }
 "not"       { return setValue(line, NOT, yytext); }
-"end"       { return setValue(line, END, yytext); }
+"while"       { return setValue(line, WHILE, yytext); }
 {charconst} { return setValue(line, CHARCONST, yytext); }
 {strconst}  { return setValue(line, STRINGCONST, yytext); }
 {id}        { return setValue(line, ID, yytext); }
@@ -78,7 +78,7 @@ id          [a-zA-Z][a-zA-Z0-9]*
 "%"         { return setValue(line, MOD, yytext); }
 [=]{2}      { return setValue(line, EQEQ, yytext); }
 "!="        { return setValue(line, NOTEQ, yytext); }
-"="         { return setValue(line, ASSIGN, yytext); }
+"="         { return setValue(line, EQ, yytext); }
 "+"         { return setValue(line, PLUS, yytext); }
 "++"        { return setValue(line, PLUSPLUS, yytext); }
 "+="        { return setValue(line, PLUSEQ, yytext); }
@@ -105,8 +105,9 @@ id          [a-zA-Z][a-zA-Z0-9]*
 ";"         { return setValue(line, SEMI, yytext); }
 "?"         { return setValue(line, QUESTION, yytext); }
 ","         { return setValue(line, COMMA, yytext); }
-{newline}   { line++;}
+" "         ;
 {whitespace};  // white space
+{newline}   { line++;}
 . { fprintf(stderr, "Error(%d): Invalid or misplace input character: '%s'. Character Ignored.\n", line, yytext); }
 <<EOF>>     {return EOF;}
 

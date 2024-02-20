@@ -40,11 +40,12 @@ void yyerror(const char *msg) {
     //TreeNode *tree;
 }
 //// your %token statements defining token classes
+//// your %token statements defining token classes
 %token IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK OR AND NOT STATIC BOOL CHAR INT
-%token ID NUMCONST CHARCONST STRINGCONST TRUE FALSE ASSIGN EQ LT PLUS LTEQ GT GTEQ
-%token MINUS TIMES OVER LPAREN RPAREN SEMI COMMA COLON ERROR LBRACK RBRACK NOTHING
+%token ID NUMCONST CHARCONST STRINGCONST TRUE FALSE EQ LT PLUS LTEQ GT GTEQ
+%token MINUS TIMES OVER LPAREN RPAREN SEMI COMMA COLON ERROR LBRACK RBRACK
 %token LCURLY RCURLY PLUSEQ MINUSEQ TIMESEQ DIVEQ PLUSPLUS MINUSMINUS EQEQ NOTEQ
-%token SEMIGT SEMILT MOD QUESTION DIVIDE END
+%token SEMIGT SEMILT MOD QUESTION DIVIDE
 //%type <tree> ...   // nonterminals
 //%token <tokenData> ...  // terminals and maybe some nonterminals
 
@@ -81,7 +82,7 @@ funDecl     : typeSpec ID LPAREN parms RPAREN stmt
             | ID LPAREN parms RPAREN stmt
             ;
 parms       : parmList
-            | NOTHING
+            | /* empty */
             ;
 parmList    : parmList SEMI parmTypeList
             | parmTypeList
@@ -107,15 +108,15 @@ expStmt     : exp SEMI
 compoundStmt : LCURLY localDecls stmtList RCURLY
              ;
 localDecls  : localDecls scopedVarDecl
-            | NOTHING
+            | /* empty */
             ;
 stmtList    : stmtList stmt
-            | NOTHING
+            | /* empty */
             ;
-selectStmt  : IF simpleExp THEN stmt END
-            | IF simpleExp THEN stmt ELSE stmt END
+selectStmt  : IF simpleExp THEN stmt ELSE stmt
+            | IF simpleExp THEN stmt
             ;
-iterStmt    : WHILE simpleExp DO stmt END
+iterStmt    : WHILE simpleExp DO stmt
             | FOR ID EQ iterRange DO stmt
             ;
 iterRange   : simpleExp TO simpleExp
@@ -186,14 +187,14 @@ factor      : immutable
 mutable     : ID
             | ID LBRACK exp RBRACK
             ;
-immutable   : RPAREN exp LPAREN
+immutable   : LPAREN exp RPAREN
             | call
             | constant
             ;
-call        : ID RPAREN args LPAREN
+call        : ID LPAREN args RPAREN
             ;
 args        : argList
-            | NOTHING
+            | /* empty */
             ;
 argList     : argList COMMA exp
             | exp
