@@ -27,7 +27,7 @@ extern int ourGetopt( int, char **, char*);
 
 //// your %token statements defining token classes
 %token LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET
-%token COMMA COLON SEMICOLON NOTHING
+%token COMMA COLON SEMICOLON 
 %token IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK
 %token INT BOOL CHAR STATIC
 %token ADD SUBTRACT MULTIPLY DIVIDE MOD QUEST
@@ -91,7 +91,7 @@ funcDecl: typeSpec ID LPAREN parms RPAREN stmt
 
 // 11 
 parms: parmList 
-    | NOTHING
+    | 
     ;
 
 // 12
@@ -132,12 +132,12 @@ compoundStmt: LBRACE localDecls stmtList RBRACE
 
 // 19
 localDecls: localDecls scopedVarDecl 
-    | NOTHING
+    | 
     ;  
 
 // 20
 stmtList: stmtList stmt
-    | NOTHING
+    | 
     ;
 
 // 21
@@ -268,7 +268,7 @@ call: ID LPAREN args RPAREN
 
 // 44
 args: argList
-    | NOTHING
+    |
     ;
 
 // 45
