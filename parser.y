@@ -113,9 +113,20 @@ parmId: ID | ID LBRACKET RBRACKET
     ;
 
 // 16
-stmt: expStmt
+stmt: matched  
+    | unmatched
+    ;
+
+matched: IF exp THEN matched ELSE matched
+    | otherStmts
+    ;
+
+unmatched: IF exp THEN stmt
+    | IF exp THEN matched ELSE unmatched
+    ;
+
+otherStmts: expStmt
     | compoundStmt
-    | selectStmt
     | iterStmt
     | returnStmt
     | breakStmt
@@ -138,11 +149,6 @@ localDecls: localDecls scopedVarDecl
 // 20
 stmtList: stmtList stmt
     | 
-    ;
-
-// 21
-selectStmt: IF simpleExp THEN stmt
-    | IF simpleExp THEN stmt ELSE stmt
     ;
 
 // 22 
@@ -170,8 +176,8 @@ exp: mutable ASSIGN exp
     | mutable SUBEQ exp
     | mutable MULEQ exp
     | mutable DIVEQ exp
-    | mutable INC exp
-    | mutable DEC exp
+    | mutable INC
+    | mutable DEC
     | simpleExp
     ;
 

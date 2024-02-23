@@ -45,7 +45,7 @@ static int setValue(int linenum, int tokenClass, char *svalue)
 COMMENT        \/\/.*
 ID             [a-zA-Z][a-zA-Z0-9]*
 NUMCONST       [0-9]+
-CHARCONST      ['][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\\'\"][']
+CHARCONST      '[\\]?.'
 STRINGCONST    ["][a-zA-Z0-9\%\*\(\)\-\{\}\[\]\:\;\<\>\?\,\/\\]*["]
 TRUE           "true"
 FALSE          "false"
