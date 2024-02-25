@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "treeNode.h"
 #include "scanType.h"
 #include "ourGetopt.cpp"
-#include "treeNode.h"
 #include "treeUtil.h"
 
 extern int yylex();
@@ -25,6 +25,7 @@ extern int ourGetopt( int, char **, char*);
 //// your %union statement
 %union {
     TokenData *tokenData;
+    TreeNode *treeNode;
 }
 
 //// your %token statements defining token classes
@@ -337,13 +338,8 @@ int main(int argc, char *argv[])
     //yydebug = 1;
 
     if (printTreeFlag) {
-        printf("printTreeFlag=True\n");
-        //printTree(root);
+        printTree(root);
     }
-    else
-    {
-        printf("printTreeFlag=False\n");
-    } 
     
     return 0;
 }

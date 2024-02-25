@@ -48,7 +48,7 @@ void printToken(TokenType token, const char* tokenString)
 }
 
 
-TreeNode * newStmtNode(StmtKind kind)
+TreeNode * newStmtNode(StmtKind kind, int lineno)
 {
     TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
     int i;
@@ -65,7 +65,7 @@ TreeNode * newStmtNode(StmtKind kind)
     return t;
 }
 
-TreeNode * newExpNode(ExpKind kind)
+TreeNode * newExpNode(ExpKind kind, int lineno)
 {
     TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
     int i;
@@ -80,19 +80,6 @@ TreeNode * newExpNode(ExpKind kind)
         t->lineno = lineno;
         t->expType = Void;
     }
-    return t;
-}
-
-char * copyString(char * s)
-{
-    int n;
-    char * t;
-    if (s==NULL) return NULL;
-    n = strlen(s)+1;
-    t = (char *) malloc(n);
-    if (t==NULL)
-        printf("Out of memory error at line %d\n",lineno);
-    else strcpy(t,s);
     return t;
 }
 
@@ -150,7 +137,7 @@ void printTree(TreeNode * tree)
             {
                 case OpK:
                     printf("Op: ");
-                    printToken(tree->attr.op,"\0");
+                    printToken((TokenType)tree->attr.op,"\0");
                     break;
                 case ConstantK:
                     printf("Const: %d\n",tree->attr.cvalue);

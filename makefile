@@ -8,7 +8,7 @@ OBJS = lex.yy.o $(BIN).tab.o
 LIBS = -lm 
 
 $(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o c-
+	$(CC) $(CFLAGS) $(OBJS) treeUtil.c $(LIBS) -o c-
 
 $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 	bison -v -t -d $(BIN).y  

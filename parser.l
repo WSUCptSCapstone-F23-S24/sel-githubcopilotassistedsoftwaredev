@@ -2,8 +2,11 @@
 #include <stdlib.h> 
 #include <ctype.h>
 // must come before parser.tab.h because it refers to this datatype
+#include "treeNode.h"
 #include "scanType.h"     // shared token value struct
+#include "treeUtil.h"
 #include "parser.tab.h"     // token defs
+
 
 // extern void yyerror(const char *msg);
 //char *lastToken=(char *)"";
