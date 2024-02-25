@@ -2,13 +2,13 @@ BIN  = parser
 CC   = g++
 CFLAGS = -DCPLUSPLUS -g     # for use with C++ if file ext is .c
 
-SRCS = $(BIN).y $(BIN).l ourgetopt.cpp
-HDRS = scanType.h ourgetopt.h
+SRCS = $(BIN).y $(BIN).l ourgetopt.cpp treeUtil.c
+HDRS = scanType.h ourgetopt.h treeNode.h treeUtil.h
 OBJS = lex.yy.o $(BIN).tab.o
 LIBS = -lm 
 
 $(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(BIN)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o c-
 
 $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 	bison -v -t -d $(BIN).y  
@@ -21,7 +21,7 @@ all:
 	make
 
 clean:
-	rm -f $(OBJS) $(BIN) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar $(BIN).output *~
+	rm -f $(OBJS) $(BIN) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar $(BIN).output *~ c-.exe
 
 tar:
 	tar -cvf $(BIN).tar $(SRCS) $(HDRS) makefile 

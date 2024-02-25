@@ -5,6 +5,8 @@
 #include <string.h>
 #include "scanType.h"
 #include "ourGetopt.cpp"
+#include "treeNode.h"
+#include "treeUtil.h"
 
 extern int yylex();
 extern FILE *yyin;
@@ -294,10 +296,10 @@ constant: NUMCONST
 
 //// any functions for main here
 
-
 int main(int argc, char *argv[]) 
 {
     int c;
+    TreeNode *root = NULL;
     bool printTreeFlag = false;
     
     // parse command line options
@@ -334,8 +336,14 @@ int main(int argc, char *argv[])
     }
     //yydebug = 1;
 
-    if (printTreeFlag) printf("printTreeFlag=True\n");
-    else printf("printTreeFlag=False\n");
+    if (printTreeFlag) {
+        printf("printTreeFlag=True\n");
+        //printTree(root);
+    }
+    else
+    {
+        printf("printTreeFlag=False\n");
+    } 
     
     return 0;
 }

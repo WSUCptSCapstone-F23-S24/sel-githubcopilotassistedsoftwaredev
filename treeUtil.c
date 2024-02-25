@@ -2,49 +2,49 @@
 #include "treeNode.h"
 
 void printToken(TokenType token, const char* tokenString)
-{ switch (token)
-    { case IF: 
-      case ELSE: 
-      case INT: 
-      case RETURN: 
-      case VOID: 
-      case WHILE:
-        printf("reserved word: %s\n",tokenString);
-        break;
-    case ASSIGN: printf("=\n"); break;
-    case EQ: printf("==\n"); break;
-    case LT: printf("<\n"); break;
-    case LTE: printf("<=\n"); break;
-    case GT: printf(">\n"); break;
-    case GTE: printf(">=\n"); break;
-    case NEQ: printf("!=\n"); break;
-    case LPAREN: printf("(\n"); break;
-    case RPAREN: printf(")\n"); break;
-    case LBRACKET: printf("[\n"); break;
-    case RBRACKET: printf("]\n"); break;
-    case LBRACE: printf("{\n"); break;
-    case RBRACE: printf("}\n"); break;
-    case SEMI: printf(";\n"); break;
-    case COMMA: printf(",\n"); break;
-    case PLUS: printf("+\n"); break;
-    case MINUS: printf("-\n"); break;
-    case TIMES: printf("*\n"); break;
-    case OVER: printf("/\n"); break;
-    case ENDFILE: printf("EOF\n"); break;
-    case NUM:
-        printf("NUM, val= %s\n",tokenString);
-        break;
-    case ID:
-        printf("ID, name= %s\n",tokenString);
-        break;
-    case ERROR:
-        printf("ERROR: %s\n",tokenString);
-        break;
-    default: /* should never happen */
-        printf("Unknown token: %d\n",token);
+{ 
+    switch (token)
+    { 
+        case P_IF: 
+        case P_ELSE: 
+        case P_INT: 
+        case P_RETURN: 
+        case P_VOID: 
+        case P_WHILE:
+            printf("reserved word: %s\n",tokenString);
+            break;
+        case P_ASSIGN: printf("=\n"); break;
+        case P_EQ: printf("==\n"); break;
+        case P_LT: printf("<\n"); break;
+        case P_LTE: printf("<=\n"); break;
+        case P_GT: printf(">\n"); break;
+        case P_GTE: printf(">=\n"); break;
+        case P_NEQ: printf("!=\n"); break;
+        case P_LPAREN: printf("(\n"); break;
+        case P_RPAREN: printf(")\n"); break;
+        case P_LBRACKET: printf("[\n"); break;
+        case P_RBRACKET: printf("]\n"); break;
+        case P_LBRACE: printf("{\n"); break;
+        case P_RBRACE: printf("}\n"); break;
+        case P_SEMI: printf(";\n"); break;
+        case P_COMMA: printf(",\n"); break;
+        case P_PLUS: printf("+\n"); break;
+        case P_MINUS: printf("-\n"); break;
+        case P_TIMES: printf("*\n"); break;
+        case P_OVER: printf("/\n"); break;
+        case P_ENDFILE: printf("EOF\n"); break;
+        case P_NUM:
+            printf("NUM, val= %s\n",tokenString);
+            break;
+        case P_ID:
+            printf("ID, name= %s\n",tokenString);
+            break;
+        case P_ERROR:
+            printf("ERROR: %s\n",tokenString);
+            break;
+        default: /* should never happen */
+            printf("Unknown token: %d\n",token);
     }
-    
-
 }
 
 
@@ -112,6 +112,11 @@ void printTree(TreeNode * tree)
 {
     int i;
     INDENT;
+    if (tree==NULL) 
+    {
+        printf("NULL tree\n");
+        return;
+    }
     while (tree != NULL)
     {
         printSpaces();
@@ -172,3 +177,33 @@ void printTree(TreeNode * tree)
     UNINDENT;
 }
 
+// add a TreeNode to a list of siblings.
+// Adding a NULL to the list is probably a programming error!
+TreeNode *addSibling(TreeNode *t, TreeNode *s)
+{
+    if (s==NULL) {
+        printf("ERROR(SYSTEM): never add a NULL to a sibling list.\n");
+        exit(1);
+    }
+    if (t!=NULL) { 
+        TreeNode *tmp;
+
+        tmp = t;
+        while (tmp->sibling!=NULL) tmp = tmp->sibling;
+        tmp->sibling = s; 
+        return t;
+    }
+    return s;
+}
+
+
+// pass the static and type attribute down the sibling list
+void setType(TreeNode *t, ExpType type, bool isStatic)
+{
+    while (t) {
+        t->expType = type;
+        t->isStatic = isStatic;
+
+        t = t->sibling;
+    }
+}

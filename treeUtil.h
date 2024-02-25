@@ -14,5 +14,8 @@ char * copyString(char *);
 
 void printTree(TreeNode *);
 
+TreeNode *addSibling(TreeNode *t, TreeNode *s);
+
+void setType(TreeNode *t, ExpType type, bool isStatic);
 
 #endif
