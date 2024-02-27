@@ -10,7 +10,7 @@
 
 // extern void yyerror(const char *msg);
 //char *lastToken=(char *)"";
-static int line=1;
+int line=1;
 
 static int setValue(int linenum, int tokenClass, char *svalue)
 {

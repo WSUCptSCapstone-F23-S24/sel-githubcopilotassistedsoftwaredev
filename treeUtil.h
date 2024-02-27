@@ -6,6 +6,8 @@
 
 void printToken(TokenType, const char *);
 
+TreeNode * newDeclNode(DeclKind kind, int lineno);
+
 TreeNode * newStmtNode(StmtKind, int lineo);
 
 TreeNode * newExpNode(ExpKind, int lineo);

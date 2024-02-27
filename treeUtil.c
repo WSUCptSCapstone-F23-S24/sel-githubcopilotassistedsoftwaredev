@@ -47,6 +47,24 @@ void printToken(TokenType token, const char* tokenString)
     }
 }
 
+TreeNode *newDeclNode(DeclKind kind, int lineno)
+{
+    TreeNode *t = (TreeNode *)malloc(sizeof(TreeNode));
+    int i;
+    if (t == NULL)
+        printf("Out of memory error at line %d\n", lineno);
+    else
+    {
+        for (i = 0; i < MAXCHILDREN; i++)
+            t->child[i] = NULL;
+        t->sibling = NULL;
+        t->nodekind = DeclK;
+        t->subkind.decl = kind;
+        t->lineno = lineno;
+    }
+    return t;
+}
+
 
 TreeNode * newStmtNode(StmtKind kind, int lineno)
 {
@@ -104,6 +122,30 @@ void printTree(TreeNode * tree)
         printf("NULL tree\n");
         return;
     }
+    else 
+    {
+        //printf("lineno: %d, ",tree->lineno);
+        switch (tree->nodekind)
+        {
+            case VarK:
+                printf("Var: %s ", tree->attr.name);
+                break;
+            break;
+        }
+        if (tree->isArray == true)
+        {
+            printf("is array ");
+        }
+        printf("of type ");
+        switch (tree->expType)
+        {
+            case Integer:
+                printf("int ");
+                break;
+        }
+        printf("[Line : %d]", tree->lineno);
+    }
+    return;
     while (tree != NULL)
     {
         printSpaces();

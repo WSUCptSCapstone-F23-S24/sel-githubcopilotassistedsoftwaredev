@@ -25,6 +25,7 @@ TreeNode *root = NULL;
 extern int yylex();
 extern FILE *yyin;
 extern int yydebug;
+extern int line;
 
 #define YYERROR_VERBOSE
 //// any C/C++ functions you want here that might be used in grammar actions below
@@ -73,9 +74,6 @@ extern int ourGetopt( int, char **, char*);
 
 // 1
 program: decList
-    {
-        root = $1;
-    }
     ;
 
 // 2
@@ -90,6 +88,19 @@ decl: varDecl
 
 // 4
 varDecl: typeSpec varDeclList SEMICOLON
+    {
+        TreeNode *newNode = newDeclNode(VarK, line);
+        newNode->expType = $1->expType;
+        newNode->attr.name = $2->attr.name;
+        newNode->isArray = $2->isArray;
+
+        if (root == NULL) {
+            root = newNode;
+        } else {
+            addSibling(root, newNode);
+        }
+        $$ = newNode;
+    }
     ;
 
 // 5
@@ -107,6 +118,9 @@ scopedVarDecl: STATIC typeSpec varDeclList SEMICOLON
 // 6 
 varDeclList: varDeclList COMMA varDeclInit
     | varDeclInit
+    {
+        $$ = $1;
+    }
     ;
 
 // 7
