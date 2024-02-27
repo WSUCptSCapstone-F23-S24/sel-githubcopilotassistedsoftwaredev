@@ -6,9 +6,9 @@
 
 void printToken(TokenType, const char *);
 
-TreeNode * newStmtNode(StmtKind);
+TreeNode * newStmtNode(StmtKind, int lineo);
 
-TreeNode * newExpNode(ExpKind);
+TreeNode * newExpNode(ExpKind, int lineo);
 
 char * copyString(char *);
 
