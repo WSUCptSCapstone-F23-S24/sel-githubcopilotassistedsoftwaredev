@@ -1,3 +1,13 @@
+#include "scanType.h"
+#include "parser.tab.h"     // token defs
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+/* MAXRESERVED = the number of reserved words */
+#define MAXRESERVED 8
+
 //  SYNTAX TREE DESCRIPTION inspired by Louden
 // 
 
@@ -6,6 +16,7 @@
 
 // Kinds of Operators
 // these are the token numbers for the operators same as in flex
+
 typedef int OpKind;  
 
 // Kinds of Statements
@@ -21,14 +32,16 @@ typedef enum {NullK, ElsifK, IfK, WhileK, LoopK, LoopForeverK, CompoundK, RangeK
 typedef enum {OpK, ConstantK, IdK, AssignK, InitK, CallK} ExpKind;
 
 // ExpType is used for type checking (Void means no type or value, UndefinedType means undefined)
-typedef enum {Void, Integer, Boolean, Char, CharInt, Equal, UndefinedType} ExpType;
+typedef enum {Void, Integer, Boolean, Char, CharInt, Equal, UndefinedType, String} ExpType;
 
 // What kind of scoping is used?  (decided during typing)
 typedef enum {None, Local, Global, Parameter, LocalStatic} VarKind;
-
-typedef enum { MY_FALSE, MY_TRUE } MyBool;
-
+extern int lineno; /* source line number for listing */
+extern FILE* source; /* source code text file */
+extern FILE* listing; /* listing output text file */
+extern FILE* code; /* code text file for TM simulator */
 #define MAXCHILDREN 3                      // no more than 3 children allowed
+
 
 typedef struct treeNode
 {
@@ -56,8 +69,7 @@ typedef struct treeNode
         char *name;                        // used when IdK
     } attr;                                 
     ExpType expType;		           // used when ExpK for type checking
-    MyBool isArray;                          // is this an array
-    MyBool isStatic;                         // is staticly allocated?
-
+    int isArray;                          // is this an array
+    int isStatic;                         // is staticly allocated?
     // even more semantic stuff will go here in later assignments.
 } TreeNode;

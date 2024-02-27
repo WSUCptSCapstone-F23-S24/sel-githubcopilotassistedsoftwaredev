@@ -4,8 +4,8 @@ CC   = g++
 CFLAGS = -DCPLUSPLUS -g -I. # Add necessary flags and include directories
 
 SRCS = $(BIN).y $(BIN).l
-HDRS = scanType.h ourgetopt.h
-OBJS = lex.yy.o $(BIN).tab.o ourgetopt.o 
+HDRS = scanType.h ourgetopt.h TreeUtils.h treeNodes.h
+OBJS = lex.yy.o $(BIN).tab.o ourgetopt.o TreeUtils.o
 LIBS = -lm 
 
 # Rule for final executable
@@ -24,6 +24,9 @@ lex.yy.c: $(BIN).l $(BIN).tab.h
 ourgetopt.o: ourgetopt.c
 	$(CC) $(CFLAGS) -c ourgetopt.c
 
+# Rules for comiling TreeUtils
+TreeUtils.o: TreeUtils.c TreeUtils.h treeNodes.h
+	$(CC) $(CFLAGS) -c TreeUtils.c
 # Default rule to build everything
 all:    
 	touch $(SRCS) 

@@ -105,8 +105,7 @@ id          [a-zA-Z][a-zA-Z0-9]*
 ";"         { return setValue(line, SEMI, yytext); }
 "?"         { return setValue(line, QUESTION, yytext); }
 ","         { return setValue(line, COMMA, yytext); }
-" "         ;
-{whitespace};  // white space
+{whitespace} {}  // white space
 {newline}   { line++;}
 . { fprintf(stderr, "Error(%d): Invalid or misplace input character: '%s'. Character Ignored.\n", line, yytext); }
 <<EOF>>     {return EOF;}
