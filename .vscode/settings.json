@@ -65,6 +65,9 @@
   ],
   "files.associations": {
     "stdio.h": "c",
-    "scantype.h": "c"
+    "scantype.h": "c",
+    "parser.tab.h": "c",
+    "string.h": "c",
+    "treeutils.h": "c"
   }
 }

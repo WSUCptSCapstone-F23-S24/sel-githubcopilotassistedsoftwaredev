@@ -203,7 +203,7 @@ parmId      : ID
                 }
             | ID LBRACK RBRACK
                 {
-                    $$ = newDeclNode(ParamK, line)
+                    $$ = newExpNode(IdK, line);
                     $$->attr.name = $1->svalue;
                     $$->expType = UndefinedType;
                     $$->isArray = 1;
@@ -272,7 +272,7 @@ iterStmt    : WHILE simpleExp DO stmt
             | FOR ID EQ iterRange DO stmt
                 {
                     $$ = newStmtNode(LoopK, line);
-                    $$->attr.name = copyString($2->tokenstr); 
+                    $$->attr.name = $2->svalue; 
                     $$->child[0] = $4; 
                     $$->child[1] = $6; 
                 }
@@ -613,22 +613,22 @@ constant    : NUMCONST
 
 //// any functions for main here
 
-int main(int argc, char argv[]) 
+int main(int argc, char *argv[]) 
 {
     int c;
-    extern charoptarg;
+    extern char *optarg;
     extern int optind;
     int pflg, dflg;
     int errflg;
     yydebug = 0;
     pflg = dflg= 0;
-    char filename;
+    char *filename;
     bool printSyntaxTree = false;
-
+    
     while (1)
     {
         /// hunt for a string of options
-        while ((c = ourGetopt(argc, argv, (char)"pd")) != EOF)
+        while ((c = ourGetopt(argc, argv, (char *)"pd")) != EOF)
             switch (c) 
             {
                 case 'd': 
@@ -668,9 +668,9 @@ int main(int argc, char argv[])
         else 
         {
             // failed to open file
-            printf("ERROR: failed to open '%s'\n", filename);
+            printf("ERROR: failed to open \'%s\'\n", filename);
             exit(1);
-        }
+        }         
     }
     else{
         yyparse();

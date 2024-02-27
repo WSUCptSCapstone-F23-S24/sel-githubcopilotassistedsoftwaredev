@@ -1,7 +1,6 @@
 #ifndef TREE_NODES_H
 #define TREE_NODES_H
 #include "scanType.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

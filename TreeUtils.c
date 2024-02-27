@@ -1,5 +1,6 @@
 // utilities to build the tree
 #include "TreeUtils.h"
+#include "parser.tab.h"
 /* Procedure printToken prints a token 
  * and its lexeme to the  file
  */
