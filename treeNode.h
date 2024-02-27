@@ -34,13 +34,13 @@ typedef enum {DeclK, StmtK, ExpK} NodeKind;
 typedef enum {VarK, FuncK, ParamK} DeclKind;
 
 // Subkinds of Statements
-typedef enum {NullK, ElsifK, IfK, WhileK, LoopK, LoopForeverK, CompoundK, RangeK, ReturnK, AssignK, BreakK} StmtKind;
+typedef enum {NullK, ElsifK, IfK, WhileK, LoopK, LoopForeverK, CompoundK, RangeK, ReturnK, BreakK} StmtKind;
 
 // Subkinds of Expressions
-typedef enum {OpK, ConstantK, IdK, InitK, CallK, ArrIdK} ExpKind;
+typedef enum {OpK, ConstantK, IdK, InitK, CallK, ArrIdK, AssignK, ArgK, NullExpK} ExpKind;
 
 // ExpType is used for type checking (Void means no type or value, UndefinedType means undefined)
-typedef enum {Void, Integer, Boolean, Char, CharInt, Equal, UndefinedType} ExpType;
+typedef enum {Void, Integer, Boolean, Char, CharInt, Equal, UndefinedType, String} ExpType;
 
 // What kind of scoping is used?  (decided during typing)
 typedef enum {None, Local, Global, Parameter, LocalStatic} VarKind;
@@ -76,7 +76,8 @@ typedef struct treeNode
     } attr;                                 
     ExpType expType;		           // used when ExpK for type checking
     bool isArray;                          // is this an array
-    bool isStatic;                         // is staticly allocated?
+    bool isStatic;                         // is staticly allocated?   
+    int arraySize;                         // the size of the array             
 
     // even more semantic stuff will go here in later assignments.
 } TreeNode;
