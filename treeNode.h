@@ -75,6 +75,7 @@ typedef struct treeNode
 	char *name;                        // used when IdK
     } attr;                                 
     ExpType expType;		           // used when ExpK for type checking
+    VarKind varKind;                       // used when IdK for scoping
     bool isArray;                          // is this an array
     bool isStatic;                         // is staticly allocated?   
     int arraySize;                         // the size of the array             

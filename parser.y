@@ -108,17 +108,37 @@ varDecl: typeSpec varDeclList SEMICOLON
 // 5
 scopedVarDecl: STATIC typeSpec varDeclList SEMICOLON
     {
-        $$ = new TreeNode();
-        $$->nodekind = DeclK;
-        $$->subkind.decl = VarK;
+        $$ = $2;
         $$->expType = $2->expType;
-        $$->attr.name = $3->attr.name;
+        $$->varKind = LocalStatic;
+
+        treeNode* ptr = $$->sibling;
+        while (ptr != NULL)
+        {
+            ptr->expType = $2->expType;
+            ptr = ptr->sibling;
+        }
     }
     | typeSpec varDeclList SEMICOLON
+    {
+        $$ = $2;
+        $$->expType = $1->expType;
+
+        treeNode* ptr = $$->sibling;
+        while (ptr != NULL)
+        {
+            ptr->expType = $1->expType;
+            ptr = ptr->sibling;
+        }
+    }
     ;
 
 // 6 
 varDeclList: varDeclList COMMA varDeclInit
+    {
+        $1->sibling = $3;
+        $$ = $1;
+    }
     | varDeclInit
     {
         $$ = $1;
@@ -139,22 +159,15 @@ varDeclInit: varDeclId
 // 8 
 varDeclId: ID
     {
-        $$ = new TreeNode();
-        $$->nodekind = DeclK;
-        $$->subkind.decl = VarK;
-        $$->expType = $1->expType;
+        $$ = newDeclNode(VarK, line);
         $$->attr.name = $1->svalue;
     }
     | ID LBRACKET NUMCONST RBRACKET
     {
-        $$ = new TreeNode();
-        $$->nodekind = DeclK;
-        $$->subkind.decl = VarK;
-        $$->expType = $1->expType;
+        $$ = newDeclNode(VarK, line);
         $$->attr.name = $1->svalue;
         $$->isArray = true;
         $$->arraySize = $3->nvalue;
-    
     }
 
 
@@ -242,6 +255,12 @@ parmTypeList: typeSpec parmIdList
     {
         $$ = $2;
         $2->expType = $1->expType;
+        treeNode* ptr = $$->sibling;
+        while (ptr != NULL)
+        {
+            ptr->expType = $1->expType;
+            ptr = ptr->sibling;
+        }
     }
     ;
 
@@ -350,21 +369,32 @@ compoundStmt: LBRACE localDecls stmtList RBRACE
         $$ = newStmtNode(CompoundK, $1->linenum);
         $$->expType = UndefinedType;
         $$->child[0] = $2;
-        $$->child[1] = $3;
+        //$$->child[1] = $3;
     }
     ;
 
 // 19
 localDecls: localDecls scopedVarDecl 
     {
-        $$ = $1;
-        $$->sibling = $2;
+        if ($1 == NULL)
+        {
+            $$ = $2;
+        }
+        else
+        {
+            $$ = $1;
+
+            treeNode * ptr = $$;
+            while (ptr->sibling != NULL)
+            {
+                ptr = ptr->sibling;
+            }
+            ptr->sibling = $2;
+        }
     }
     |
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = NullK;
+        $$ = NULL;
     }
     ;  
 

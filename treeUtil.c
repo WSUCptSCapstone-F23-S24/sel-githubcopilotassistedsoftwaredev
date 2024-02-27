@@ -181,7 +181,9 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
     {
         if (tree->child[i] != NULL)
         {
-            if (tree->child[i]->subkind.decl == ParamK || tree->child[i]->subkind.stmt == CompoundK)
+            if (tree->child[i]->subkind.decl == ParamK 
+                || tree->child[i]->subkind.stmt == CompoundK
+                || tree->child[i]->subkind.decl == VarK)
             {
                  printTreeRecursive(tree->child[i], 0, i, spacing+1);
             }
