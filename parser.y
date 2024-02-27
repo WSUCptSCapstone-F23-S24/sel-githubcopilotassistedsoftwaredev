@@ -46,6 +46,7 @@ extern int ourGetopt( int, char **, char*);
 
 
 %type <treeNode> program decList decl varDecl funcDecl typeSpec varDeclList scopedVarDecl varDeclInit varDeclId parms stmt parmList
+%type <treeNode> parmId parmIdList
 %type <treeNode> parmTypeList matched unmatched exp otherStmts expStmt compoundStmt iterStmt returnStmt breakStmt localDecls
 %type <treeNode> stmtList simpleExp iterRange mutable andExp unaryRelExp relExp relop minmaxExp minmaxOp sumExp sumOp mulExp
 %type <treeNode> mulOp unaryExp unaryOp factor immutable call args argList constant
@@ -127,12 +128,10 @@ varDeclList: varDeclList COMMA varDeclInit
 varDeclInit: varDeclId 
     {
         $$ = $1;
-        printf("Var: %s of type %s [line: %d]\n", $$->attr.name, getTypeName($$->expType), $$->lineno);
     }
     | varDeclId COLON simpleExp
     {
         $$ = $1;
-        printf("Var: %s of type %s [line: %d]\n", $$->attr.name, getTypeName($$->expType), $$->lineno);
     }
     ;
 
@@ -188,9 +187,8 @@ funcDecl: typeSpec ID LPAREN parms RPAREN stmt
         TreeNode *newNode = newDeclNode(FuncK, $2->linenum);
         newNode->expType = $1->expType;
         newNode->attr.name = $2->svalue;
-        $$->nodekind = DeclK;
-        $$->child[0] = $4;
-        $$->child[1] = $6;
+        newNode->child[0] = $4;
+        newNode->child[1] = $6;
 
         if (root == NULL) {
             root = newNode;
@@ -204,9 +202,8 @@ funcDecl: typeSpec ID LPAREN parms RPAREN stmt
         TreeNode *newNode = newDeclNode(FuncK, $1->linenum);
         newNode->expType = Void;
         newNode->attr.name = $1->svalue;
-        $$->nodekind = DeclK;
-        $$->child[0] = $3;
-        $$->child[1] = $5;
+        newNode->child[0] = $3;
+        newNode->child[1] = $5;
 
         if (root == NULL) {
             root = newNode;
@@ -219,25 +216,63 @@ funcDecl: typeSpec ID LPAREN parms RPAREN stmt
 
 // 11 
 parms: parmList 
+    {
+        $$ = $1;
+    }
     |
+    {
+        $$ = NULL;
+    }
     ;
 
 // 12
 parmList: parmList SEMICOLON parmTypeList
+    {
+        $1->sibling = $3;
+    }
     | parmTypeList
+    {
+        $$ = $1;
+    }
     ;
 
 // 13
 parmTypeList: typeSpec parmIdList
+    {
+        $$ = $2;
+        $2->expType = $1->expType;
+    }
     ;
 
 // 14
 parmIdList: parmIdList COMMA parmId 
+    {
+        $1->sibling = $3;
+    }
     | parmId
+    {
+        $$ = $1;
+    }
     ;
 
 // 15
-parmId: ID | ID LBRACKET RBRACKET
+parmId: ID 
+    {
+        TreeNode *newNode = newDeclNode(ParamK, $1->linenum);
+        newNode->attr.name = $1->svalue;
+        newNode->expType = UndefinedType;
+        newNode->subkind.decl = ParamK;
+        $$ = newNode;
+    }
+    | ID LBRACKET RBRACKET
+    {
+        TreeNode *newNode = newDeclNode(ParamK, $1->linenum);
+        newNode->attr.name = $1->svalue;
+        newNode->expType = UndefinedType;
+        newNode->subkind.decl = ParamK;
+        newNode->isArray = true;
+        $$ = newNode;
+    }
     ;
 
 // 16

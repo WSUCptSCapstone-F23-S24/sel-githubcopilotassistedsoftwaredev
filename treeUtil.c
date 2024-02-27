@@ -106,11 +106,11 @@ static int indentno = 0;
 #define INDENT indentno+=2
 #define UNINDENT indentno-=2
 
-static void printSpaces(void)
+static void printSpaces(int spacing)
 {
     int i;
-    for (i=0;i<indentno;i++)
-        printf(" ");
+    for (i=0;i<spacing;i++)
+        printf(".    ");
 }
 
 void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
@@ -122,16 +122,16 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
     }
     else 
     {
+        printSpaces(spacing);
         if (sibling > 0)
         {
             printf("Sibling: %d ", sibling);
         }
-        if (child > 0)
+        if (child > -1)
         {
             printf("Child: %d ", child);
         }
 
-        //printf("lineno: %d, ",tree->lineno);
         switch (tree->subkind.decl)
         {
             case VarK:
@@ -145,6 +145,13 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
             case FuncK:
                 printf("Func: %s returns type ", tree->attr.name);
                 break;
+            case ParamK:
+                printf("Param: %s ", tree->attr.name);
+                if (tree->isArray == true)
+                {
+                    printf("is array ");
+                }
+                printf("of type ");
             break;
         }
         switch (tree->expType)
@@ -162,17 +169,26 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
         printf("[Line : %d]\n", tree->lineno);
     }
 
+    //iterate through children, calling printTreeRecursive
+    for (int i = 0; i < MAXCHILDREN; i++)
+    {
+        if (tree->child[i] != NULL && tree->child[i]->subkind.decl == ParamK)
+        {
+            printTreeRecursive(tree->child[i], 0, i, spacing+1);
+        }
+    }
+
     if (tree->sibling != NULL)
     {
         //call for sibling
-        printTreeRecursive(tree->sibling, sibling + 1, 0, 0);
+        printTreeRecursive(tree->sibling, sibling + 1, -1, spacing);
     }
 
 }
 
 void printTree(TreeNode * tree)
 {
-    printTreeRecursive(tree, 0, 0, 0);
+    printTreeRecursive(tree, 0, -1, 0);
     // return;
     // while (tree != NULL)
     // {
