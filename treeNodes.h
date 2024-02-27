@@ -1,5 +1,7 @@
+#ifndef TREE_NODES_H
+#define TREE_NODES_H
 #include "scanType.h"
-#include "parser.tab.h"     // token defs
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -73,3 +75,4 @@ typedef struct treeNode
     int isStatic;                         // is staticly allocated?
     // even more semantic stuff will go here in later assignments.
 } TreeNode;
+#endif TREE_NODES_H

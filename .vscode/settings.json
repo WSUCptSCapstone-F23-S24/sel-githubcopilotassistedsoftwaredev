@@ -64,6 +64,7 @@
     }
   ],
   "files.associations": {
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "scantype.h": "c"
   }
 }
