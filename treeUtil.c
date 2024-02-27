@@ -113,10 +113,8 @@ static void printSpaces(void)
         printf(" ");
 }
 
-void printTree(TreeNode * tree)
+void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
 {
-    int i;
-    INDENT;
     if (tree==NULL) 
     {
         printf("NULL tree\n");
@@ -124,86 +122,116 @@ void printTree(TreeNode * tree)
     }
     else 
     {
+        if (sibling > 0)
+        {
+            printf("Sibling: %d ", sibling);
+        }
+        if (child > 0)
+        {
+            printf("Child: %d ", child);
+        }
+
         //printf("lineno: %d, ",tree->lineno);
-        switch (tree->nodekind)
+        switch (tree->subkind.decl)
         {
             case VarK:
                 printf("Var: %s ", tree->attr.name);
+                if (tree->isArray == true)
+                {
+                    printf("is array ");
+                }
+                printf("of type ");
+                break;
+            case FuncK:
+                printf("Func: %s returns type ", tree->attr.name);
                 break;
             break;
         }
-        if (tree->isArray == true)
-        {
-            printf("is array ");
-        }
-        printf("of type ");
         switch (tree->expType)
         {
             case Integer:
                 printf("int ");
                 break;
+            case Void:
+                printf("void ");
+                break;
+            case Boolean:
+                printf("bool ");
+                break;
         }
-        printf("[Line : %d]", tree->lineno);
+        printf("[Line : %d]\n", tree->lineno);
     }
-    return;
-    while (tree != NULL)
+
+    if (tree->sibling != NULL)
     {
-        printSpaces();
-        if (tree->nodekind==StmtK)
-        {
-            switch (tree->subkind.stmt)
-            {
-                case IfK:
-                    printf("If\n");
-                    break;
-                case WhileK:
-                    printf("While\n");
-                    break;
-                case AssignK:
-                    printf("Assign to: %s\n",tree->attr.name);
-                    break;
-                case ReturnK:
-                    printf("Return\n");
-                    break;
-                case CallK:
-                    printf("Call: %s\n",tree->attr.name);
-                    break;
-                default:
-                    printf("Unknown ExpNode kind\n");
-                    break;
-            }
-        }
-        else if (tree->nodekind==ExpK)
-        {
-            switch (tree->subkind.exp)
-            {
-                case OpK:
-                    printf("Op: ");
-                    printToken((TokenType)tree->attr.op,"\0");
-                    break;
-                case ConstantK:
-                    printf("Const: %d\n",tree->attr.cvalue);
-                    break;
-                case IdK:
-                    printf("Id: %s\n",tree->attr.name);
-                    break;
-                case ArrIdK:
-                    printf("Array Id: %s\n",tree->attr.name);
-                    break;
-                case CallK:
-                    printf("Call: %s\n",tree->attr.name);
-                    break;
-                default:
-                    printf("Unknown ExpNode kind\n");
-                    break;
-            }
-        }
-        else printf("Unknown node kind\n");
-        for (i=0;i<MAXCHILDREN;i++)
-            printTree(tree->child[i]);
-        tree = tree->sibling;
+        //call for sibling
+        printTreeRecursive(tree->sibling, sibling + 1, 0, 0);
     }
-    UNINDENT;
+
+}
+
+void printTree(TreeNode * tree)
+{
+    printTreeRecursive(tree, 0, 0, 0);
+    // return;
+    // while (tree != NULL)
+    // {
+    //     printSpaces();
+    //     if (tree->nodekind==StmtK)
+    //     {
+    //         switch (tree->subkind.stmt)
+    //         {
+    //             case IfK:
+    //                 printf("If\n");
+    //                 break;
+    //             case WhileK:
+    //                 printf("While\n");
+    //                 break;
+    //             case AssignK:
+    //                 printf("Assign to: %s\n",tree->attr.name);
+    //                 break;
+    //             case ReturnK:
+    //                 printf("Return\n");
+    //                 break;
+    //             case CallK:
+    //                 printf("Call: %s\n",tree->attr.name);
+    //                 break;
+    //             default:
+    //                 printf("Unknown ExpNode kind\n");
+    //                 break;
+    //         }
+    //     }
+    //     else if (tree->nodekind==ExpK)
+    //     {
+    //         switch (tree->subkind.exp)
+    //         {
+    //             case OpK:
+    //                 printf("Op: ");
+    //                 printToken((TokenType)tree->attr.op,"\0");
+    //                 break;
+    //             case ConstantK:
+    //                 printf("Const: %d\n",tree->attr.cvalue);
+    //                 break;
+    //             case IdK:
+    //                 printf("Id: %s\n",tree->attr.name);
+    //                 break;
+    //             case ArrIdK:
+    //                 printf("Array Id: %s\n",tree->attr.name);
+    //                 break;
+    //             case CallK:
+    //                 printf("Call: %s\n",tree->attr.name);
+    //                 break;
+    //             default:
+    //                 printf("Unknown ExpNode kind\n");
+    //                 break;
+    //         }
+    //     }
+    //     else printf("Unknown node kind\n");
+    //     for (i=0;i<MAXCHILDREN;i++)
+    //         printTree(tree->child[i]);
+    //     tree = tree->sibling;
+    // }
+    // UNINDENT;
 }
 
 // add a TreeNode to a list of siblings.

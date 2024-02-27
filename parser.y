@@ -185,23 +185,35 @@ typeSpec: INT
 // 10
 funcDecl: typeSpec ID LPAREN parms RPAREN stmt
     {
-        $$ = new TreeNode();
+        TreeNode *newNode = newDeclNode(FuncK, $2->linenum);
+        newNode->expType = $1->expType;
+        newNode->attr.name = $2->svalue;
         $$->nodekind = DeclK;
-        $$->subkind.decl = FuncK;
-        $$->expType = $1->expType;
-        $$->attr.name = $2->svalue;
         $$->child[0] = $4;
         $$->child[1] = $6;
+
+        if (root == NULL) {
+            root = newNode;
+        } else {
+            addSibling(root, newNode);
+        }
+        $$ = newNode;        
     }
     | ID LPAREN parms RPAREN stmt
     {
-        $$ = new TreeNode();
+        TreeNode *newNode = newDeclNode(FuncK, $1->linenum);
+        newNode->expType = Void;
+        newNode->attr.name = $1->svalue;
         $$->nodekind = DeclK;
-        $$->subkind.decl = FuncK;
-        $$->expType = Void;
-        $$->attr.name = $1->svalue;
         $$->child[0] = $3;
         $$->child[1] = $5;
+
+        if (root == NULL) {
+            root = newNode;
+        } else {
+            addSibling(root, newNode);
+        }
+        $$ = newNode;  
     }
     ;
 
