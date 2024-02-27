@@ -193,6 +193,7 @@ funcDecl: typeSpec ID LPAREN parms RPAREN stmt
 
 // 11 
 parms: parmList 
+    |
     ;
 
 // 12
@@ -216,7 +217,6 @@ parmId: ID | ID LBRACKET RBRACKET
 // 16
 stmt: matched  
     | unmatched
-    | compoundStmt
     ;
 
 matched: IF exp THEN matched ELSE matched
