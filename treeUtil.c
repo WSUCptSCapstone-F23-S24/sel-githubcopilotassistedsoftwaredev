@@ -131,7 +131,7 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
         {
             printf("Child: %d ", child);
         }
-
+        //print the node kind and subkind if it is declaration
         switch (tree->subkind.decl)
         {
             case VarK:
@@ -154,6 +154,13 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
                 printf("of type ");
             break;
         }
+        //print the subkind if it is a statement
+        switch (tree->subkind.stmt)
+        {
+            case CompoundK:
+                printf("Compound ");
+                break;
+        }
         switch (tree->expType)
         {
             case Integer:
@@ -172,9 +179,12 @@ void printTreeRecursive(TreeNode * tree, int sibling, int child, int spacing)
     //iterate through children, calling printTreeRecursive
     for (int i = 0; i < MAXCHILDREN; i++)
     {
-        if (tree->child[i] != NULL && tree->child[i]->subkind.decl == ParamK)
+        if (tree->child[i] != NULL)
         {
-            printTreeRecursive(tree->child[i], 0, i, spacing+1);
+            if (tree->child[i]->subkind.decl == ParamK || tree->child[i]->subkind.stmt == CompoundK)
+            {
+                 printTreeRecursive(tree->child[i], 0, i, spacing+1);
+            }
         }
     }
 

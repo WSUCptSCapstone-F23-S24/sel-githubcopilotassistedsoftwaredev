@@ -50,6 +50,7 @@ extern int ourGetopt( int, char **, char*);
 %type <treeNode> parmTypeList matched unmatched exp otherStmts expStmt compoundStmt iterStmt returnStmt breakStmt localDecls
 %type <treeNode> stmtList simpleExp iterRange mutable andExp unaryRelExp relExp relop minmaxExp minmaxOp sumExp sumOp mulExp
 %type <treeNode> mulOp unaryExp unaryOp factor immutable call args argList constant
+%type <tokenData> LBRACE
 
 
 
@@ -188,7 +189,7 @@ funcDecl: typeSpec ID LPAREN parms RPAREN stmt
         newNode->expType = $1->expType;
         newNode->attr.name = $2->svalue;
         newNode->child[0] = $4;
-        newNode->child[1] = $6;
+        newNode->child[1] = $6; 
 
         if (root == NULL) {
             root = newNode;
@@ -277,7 +278,13 @@ parmId: ID
 
 // 16
 stmt: matched  
+    {
+        $$ = $1;
+    }
     | unmatched
+    {
+        $$ = $1;
+    }
     ;
 
 matched: IF exp THEN matched ELSE matched
@@ -290,6 +297,9 @@ matched: IF exp THEN matched ELSE matched
         $$->child[2] = $6;
     }
     | otherStmts
+    {
+        $$ = $1;
+    }
     ;
 
 unmatched: IF exp THEN stmt
@@ -313,6 +323,9 @@ unmatched: IF exp THEN stmt
 
 otherStmts: expStmt
     | compoundStmt
+    {
+        $$ = $1;
+    }
     | iterStmt
     | returnStmt
     | breakStmt
@@ -334,9 +347,8 @@ expStmt: exp SEMICOLON
 // 18
 compoundStmt: LBRACE localDecls stmtList RBRACE
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = CompoundK;
+        $$ = newStmtNode(CompoundK, $1->linenum);
+        $$->expType = UndefinedType;
         $$->child[0] = $2;
         $$->child[1] = $3;
     }
