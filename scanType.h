@@ -1,5 +1,9 @@
 #ifndef _SCANTYPE_H_
 #define _SCANTYPE_H_
+
+#include "treeNode.h"
+
+
 // 
 //  SCANNER TOKENDATA
 // 
@@ -10,5 +14,6 @@ struct TokenData {
     char cvalue;            // any character value
     int  nvalue;            // any numeric value or Boolean value
     char *svalue;           // any string value e.g. an id
+    ExpType expType;           // type of the token
 };
 #endif
