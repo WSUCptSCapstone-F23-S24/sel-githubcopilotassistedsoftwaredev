@@ -96,7 +96,7 @@ TreeNode * newExpNode(ExpKind kind, int lineno)
         t->nodekind = ExpK;
         t->subkind.exp = kind;
         t->lineno = lineno;
-        t->expType = Void;
+        t->expType = (ExpType)kind;
     }
     return t;
 }

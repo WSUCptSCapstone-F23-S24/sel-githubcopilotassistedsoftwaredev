@@ -341,6 +341,9 @@ unmatched: IF exp THEN stmt
     ;
 
 otherStmts: expStmt
+    {
+        $$ = $1;
+    }
     | compoundStmt
     {
         $$ = $1;
@@ -465,9 +468,7 @@ breakStmt: BREAK SEMICOLON
 // 26
 exp: mutable ASSIGN exp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = AssignK;
+        $$ = newExpNode(AssignK, $1->lineno);
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
