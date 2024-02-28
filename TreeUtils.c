@@ -232,7 +232,7 @@ void printTree( TreeNode * tree )
     for (i=0;i<MAXCHILDREN;i++)
     {
       if (tree->child != NULL)
-        printf("\n Child: %d ", i);
+        //printf("\n Child: %d ", i);
       printTree(tree->child[i]);
     }
 

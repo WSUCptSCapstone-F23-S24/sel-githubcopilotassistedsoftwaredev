@@ -58,7 +58,7 @@ TreeNode *syntaxTree;
 /* Grammar for C- */
 
 program     : declList
-                {  }
+                {syntaxTree = $$; }
             ;
 declList    : declList decl { 
                 $$ = newDeclNode(VarK, line);
