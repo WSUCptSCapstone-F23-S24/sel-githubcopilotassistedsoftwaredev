@@ -20,4 +20,14 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s);
 
 void setType(TreeNode *t, ExpType type, bool isStatic);
 
+void printDeclaration(TreeNode * tree);
+
+void printExpression(TreeNode * tree);
+
+void printStatement(TreeNode * tree);
+
+void printType(ExpType type);
+
+
+
 #endif

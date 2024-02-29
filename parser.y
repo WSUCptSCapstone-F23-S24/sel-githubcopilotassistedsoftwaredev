@@ -50,7 +50,7 @@ extern int ourGetopt( int, char **, char*);
 %type <treeNode> parmTypeList matched unmatched exp otherStmts expStmt compoundStmt iterStmt returnStmt breakStmt localDecls
 %type <treeNode> stmtList simpleExp iterRange mutable andExp unaryRelExp relExp relop minmaxExp minmaxOp sumExp sumOp mulExp
 %type <treeNode> mulOp unaryExp unaryOp factor immutable call args argList constant
-%type <tokenData> LBRACE
+//%type <tokenData> LBRACE
 
 
 
@@ -58,14 +58,14 @@ extern int ourGetopt( int, char **, char*);
 
 
 //// your %token statements defining token classes
-%token LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET
-%token COMMA COLON SEMICOLON 
-%token IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK
-%token INT BOOL CHAR STATIC
-%token ADD SUBTRACT MULTIPLY DIVIDE MOD QUEST
-%token AND OR NOT 
-%token EQ NEQ LT LE GT GE ASSIGN MIN MAX
-%token ADDEQ SUBEQ MULEQ DIVEQ INC DEC
+%token <tokenData> LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET
+%token <tokenData> COMMA COLON SEMICOLON 
+%token <tokenData> IF THEN ELSE WHILE DO FOR TO BY RETURN BREAK
+%token <tokenData> INT BOOL CHAR STATIC
+%token <tokenData> ADD SUBTRACT MULTIPLY DIVIDE MOD QUEST
+%token <tokenData> AND OR NOT 
+%token <tokenData> EQ NEQ LT LE GT GE ASSIGN MIN MAX
+%token <tokenData> ADDEQ SUBEQ MULEQ DIVEQ INC DEC
 %token <tokenData> ID NUMCONST CHARCONST STRINGCONST TRUE FALSE
 
 
@@ -360,9 +360,7 @@ expStmt: exp SEMICOLON
     }
     | SEMICOLON
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = NullK;
+        $$ = NULL;
     }
     ;
 
@@ -372,7 +370,7 @@ compoundStmt: LBRACE localDecls stmtList RBRACE
         $$ = newStmtNode(CompoundK, $1->linenum);
         $$->expType = UndefinedType;
         $$->child[0] = $2;
-        //$$->child[1] = $3;
+        $$->child[1] = $3;
     }
     ;
 
@@ -386,13 +384,7 @@ localDecls: localDecls scopedVarDecl
         else
         {
             $$ = $1;
-
-            treeNode * ptr = $$;
-            while (ptr->sibling != NULL)
-            {
-                ptr = ptr->sibling;
-            }
-            ptr->sibling = $2;
+            addSibling($1, $2);
         }
     }
     |
@@ -404,14 +396,19 @@ localDecls: localDecls scopedVarDecl
 // 20
 stmtList: stmtList stmt
     {
-        $$ = $1;
-        $$->sibling = $2;
+        if ($1 == NULL)
+        {
+            $$ = $2;
+        }
+        else
+        {
+            $$ = $1;
+            addSibling($1, $2);
+        }
     }
     |
     {  
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = NullK;
+        $$ = NULL;
     } 
     ;
 
@@ -469,81 +466,89 @@ breakStmt: BREAK SEMICOLON
 exp: mutable ASSIGN exp
     {
         $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "=";
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
     | mutable ADDEQ exp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = ADD;
+        $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "+=";
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
     | mutable SUBEQ exp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = SUBTRACT;
+        $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "-=";
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
     | mutable MULEQ exp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = MULTIPLY;
+        $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "*=";
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
     | mutable DIVEQ exp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = DIVIDE;
+        $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "/=";
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
     | mutable INC
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = INC;
+        $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "++";
         $$->child[0] = $1;
     }
     | mutable DEC
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = DEC;
+        $$ = newExpNode(AssignK, $1->lineno);
+        $$->attr.name = "--";
         $$->child[0] = $1;
     }
     | simpleExp
+    {
+        $$ = $1;
+    }
     ;
 
 // 27
 simpleExp: simpleExp OR andExp
+    {
+        $$ = newExpNode(OpK, $3->lineno);
+        $$->attr.name = "OR";
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
     | andExp
+    {
+        $$ = $1;
+    }
     ;
 
 // 28
 andExp: andExp AND unaryRelExp
+    {
+        $$ = newExpNode(OpK, $3->lineno);
+        $$->attr.name = "AND";
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
     | unaryRelExp
+    {
+        $$ = $1;
+    }
     ;  
 
 // 29
 unaryRelExp: NOT unaryRelExp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = NOT;
+        $$ = newExpNode(OpK, $2->lineno);
+        $$->attr.name = "NOT";
         $$->child[0] = $2;
     }
     | relExp
@@ -555,10 +560,7 @@ unaryRelExp: NOT unaryRelExp
 // 30
 relExp: minmaxExp relop minmaxExp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = $2->attr.op;
+        $$ = $2;
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -571,45 +573,33 @@ relExp: minmaxExp relop minmaxExp
 // 31
 relop: LE
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = LE;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "<=";
     }
     | LT
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = LT;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "<";
     }
     | GT
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = GT;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = ">";
     }
     | GE
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = GE;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = ">=";
     }
     | EQ
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = EQ;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "==";
     }
     | NEQ
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = NEQ;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "!=";
     }
     ;
 
@@ -649,10 +639,7 @@ minmaxOp: MIN
 // 34
 sumExp: sumExp sumOp mulExp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = $2->attr.op;
+        $$ = $2;
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -665,27 +652,20 @@ sumExp: sumExp sumOp mulExp
 // 35
 sumOp: ADD
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = ADD;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name="+";
     }
     | SUBTRACT
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = SUBTRACT;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "-";
     }
     ;
 
 // 36
 mulExp: mulExp mulOp unaryExp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = $2->attr.op;
+        $$ = $2;
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -698,24 +678,18 @@ mulExp: mulExp mulOp unaryExp
 // 37
 mulOp: MULTIPLY
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = MULTIPLY;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "*";
     }
     | DIVIDE
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = DIVIDE;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "/";
     }
     | MOD
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = MOD;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "%";
     }
     ;
 
@@ -727,24 +701,18 @@ unaryExp: unaryOp unaryExp
 // 39
 unaryOp: SUBTRACT
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = SUBTRACT;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "-";
     }
     | MULTIPLY
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = MULTIPLY;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "*";
     }
     | QUEST
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = QUEST;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "?";
     }
     ;
 
@@ -756,18 +724,24 @@ factor: immutable
 // 41
 mutable: ID
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = IdK;
+        $$ = newExpNode(IdK, $1->linenum);
         $$->attr.name = $1->svalue;
     }
-    | ID LBRACKET exp RBRACKET
+    | ID LBRACKET NUMCONST RBRACKET
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ArrIdK;
-        $$->attr.name = $1->svalue;
-        $$->child[0] = $3;
+        //create lbracket op node
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "[";
+
+        //create child 0 as id
+        $$->child[0] = newExpNode(IdK, $3->linenum);
+        $$->child[0]->attr.name = $1->svalue;
+
+        //create child 1 as numconst
+        $$->child[1] = newExpNode(ConstantK, $3->linenum);
+        $$->child[1]->expType = Integer;
+        $$->child[1]->attr.value = $3->nvalue;
+
     }
     ;
 
@@ -782,11 +756,7 @@ immutable: LPAREN exp RPAREN
     }
     | constant
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ConstantK;
-        $$->expType = $1->expType;
-        $$->attr.value = $1->attr.value;
+        $$ = $1;
     }
     ;
 
