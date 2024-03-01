@@ -91,10 +91,17 @@ decl: varDecl
 // 4
 varDecl: typeSpec varDeclList SEMICOLON
     {
-        $$ = newDeclNode(VarK, line);
+        $$ = $2;
         $$->expType = $1->expType;
-        $$->attr.name = $2->attr.name;
-        $$->isArray = $2->isArray;
+
+        for (int i = 0; i < MAXCHILDREN; i++)
+        {
+            if ($$->child[i] != NULL)
+            {
+                $$->child[i]->expType = $1->expType;
+                $$->child[i]->isArray = $$->isArray;
+            }
+        }
 
         if (root == NULL) {
             root = $$;
@@ -107,7 +114,7 @@ varDecl: typeSpec varDeclList SEMICOLON
 // 5
 scopedVarDecl: STATIC typeSpec varDeclList SEMICOLON
     {
-        $$ = $2;
+        $$ = $3;
         $$->expType = $2->expType;
         $$->varKind = LocalStatic;
 
@@ -135,8 +142,8 @@ scopedVarDecl: STATIC typeSpec varDeclList SEMICOLON
 // 6 
 varDeclList: varDeclList COMMA varDeclInit
     {
-        $1->sibling = $3;
         $$ = $1;
+        $$->sibling = $3;
     }
     | varDeclInit
     {
@@ -152,6 +159,7 @@ varDeclInit: varDeclId
     | varDeclId COLON simpleExp
     {
         $$ = $1;
+        $$->child[0] = $3;
     }
     ;
 

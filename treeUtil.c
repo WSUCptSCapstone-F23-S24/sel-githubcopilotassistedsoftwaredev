@@ -208,7 +208,12 @@ void printExpression(TreeNode * tree)
             printf("Op: ");
             break;
         case ConstantK:
-            printf("Const of type ");
+            printf("Const ");
+            if (tree->isArray)
+            {
+                printf("is array ");
+            }
+            printf("of type ");
             printType(tree->expType);
             printf(": ");
             break;
@@ -241,7 +246,7 @@ void printExpression(TreeNode * tree)
     }
     else if (tree->expType == Char)
     {
-        printf("%c ", tree->attr.cvalue);
+        printf("'%c' ", tree->attr.cvalue);
     }
     else if (tree->expType == Boolean)
     {

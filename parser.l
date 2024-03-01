@@ -36,7 +36,26 @@ static int setValue(int linenum, int tokenClass, char *svalue)
             yylval.tokenData->nvalue = strlen(strdup(svalue))-2;         
             break;
         case CHARCONST:
-            yylval.tokenData->cvalue = strdup(svalue)[1];         
+            if(svalue[1] == '\\')
+            {
+                if(svalue[2] == 'n')
+                {
+                    yylval.tokenData->cvalue = '\n';
+                }
+                else if (svalue[2] == '0')
+                {
+                    yylval.tokenData->cvalue = '\0';
+                }
+                else
+                {
+                    yylval.tokenData->cvalue = strdup(svalue)[2];       
+                }
+            }
+            else
+            {
+                yylval.tokenData->cvalue = strdup(svalue)[1];         
+            }
+
             break;
     }
 
