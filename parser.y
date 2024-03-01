@@ -91,17 +91,16 @@ decl: varDecl
 // 4
 varDecl: typeSpec varDeclList SEMICOLON
     {
-        TreeNode *newNode = newDeclNode(VarK, line);
-        newNode->expType = $1->expType;
-        newNode->attr.name = $2->attr.name;
-        newNode->isArray = $2->isArray;
+        $$ = newDeclNode(VarK, line);
+        $$->expType = $1->expType;
+        $$->attr.name = $2->attr.name;
+        $$->isArray = $2->isArray;
 
         if (root == NULL) {
-            root = newNode;
+            root = $$;
         } else {
-            addSibling(root, newNode);
+            addSibling(root, $$);
         }
-        $$ = newNode;
     }
     ;
 
@@ -174,23 +173,17 @@ varDeclId: ID
 // 9
 typeSpec: INT
     {
-        $$ = new TreeNode();
-        $$->nodekind = DeclK;
-        $$->subkind.decl = ParamK;
+        $$ = newDeclNode(ParamK, $1->linenum);
         $$->expType = Integer;
     }
     | BOOL
     {
-        $$ = new TreeNode();
-        $$->nodekind = DeclK;
-        $$->subkind.decl = ParamK;
+        $$ = newDeclNode(ParamK, $1->linenum);
         $$->expType = Boolean;
     }
     | CHAR
     {
-        $$ = new TreeNode();
-        $$->nodekind = DeclK;
-        $$->subkind.decl = ParamK;
+        $$ = newDeclNode(ParamK, $1->linenum);
         $$->expType = Char;
     }
     ;
@@ -198,33 +191,31 @@ typeSpec: INT
 // 10
 funcDecl: typeSpec ID LPAREN parms RPAREN stmt
     {
-        TreeNode *newNode = newDeclNode(FuncK, $2->linenum);
-        newNode->expType = $1->expType;
-        newNode->attr.name = $2->svalue;
-        newNode->child[0] = $4;
-        newNode->child[1] = $6; 
+        $$ = newDeclNode(FuncK, $2->linenum);
+        $$->expType = $1->expType;
+        $$->attr.name = $2->svalue;
+        $$->child[0] = $4;
+        $$->child[1] = $6; 
 
         if (root == NULL) {
-            root = newNode;
+            root = $$;
         } else {
-            addSibling(root, newNode);
-        }
-        $$ = newNode;        
+            addSibling(root, $$);
+        }    
     }
     | ID LPAREN parms RPAREN stmt
     {
-        TreeNode *newNode = newDeclNode(FuncK, $1->linenum);
-        newNode->expType = Void;
-        newNode->attr.name = $1->svalue;
-        newNode->child[0] = $3;
-        newNode->child[1] = $5;
+        $$ = newDeclNode(FuncK, $1->linenum);
+        $$->expType = Void;
+        $$->attr.name = $1->svalue;
+        $$->child[0] = $3;
+        $$->child[1] = $5;
 
         if (root == NULL) {
-            root = newNode;
+            root = $$;
         } else {
-            addSibling(root, newNode);
+            addSibling(root, $$);
         }
-        $$ = newNode;  
     }
     ;
 
@@ -349,8 +340,17 @@ otherStmts: expStmt
         $$ = $1;
     }
     | iterStmt
+    {
+        $$ = $1;
+    }
     | returnStmt
+    {
+        $$ = $1;
+    }
     | breakStmt
+    {
+        $$ = $1;
+    }
     ;
     
 // 17
@@ -415,18 +415,20 @@ stmtList: stmtList stmt
 // 22 
 iterStmt: WHILE simpleExp DO stmt
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = WhileK;
+        $$ = newStmtNode(WhileK, $3->linenum);
         $$->child[0] = $2;
         $$->child[1] = $4;
     }
     | FOR ID ASSIGN iterRange DO stmt
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = LoopK;
-        $$->child[0] = NULL;
+        //For node
+        $$ = newStmtNode(LoopK, $2->linenum);
+
+        //ID variable node
+        $$->child[0] = newDeclNode(VarK, $2->linenum);
+        $$->child[0]->expType = Integer;
+        $$->child[0]->attr.name = $2->svalue;
+
         $$->child[1] = $4;
         $$->child[2] = $6;
     }
@@ -434,21 +436,28 @@ iterStmt: WHILE simpleExp DO stmt
 
 // 23
 iterRange: simpleExp TO simpleExp
+    {
+        $$ = newStmtNode(RangeK, $2->linenum);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
     | simpleExp TO simpleExp BY simpleExp
+    {
+        $$ = newStmtNode(RangeK, $2->linenum);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+        $$->child[2] = $5;
+    }
     ;
 
 // 24
 returnStmt: RETURN SEMICOLON
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = ReturnK;
+        $$ = newStmtNode(ReturnK, $1->linenum);
     }
     | RETURN exp SEMICOLON
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = ReturnK;
+        $$ = newStmtNode(ReturnK, $1->linenum);
         $$->child[0] = $2;
     }
     ;
@@ -456,9 +465,7 @@ returnStmt: RETURN SEMICOLON
 // 25
 breakStmt: BREAK SEMICOLON
     {
-        $$ = new TreeNode();
-        $$->nodekind = StmtK;
-        $$->subkind.stmt = BreakK;
+        $$ = newStmtNode(BreakK, $1->linenum);
     }
     ;
 
@@ -606,10 +613,7 @@ relop: LE
 // 32
 minmaxExp: minmaxExp minmaxOp sumExp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = $2->attr.op;
+        $$ = $2;
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -622,17 +626,13 @@ minmaxExp: minmaxExp minmaxOp sumExp
 // 33 
 minmaxOp: MIN
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = MIN;
+       $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "MIN";
     }
     | MAX
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = OpK;
-        $$->attr.op = MAX;
+        $$ = newExpNode(OpK, $1->linenum);
+        $$->attr.name = "MAX";
     }
     ;
 
@@ -695,7 +695,14 @@ mulOp: MULTIPLY
 
 // 38
 unaryExp: unaryOp unaryExp
+    {
+        $$ = $1;
+        $$->child[0] = $2;
+    }
     | factor
+    {
+        $$ = $1;
+    }
     ;
 
 // 39
@@ -707,7 +714,7 @@ unaryOp: SUBTRACT
     | MULTIPLY
     {
         $$ = newExpNode(OpK, $1->linenum);
-        $$->attr.name = "*";
+        $$->attr.name = "SIZEOF";
     }
     | QUEST
     {
@@ -727,20 +734,18 @@ mutable: ID
         $$ = newExpNode(IdK, $1->linenum);
         $$->attr.name = $1->svalue;
     }
-    | ID LBRACKET NUMCONST RBRACKET
+    | ID LBRACKET exp RBRACKET
     {
         //create lbracket op node
         $$ = newExpNode(OpK, $1->linenum);
         $$->attr.name = "[";
 
         //create child 0 as id
-        $$->child[0] = newExpNode(IdK, $3->linenum);
+        $$->child[0] = newExpNode(IdK, $1->linenum);
         $$->child[0]->attr.name = $1->svalue;
 
-        //create child 1 as numconst
-        $$->child[1] = newExpNode(ConstantK, $3->linenum);
-        $$->child[1]->expType = Integer;
-        $$->child[1]->attr.value = $3->nvalue;
+        //set child 1 to exp
+        $$->child[1] = $3;
 
     }
     ;
@@ -763,9 +768,7 @@ immutable: LPAREN exp RPAREN
 // 43
 call: ID LPAREN args RPAREN
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = CallK;
+        $$ = newExpNode(CallK, $1->linenum);
         $$->attr.name = $1->svalue;
         $$->child[0] = $3;
     }
@@ -778,9 +781,7 @@ args: argList
     }
     |
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = NullExpK;
+        $$ = NULL;
     }
     ;
 
@@ -788,57 +789,44 @@ args: argList
 argList: argList COMMA exp
     {
         $$ = $1;
-        $$->child[0] = $3;
+        addSibling($$, $3);
     }
     | exp
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ArgK;
-        $$->child[0] = $1;
+        $$ = $1;
     }
     ;
 
 // 46
 constant: NUMCONST
-    {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ConstantK;
+    {   
+        $$ = newExpNode(ConstantK, $1->linenum);
+        $$->attr.value = $1->nvalue;
         $$->expType = Integer;
-        $$->attr.value = $1->cvalue;
     }
     | CHARCONST
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ConstantK;
+        $$ = newExpNode(ConstantK, $1->linenum);
+        $$->attr.cvalue = $1->cvalue;
         $$->expType = Char;
-        $$->attr.value = $1->nvalue;
     }
     | STRINGCONST
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ConstantK;
+        $$ = newExpNode(ConstantK, $1->linenum);
+        $$->attr.string = $1->svalue;
         $$->expType = String;
-        $$->attr.name = $1->svalue;
     }
     | TRUE
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ConstantK;
-        $$->expType = Boolean;
+        $$ = newExpNode(ConstantK, $1->linenum);
         $$->attr.value = 1;
+        $$->expType = Boolean;
     }
     | FALSE
     {
-        $$ = new TreeNode();
-        $$->nodekind = ExpK;
-        $$->subkind.exp = ConstantK;
-        $$->expType = Boolean;
+        $$ = newExpNode(ConstantK, $1->linenum);
         $$->attr.value = 0;
+        $$->expType = Boolean;
     }
     ;
 

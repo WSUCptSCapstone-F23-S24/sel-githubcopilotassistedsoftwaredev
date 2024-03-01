@@ -195,9 +195,9 @@ void printDeclaration(TreeNode * tree)
                     printf("is array ");
                 }
                 printf("of type ");
-                printType(tree->expType);
             break;
         }
+    printType(tree->expType);
 }
 
 void printExpression(TreeNode * tree)
@@ -213,7 +213,8 @@ void printExpression(TreeNode * tree)
             printf(": ");
             break;
         case IdK:
-            printf("Id: ");
+            printf("Id: %s ", tree->attr.name);
+            return;
             break;
         case InitK:
             printf("Init: ");
@@ -238,6 +239,14 @@ void printExpression(TreeNode * tree)
     {
         printf("%d ", tree->attr.value);
     }
+    else if (tree->expType == Char)
+    {
+        printf("%c ", tree->attr.cvalue);
+    }
+    else if (tree->expType == Boolean)
+    {
+        printf("%d ", tree->attr.value);
+    }
     else
     {
         printf("%s ", tree->attr.name);
@@ -250,6 +259,21 @@ void printStatement(TreeNode * tree)
         {
             case CompoundK:
                 printf("Compound ");
+                break;
+            case ReturnK:
+                printf("Return ");
+                break;
+            case BreakK:
+                printf("Break ");
+                break;
+            case LoopK:
+                printf("For ");
+                break;
+            case WhileK:
+                printf("While ");
+                break;
+            case RangeK:
+                printf("Range ");
                 break;
         }
 }
