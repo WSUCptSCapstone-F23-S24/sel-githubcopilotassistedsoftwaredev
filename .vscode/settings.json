@@ -68,6 +68,7 @@
     "scantype.h": "c",
     "parser.tab.h": "c",
     "string.h": "c",
-    "treeutils.h": "c"
+    "treeutils.h": "c",
+    "type_traits": "c"
   }
 }
