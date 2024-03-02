@@ -29,4 +29,6 @@ char * copyString( char * );
  */
 void printTree( TreeNode * );
 
+TreeNode *addSibling(TreeNode *t, TreeNode *s);
+
 #endif

@@ -72,6 +72,7 @@ typedef struct treeNode
     ExpType expType;		           // used when ExpK for type checking
     int isArray;                          // is this an array
     int isStatic;                         // is staticly allocated?
+    VarKind varKind;                       // used when IdK for scoping
     // even more semantic stuff will go here in later assignments.
 } TreeNode;
 #endif TREE_NODES_H

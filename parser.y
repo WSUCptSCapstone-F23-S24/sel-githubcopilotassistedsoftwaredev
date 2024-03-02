@@ -58,56 +58,68 @@ TreeNode *syntaxTree;
 /* Grammar for C- */
 
 program     : declList
-                {syntaxTree = $$; }
             ;
-declList    : declList decl { 
-                $$ = newDeclNode(VarK, line);
-                $$->child[0] = $1;
-                }
+declList    : declList decl
             | decl
-                {
-                    $$ = $1;
-                }
             ;
 decl        : varDecl
-                {
-                    $$ = $1;
-                }
             | funDecl
-                {
-                    $$ = $1;
-                }
             ;
 varDecl     : typeSpec varDeclList SEMI 
                 {
-                    $$ = newDeclNode(VarK, line);
-                    $$->child[0] = $1; 
-                    $$->child[1] = $2; 
+                    $$ = $2;
+                    $$->expType = $1->expType;
+
+                    for (int i = 0; i < MAXCHILDREN; i++)
+                    {
+                        if ($$->child[i] != NULL)
+                        {
+                            $$->child[i]->isArray = $$->isArray;
+                            $$->child[i]->expType = $1->expType;
+                        }
+                    }
+
+                    if (syntaxTree == NULL) {
+                        syntaxTree = $$;
+                    } else {
+                        addSibling(syntaxTree, $$);
+                    }
                 }
             ;
 scopedVarDecl : STATIC typeSpec varDeclList SEMI
                     {
-                        $$ = newDeclNode(VarK, line);
-                        $$->isStatic = 1; 
-                        $$->child[0] = $2; 
-                        $$->child[1] = $3; 
+                        $$ = $3;
+                        $$->expType = $2->expType;
+                        $$->varKind = LocalStatic;
+
+                        treeNode* temp = $$->sibling;
+                        while (temp != NULL)
+                        {
+                            temp->expType = $2->expType;
+                            temp = temp->sibling;
+                        }
                     }
               | typeSpec varDeclList SEMI
                     {
-                        $$ = newDeclNode(VarK, line);
-                        $$->child[0] = $1; 
+                        $$ = $2;
+                        $$->expType = $1->expType;
+
+                        treeNode* temp = $$->sibling;
+                        while (temp != NULL)
+                        {
+                            temp->expType = $1->expType;
+                            temp = temp->sibling;
+                        }
                     }
               ;
 varDeclList : varDeclList COMMA varDeclInit
                 {
-                    $$ = newDeclNode(VarK, line);
-                    $$->child[0] = $1;
-                    $$->child[1] = $3;
+                    $$ = $1;
+                    $$->sibling = $3;
                 }
             | varDeclInit
                 {
-                    $$ = newDeclNode(VarK, line);
-                    $$->child[0] = $1;
+                    $$ = $1;
                 }
             ;
 varDeclInit : varDeclId
@@ -116,9 +128,8 @@ varDeclInit : varDeclId
                 }
             | varDeclId COLON simpleExp
                 {
-                    $$ = newDeclNode(VarK, line);
-                    $$->child[0] = $1;
-                    $$->child[1] = $3;
+                    $$ = $1;
+                    $$->child[0] = $3;
                 }
             ;
 varDeclId   : ID
@@ -136,38 +147,46 @@ varDeclId   : ID
             ;
 typeSpec    : INT 
                 {
-                    $$ = newDeclNode(VarK, line); // Is this going to be a decl or expr node??
-                    $$->subkind.decl = ParamK;
-                    $$->expType = Integer; // Not expression but used for type checking.
+                    $$ = newDeclNode(ParamK, $1->linenum);
+                    $$->expType = Integer;
                 }
             | BOOL 
                 {
-                    $$ = newDeclNode(VarK, line); // Is this going to be a decl or expr node??
-                    $$->subkind.decl = ParamK;
-                    $$->expType = Boolean; // Not expression but used for type checking.
+                    $$ = newDeclNode(ParamK, $1->linenum);
+                    $$->expType = Boolean;
                 }
             | CHAR 
                 {
-                    $$ = newDeclNode(VarK, line); // Is this going to be a decl or expr node??
-                    $$->subkind.decl = ParamK;
-                    $$->expType = Char; // Not expression but used for type checking.
+                    $$ = newDeclNode(ParamK, $1->linenum);
+                    $$->expType = Char;
                 }
             ;
 funDecl     : typeSpec ID LPAREN parms RPAREN stmt
                 {
-                    $$ = newDeclNode(FuncK, line);
+                    $$ = newDeclNode(FuncK, $2->linenum);
+                    $$->expType = $1->expType;
                     $$->attr.name = $2->svalue;
-                    $$->child[0] = $1; 
-                    $$->child[1] = $4; 
-                    $$->child[2] = $6; 
+                    $$->child[0] = $4;
+                    $$->child[1] = $6; 
+
+                    if (syntaxTree == NULL) {
+                        syntaxTree = $$;
+                    } else {
+                        addSibling(syntaxTree, $$);
+                    }    
                 }
             | ID LPAREN parms RPAREN stmt
                 {
-                    $$ = newDeclNode(FuncK, line);
+                    $$ = newDeclNode(FuncK, $1->linenum);
+                    $$->expType = Void;
                     $$->attr.name = $1->svalue;
-                    $$->expType = Void;  // Not expression but used for type checking.
-                    $$->child[0] = $3; 
-                    $$->child[1] = $5; 
+                    $$->child[0] = $3;
+                    $$->child[1] = $5;
+                    if (syntaxTree == NULL) {
+                        syntaxTree = $$;
+                    } else {
+                        addSibling(syntaxTree, $$);
+                    }
                 }
             ;
 parms       : parmList { $$ = $1; }
@@ -189,7 +208,12 @@ parmTypeList : typeSpec parmIdList
                     {
                         $$ = $2;
                         $2->expType = $1->expType;
-                        // what to do now, sibling activities ?
+                        treeNode* temp = $$->sibling;
+                        while (temp != NULL)
+                        {
+                            temp->expType = $1->expType;
+                            temp = temp->sibling;
+                        }
                     }
              ;
 parmIdList  : parmIdList COMMA parmId { $1->sibling = $3; }
@@ -197,9 +221,10 @@ parmIdList  : parmIdList COMMA parmId { $1->sibling = $3; }
             ;
 parmId      : ID 
                 {
-                    $$ = newDeclNode(ParamK, line);
-                    $$->attr.name = $1->svalue;
-                    $$->expType = UndefinedType;
+                    TreeNode *temp = newDeclNode(ParamK, $1->linenum);
+                    temp->attr.name = $1->svalue;
+                    temp->expType = UndefinedType;
+                    $$ = temp;
                 }
             | ID LBRACK RBRACK
                 {
@@ -219,7 +244,7 @@ stmt        : expStmt { $$ = $1; }
 expStmt     : exp SEMI { $$ = $1; }
             | SEMI 
                 { 
-                    $$ = newStmtNode(NullK, line);
+                    $$ = NULL;
                 }
             ;
 compoundStmt : LCURLY localDecls stmtList RCURLY
@@ -227,26 +252,42 @@ compoundStmt : LCURLY localDecls stmtList RCURLY
                     $$ = newStmtNode(CompoundK, line);
                     $$->expType = UndefinedType; // For type checking
                     $$->child[0] = $2;
+                    $$->child[1] = $3;
                 }
              ;
 localDecls  : localDecls scopedVarDecl
                 {
-                    
+                    if ($1 == NULL)
+                    {
+                        $$ = $2;
+                    }
+                    else
+                    {
+                        $$ = $1;
+                        addSibling($1, $2);
+                    }
                 }
             | /* empty */
                 {
-                    //$$ = newDeclNode(VarK, line);
-                    //$$.attr.op = Void;  // Could also be undefined ?
-                    //$$.subkind.decl = // define the scope ?
+                    $$ = NULL;
                 }
             ;
 stmtList    : stmtList stmt
                 {
-                    $$ = $1;
+                    if ($1 == NULL)
+                    {
+                        $$ = $2;
+                    }
+                    else
+                    {
+                        $$ = $1;
+                        addSibling($1, $2);
+                    }
                 }
             | /* empty */
                 {
                     //$$ = newStmtNode(NullK, line); 
+                    $$ = NULL;
                 }
             ;
 selectStmt  : IF simpleExp THEN stmt ELSE stmt
@@ -271,21 +312,24 @@ iterStmt    : WHILE simpleExp DO stmt
                 }
             | FOR ID EQ iterRange DO stmt
                 {
-                    $$ = newStmtNode(LoopK, line);
-                    $$->attr.name = $2->svalue; 
+                    $$ = newStmtNode(LoopK, $2->linenum);
+                    $$->attr.name = $2->svalue;
+                    $$->child[0]->expType = Integer;
+                    $$->child[0]->attr.name = $2->svalue;
+                    $$->child[0] = newDeclNode(VarK, $2->linenum);
                     $$->child[0] = $4; 
                     $$->child[1] = $6; 
                 }
             ;
 iterRange   : simpleExp TO simpleExp
                 {
-                    $$ = newStmtNode(RangeK, line);
+                    $$ = newStmtNode(RangeK, $2->linenum);
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                 }
             | simpleExp TO simpleExp BY simpleExp
                 {
-                    $$ = newStmtNode(RangeK, line);
+                    $$ = newStmtNode(RangeK, $2->linenum);
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                     $$->child[2] = $5; 
@@ -293,72 +337,80 @@ iterRange   : simpleExp TO simpleExp
             ;
 returnStmt  : RETURN SEMI
                 {
-                    $$ = newStmtNode(ReturnK, line);
+                    $$ = newStmtNode(ReturnK, $1->linenum);
                 }
             | RETURN exp SEMI
                 {
-                    $$ = newStmtNode(ReturnK, line);
+                    $$ = newStmtNode(ReturnK, $1->linenum);
                     $$->child[0] = $2; 
                 }
             ;
 breakStmt   : BREAK SEMI
                 {
-                    $$ = newStmtNode(BreakK, line);
+                    $$ = newStmtNode(BreakK, $1->linenum);
                 }
             ;
 exp         : mutable EQ exp
                 {
-                    $$ = newExpNode(AssignK, line);
+                    $$ = newExpNode(AssignK, $1->lineno);
                     $$->attr.op = EQ;   // set token type (same as in bison)
+                    $$->attr.name = "=";
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                 }
             | mutable PLUSEQ exp // opK
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->lineno);
                     $$->attr.op = PLUSEQ;   // set token type (same as in bison)
+                    $$->attr.name = "+=";
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                 }
             | mutable MINUSEQ exp
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->lineno);
                     $$->attr.op = MINUSEQ;   // set token type (same as in bison)
+                    $$->attr.name = "-=";
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                 }
             | mutable TIMESEQ exp
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->lineno);
                     $$->attr.op = TIMESEQ;   // set token type (same as in bison)
+                    $$->attr.name = "*=";
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                 }
             | mutable DIVEQ exp
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->lineno);
                     $$->attr.op = DIVEQ;   // set token type (same as in bison)
+                    $$->attr.name = "/=";
                     $$->child[0] = $1; 
                     $$->child[1] = $3; 
                 }
             | mutable PLUSPLUS
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->lineno);
                     $$->attr.op = PLUSPLUS;   // set token type (same as in bison)
+                    $$->attr.name = "++";
                     $$->child[0] = $1; 
                 }
             | mutable MINUSMINUS
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->lineno);
                     $$->attr.op = MINUSMINUS;   // set token type (same as in bison)
+                    $$->attr.name = "--";
                     $$->child[0] = $1; 
                 }
             | simpleExp { $$ = $1; }
             ;
 simpleExp   : simpleExp OR andExp
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $3->lineno);
                     $$->attr.op = OR;   // set token type (same as in bison)
+                    $$->attr.name = "OR";
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -369,8 +421,9 @@ simpleExp   : simpleExp OR andExp
             ;
 andExp      : andExp AND unaryRelExp
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $3->lineno);
                     $$->attr.op = AND;   // set token type (same as in bison)
+                    $$->attr.name = "AND";
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -381,8 +434,9 @@ andExp      : andExp AND unaryRelExp
             ;
 unaryRelExp : NOT unaryRelExp
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $2->lineno);
                     $$->attr.op = NOT;   // set token type (same as in bison)
+                    $$->attr.name = "NOT";
                     $$->child[0] = $2;
                 }
             | relExp 
@@ -392,7 +446,7 @@ unaryRelExp : NOT unaryRelExp
             ;
 relExp      : minmaxExp relop minmaxExp
                 {
-                    $$ = newExpNode($2->subkind.exp, line); 
+                    $$ = $2; 
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -403,39 +457,44 @@ relExp      : minmaxExp relop minmaxExp
             ;
 relop       : LTEQ 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = LTEQ;   // set token type (same as in bison)
+                    $$->attr.name = "<=";
                 }
             | LT 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = LT;   // set token type (same as in bison)
+                    $$->attr.name = "<";
                 }
             | GT 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = GT;   // set token type (same as in bison)
+                    $$->attr.name = ">";
                 }
             | GTEQ 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = GTEQ;   // set token type (same as in bison)
+                    $$->attr.name = ">=";
                 }
             | EQEQ 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = EQEQ;   // set token type (same as in bison)
+                    $$->attr.name = "==";
                 }
             | NOTEQ 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = NOTEQ;   // set token type (same as in bison)
+                    $$->attr.name = "!=";
                 }
             ;
 minmaxExp   : minmaxExp minmaxop sumExp
                 {
-                    $$ = newExpNode(OpK, line);
-                    $$->attr.op = $2->attr.op; 
+                    $$ = $2; 
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -444,20 +503,21 @@ minmaxExp   : minmaxExp minmaxop sumExp
 minmaxop    : SEMIGT 
                 {
                     // MIN 
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = SEMIGT;
+                    $$->attr.name = "MIN";
                 }
             | SEMILT 
                 {
                     // MAX
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = SEMILT;
+                    $$->attr.name = "MAX";
                 }
             ;
 sumExp      : sumExp sumop mulExp
                 {
-                    $$ = newExpNode(OpK, line);
-                    $$->attr.op = $2->attr.op;
+                    $$ = $2;
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -465,19 +525,20 @@ sumExp      : sumExp sumop mulExp
             ;
 sumop       : PLUS
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = PLUS;
+                    $$->attr.name = "+";
                 }
             | MINUS
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = MINUS;
+                    $$->attr.name = "-";
                 }
             ;
 mulExp      : mulExp mulop unaryExp
                 {
-                    $$ = newExpNode(OpK, line);
-                    $$->attr.op = TIMES;
+                    $$ = $2;
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -485,58 +546,63 @@ mulExp      : mulExp mulop unaryExp
             ;
 mulop       : TIMES 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = TIMES;
+                    $$->attr.name = "*";
                 }
             | DIVIDE
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = DIVIDE;
+                    $$->attr.name = "/";
                 }
             | MOD
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = MOD;
+                    $$->attr.name = "%";
                 }
             ;
 unaryExp    : unaryop unaryExp
                 {
-                    $$ = newExpNode(OpK, line);
-                    $$->attr.op = $1->attr.op;
+                    $$ = $1;
                     $$->child[0] = $2;
                 }
             | factor { $$ = $1; }
             ;
 unaryop     : MINUS 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = MINUS;
+                    $$->attr.name = "-";
                 }
             | TIMES 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = TIMES;
                 }
             | QUESTION 
                 {
-                    $$ = newExpNode(OpK, line);
+                    $$ = newExpNode(OpK, $1->linenum);
                     $$->attr.op = QUESTION;
+                    $$->attr.name = "?";
                 }
             ;
-factor      : immutable { $$ = $1; }
-            | mutable { $$ = $1; }
+factor      : immutable 
+            | mutable 
             ;
 mutable     : ID
                 {
-                    $$ = newExpNode(IdK, line);
+                    $$ = newExpNode(IdK, $1->linenum);
                     $$->attr.name = $1->svalue;
                 }
             | ID LBRACK exp RBRACK
                 {
-                    $$ = newExpNode(IdK, line);
-                    $$->isArray = 1;
-                    $$->attr.name = $1->svalue;
-                    $$->child[0] = $3; 
+                    $$ = newExpNode(OpK, $1->linenum);
+                    $$->attr.name = "[";
+                    $$->child[0] = newExpNode(IdK, $1->linenum);
+                    $$->child[0]->attr.name = $1->svalue;
+                    $$->child[1] = $3;
                 }
             ;
 immutable   : LPAREN exp RPAREN
@@ -549,12 +615,12 @@ immutable   : LPAREN exp RPAREN
                 }
             | constant
                 {
-                    $$ = newExpNode(ConstantK, line);   
+                    $$ = $1;  
                 }
             ;
 call        : ID LPAREN args RPAREN
                 {
-                    $$ = newExpNode(CallK, line);
+                    $$ = newExpNode(CallK, $1->linenum);
                     $$->attr.name = $1->svalue;
                     $$->child[0] = $3; 
                 }
@@ -568,41 +634,40 @@ args        : argList { $$ = $1; }
 argList     : argList COMMA exp
                 {
                     $$ = $1;  // should this be a decl node ??
-                    $$->child[0] = $3;
+                    addSibling($$, $3);
                 }
             | exp
                 {
-                    $$ = newExpNode(CallK, line); 
-                    $$->child[0] = $1;
+                    $$ = $1;
                 }
             ;
 constant    : NUMCONST
                 {
-                    $$ = newExpNode(ConstantK, line);
+                    $$ = newExpNode(ConstantK, $1->linenum);
                     $$->expType = Integer;
                     $$->attr.value = $1->nvalue;
                 }
             | CHARCONST
                 {
-                    $$ = newExpNode(ConstantK, line);
+                    $$ = newExpNode(ConstantK, $1->linenum);
                     $$->expType = Char;
                     $$->attr.cvalue = $1->cvalue;
                 }
             | STRINGCONST
                 {
-                    $$ = newExpNode(ConstantK, line);
+                    $$ = newExpNode(ConstantK, $1->linenum);
                     $$->expType = String;
                     $$->attr.string = $1->svalue;
                 }
             | TRUE
                 {
-                    $$ = newExpNode(ConstantK, line);
+                    $$ = newExpNode(ConstantK, $1->linenum);
                     $$->attr.value = 1; //1 fior true
                     $$->expType = Boolean;
                 }
             | FALSE
                 {
-                    $$ = newExpNode(ConstantK, line);
+                    $$ = newExpNode(ConstantK, $1->linenum);
                     $$->attr.value = 0; //0 for false
                     $$->expType = Boolean;
                 }
