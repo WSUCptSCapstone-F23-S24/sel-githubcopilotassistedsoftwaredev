@@ -10,7 +10,7 @@
 extern int yylex();
 extern FILE *yyin;
 extern int yydebug;
-extern int line;
+
 
 #define YYERROR_VERBOSE
 //// any C/C++ functions you want here that might be used in grammar actions below
@@ -115,7 +115,7 @@ scopedVarDecl : STATIC typeSpec varDeclList SEMI
 varDeclList : varDeclList COMMA varDeclInit
                 {
                     $$ = $1;
-                    $$->sibling = $3;
+                    addSibling($$, $3);
                 }
             | varDeclInit
                 {
@@ -134,13 +134,13 @@ varDeclInit : varDeclId
             ;
 varDeclId   : ID
                 {
-                    $$ = newDeclNode(VarK, line);
+                    $$ = newDeclNode(VarK, $1->linenum);
                     $$->attr.name = $1->svalue;
                          
                 }
             | ID LBRACK NUMCONST RBRACK
                 {
-                    $$ = newDeclNode(VarK, line);
+                    $$ = newDeclNode(VarK, $1->linenum);
                     $$->attr.name = $1->svalue;
                     $$->isArray = 1;
                 }
@@ -197,7 +197,7 @@ parms       : parmList { $$ = $1; }
             ;
 parmList    : parmList SEMI parmTypeList
                 {
-                    $1->sibling = $3;
+                    addSibling($1, $3);
                 }
             | parmTypeList
                 {
@@ -216,7 +216,7 @@ parmTypeList : typeSpec parmIdList
                         }
                     }
              ;
-parmIdList  : parmIdList COMMA parmId { $1->sibling = $3; }
+parmIdList  : parmIdList COMMA parmId { addSibling($1, $3); }
             | parmId  { $$ = $1; }
             ;
 parmId      : ID 
@@ -228,7 +228,7 @@ parmId      : ID
                 }
             | ID LBRACK RBRACK
                 {
-                    $$ = newExpNode(IdK, line);
+                    $$ = newDeclNode(ParamK, $1->linenum);
                     $$->attr.name = $1->svalue;
                     $$->expType = UndefinedType;
                     $$->isArray = 1;
@@ -249,7 +249,7 @@ expStmt     : exp SEMI { $$ = $1; }
             ;
 compoundStmt : LCURLY localDecls stmtList RCURLY
                 {
-                    $$ = newStmtNode(CompoundK, line);
+                    $$ = newStmtNode(CompoundK, $1->linenum);
                     $$->expType = UndefinedType; // For type checking
                     $$->child[0] = $2;
                     $$->child[1] = $3;
@@ -286,27 +286,27 @@ stmtList    : stmtList stmt
                 }
             | /* empty */
                 {
-                    //$$ = newStmtNode(NullK, line); 
+                    //$$ = newStmtNode(NullK, $1->linenum); 
                     $$ = NULL;
                 }
             ;
 selectStmt  : IF simpleExp THEN stmt ELSE stmt
                     {
-                        $$ = newStmtNode(IfK, line);
+                        $$ = newStmtNode(IfK, $1->linenum);
                         $$->child[0] = $2; 
                         $$->child[1] = $4; 
                         $$->child[2] = $6; 
                     }
             | IF simpleExp THEN stmt
                     {
-                        $$ = newStmtNode(IfK, line);
+                        $$ = newStmtNode(IfK, $1->linenum);
                         $$->child[0] = $2; 
                         $$->child[1] = $4; 
                     }
             ;
 iterStmt    : WHILE simpleExp DO stmt
                 {
-                    $$ = newStmtNode(WhileK, line);
+                    $$ = newStmtNode(WhileK, $1->linenum);
                     $$->child[0] = $2; 
                     $$->child[1] = $4; 
                 }

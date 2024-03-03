@@ -4,77 +4,77 @@
 /* Procedure printToken prints a token 
  * and its lexeme to the  file
  */
-void printToken(OpKind type, char* token, int lineno)
-{ 
-  printf("*******************   %x   ******************", type);
-  switch (type)
-  { case IF: printf("if [line: %d]", lineno); break;
-    case OR: printf("or [line: %d]", lineno); break;
-    case AND: printf("and [line: %d]", lineno); break;
-    case ELSE: printf("else [line: %d]", lineno); break;
-    case INT: printf("int [line: %d]", lineno); break;
-    case BOOL: printf("bool [line: %d]", lineno); break;
-    case THEN: printf("then [line: %d]", lineno); break;
-    case BY: printf("by [line: %d]", lineno); break;
-    case DO: printf("do [line: %d]", lineno); break;
-    case BREAK: printf("break [line: %d]", lineno); break;
-    case STATIC: printf("static [line: %d]", lineno); break;
-    case CHAR: printf("char [line: %d]", lineno); break;
-    case TRUE: printf("true [line: %d]", lineno); break;
-    case FALSE: printf("false [line: %d]", lineno); break;
-    case FOR: printf("for [line: %d]", lineno); break;
-    case TO: printf("to [line: %d]", lineno); break;
-    case RETURN: printf("return [line: %d]", lineno); break;
-    case NOT: printf("not [line: %d]", lineno); break;
-    case WHILE: printf("while [line: %d]", lineno); break;
-    case MOD: printf("%% [line: %d]", lineno); break;
-    case EQEQ: printf("== [line: %d]", lineno); break;
-    case NOTEQ: printf("!= [line: %d]", lineno); break;
-    case EQ: printf("= [line: %d]", lineno); break;
-    case PLUS: printf("+ [line: %d]", lineno); break;
-    case PLUSPLUS: printf("++ [line: %d]", lineno); break;
-    case PLUSEQ: printf("+= [line: %d]", lineno); break;
-    case MINUS: printf("- [line: %d]", lineno); break;
-    case MINUSMINUS: printf("-- [line: %d]", lineno); break;
-    case MINUSEQ: printf("-= [line: %d]", lineno); break;
-    case TIMES: printf("* [line: %d]", lineno); break;
-    case TIMESEQ: printf("*= [line: %d]", lineno); break;
-    case DIVIDE: printf("/ [line: %d]", lineno); break;
-    case DIVEQ: printf("/= [line: %d]", lineno); break;
-    case LT: printf("< [line: %d]", lineno); break;
-    case SEMILT: printf(":<: [line: %d]", lineno); break;
-    case LTEQ: printf("<= [line: %d]", lineno); break;
-    case GT: printf("> [line: %d]", lineno); break;
-    case SEMIGT: printf(":>: [line: %d]", lineno); break;
-    case GTEQ: printf(">= [line: %d]", lineno); break;
-    case LPAREN: printf("( [line: %d]", lineno); break;
-    case RPAREN: printf(") [line: %d]", lineno); break;
-    case LCURLY: printf("{ [line: %d]", lineno); break;
-    case RCURLY: printf("} [line: %d]", lineno); break;
-    case LBRACK: printf("[ [line: %d]", lineno); break;
-    case RBRACK: printf("] [line: %d]", lineno); break;
-    case COLON: printf(": [line: %d]", lineno); break;
-    case SEMI: printf("; [line: %d]", lineno); break;
-    case QUESTION: printf("? [line: %d]", lineno); break;
-    case COMMA: printf(". [line: %d]", lineno); break;
+//void printToken(OpKind type, char* token, int lineno)
+//{ 
+  //printf("%s [line: %d]\n", token, lineno);
+  // switch (type)
+  // { case IF: printf("if [line: %d]", lineno); break;
+  //   case OR: printf("or [line: %d]", lineno); break;
+  //   case AND: printf("and [line: %d]", lineno); break;
+  //   case ELSE: printf("else [line: %d]", lineno); break;
+  //   case INT: printf("int [line: %d]", lineno); break;
+  //   case BOOL: printf("bool [line: %d]", lineno); break;
+  //   case THEN: printf("then [line: %d]", lineno); break;
+  //   case BY: printf("by [line: %d]", lineno); break;
+  //   case DO: printf("do [line: %d]", lineno); break;
+  //   case BREAK: printf("break [line: %d]", lineno); break;
+  //   case STATIC: printf("static [line: %d]", lineno); break;
+  //   case CHAR: printf("char [line: %d]", lineno); break;
+  //   case TRUE: printf("true [line: %d]", lineno); break;
+  //   case FALSE: printf("false [line: %d]", lineno); break;
+  //   case FOR: printf("for [line: %d]", lineno); break;
+  //   case TO: printf("to [line: %d]", lineno); break;
+  //   case RETURN: printf("return [line: %d]", lineno); break;
+  //   case NOT: printf("not [line: %d]", lineno); break;
+  //   case WHILE: printf("while [line: %d]", lineno); break;
+  //   case MOD: printf("%% [line: %d]", lineno); break;
+  //   case EQEQ: printf("== [line: %d]", lineno); break;
+  //   case NOTEQ: printf("!= [line: %d]", lineno); break;
+  //   case EQ: printf("= [line: %d]", lineno); break;
+  //   case PLUS: printf("+ [line: %d]", lineno); break;
+  //   case PLUSPLUS: printf("++ [line: %d]", lineno); break;
+  //   case PLUSEQ: printf("+= [line: %d]", lineno); break;
+  //   case MINUS: printf("- [line: %d]", lineno); break;
+  //   case MINUSMINUS: printf("-- [line: %d]", lineno); break;
+  //   case MINUSEQ: printf("-= [line: %d]", lineno); break;
+  //   case TIMES: printf("* [line: %d]", lineno); break;
+  //   case TIMESEQ: printf("*= [line: %d]", lineno); break;
+  //   case DIVIDE: printf("/ [line: %d]", lineno); break;
+  //   case DIVEQ: printf("/= [line: %d]", lineno); break;
+  //   case LT: printf("< [line: %d]", lineno); break;
+  //   case SEMILT: printf(":<: [line: %d]", lineno); break;
+  //   case LTEQ: printf("<= [line: %d]", lineno); break;
+  //   case GT: printf("> [line: %d]", lineno); break;
+  //   case SEMIGT: printf(":>: [line: %d]", lineno); break;
+  //   case GTEQ: printf(">= [line: %d]", lineno); break;
+  //   case LPAREN: printf("( [line: %d]", lineno); break;
+  //   case RPAREN: printf(") [line: %d]", lineno); break;
+  //   case LCURLY: printf("{ [line: %d]", lineno); break;
+  //   case RCURLY: printf("} [line: %d]", lineno); break;
+  //   case LBRACK: printf("[ [line: %d]", lineno); break;
+  //   case RBRACK: printf("] [line: %d]", lineno); break;
+  //   case COLON: printf(": [line: %d]", lineno); break;
+  //   case SEMI: printf("; [line: %d]", lineno); break;
+  //   case QUESTION: printf("? [line: %d]", lineno); break;
+  //   case COMMA: printf(". [line: %d]", lineno); break;
 
-    case CHARCONST:
-      printf("CHARCONST: %s [line: %d]\n",token, lineno);
-      break;
-    case STRINGCONST:
-      printf("STRINGCONST: %s [line: %d]\n",token, lineno);
-      break;
-    case ID:
-      printf("ID, name= %s [line: %d]\n",token, lineno);
-      break;
-    case NUMCONST:
-      printf("NUMCONST, val= %s [line: %d]\n",token, lineno);
-      break;
+  //   case CHARCONST:
+  //     printf("CHARCONST: %s [line: %d]\n",token, lineno);
+  //     break;
+  //   case STRINGCONST:
+  //     printf("STRINGCONST: %s [line: %d]\n",token, lineno);
+  //     break;
+  //   case ID:
+  //     printf("ID, name= %s [line: %d]\n",token, lineno);
+  //     break;
+  //   case NUMCONST:
+  //     printf("NUMCONST, val= %s [line: %d]\n",token, lineno);
+  //     break;
 
-    default: /* should never happen */
-      printf("Unknown token: %s [line: %d]\n",token , lineno);
-  }
-}
+  //   default: /* should never happen */
+  //     printf("Unknown token: %s [line: %d]\n",token , lineno);
+  //}
+//}
 
 /* Function newStmtNode creates a new statement
  * node for syntax tree construction
@@ -250,8 +250,8 @@ void printTree( TreeNode * tree )
     else if (tree->nodekind==ExpK)
     { switch (tree->subkind.exp) {
         case OpK:
-          printf("Op: ");
-          printToken(tree->attr.op, tree->attr.string, tree->lineno);
+          printf("Op: %s [line: %d]\n", tree->attr.name, tree->lineno);
+          //printToken(tree->attr.op, tree->attr.string, tree->lineno);
           break;
         case ConstantK:
           printf("Const: of type %s: %s [line: %d]\n", expKindtoString(tree->expType), isBooltoString(tree), tree->lineno);

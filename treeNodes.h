@@ -18,8 +18,12 @@
 // Kinds of Operators
 // these are the token numbers for the operators same as in flex
 
-typedef int OpKind;  
-
+/*typedef enum {IF, OR, AND, ELSE, INT, BOOL, THEN, BY, DO, BREAK, STATIC, CHAR, TRUE, FALSE, FOR, TO, RETURN, NOT, WHILE,
+              MOD, EQEQ, NOTEQ, EQ, PLUS, PLUSPLUS, PLUSEQ, MINUS, MINUSMINUS, MINUSEQ, TIMES, TIMESEQ, DIVIDE, DIVEQ, LT,
+              SEMILT, LTEQ, GT, SEMIGT, GTEQ, LPAREN, RPAREN, LCURLY, RCURLY, LBRACK, RBRACK, COLON, SEMI, QUESTION, COMMA,
+              CHARCONST, STRINGCONST, ID, NUMCONST} OpKind;  
+*/
+typedef int OpKind;
 // Kinds of Statements
 typedef enum {DeclK, StmtK, ExpK} NodeKind;
 
@@ -63,7 +67,7 @@ typedef struct treeNode
     // extra properties about the node depending on type of the node
     union                                  // relevant data to type -> attr
     {
-        OpKind op;                         // type of token (same as in bison)
+        int op;                         // type of token (same as in bison)
         int value;                         // used when an integer constant or boolean
         unsigned char cvalue;               // used when a character
         char *string;                      // used when a string constant
