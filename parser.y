@@ -740,6 +740,6 @@ int main(int argc, char *argv[])
     else{
         yyparse();
     }
-    if (printSyntaxTree) printTree(syntaxTree);
+    if (printSyntaxTree) printTree(syntaxTree, -1, 0, 0);
     return 0;
 }

@@ -153,9 +153,9 @@ static int indentno = 0;
 #define UNINDENT indentno-=2
 
 /* printSpaces indents by printing spaces */
-static void printSpaces(void)
+static void printSpaces(int indentation)
 { int i;
-  for (i=0;i<indentno;i++)
+  for (i=0;i<indentation;i++)
     printf(" ");
 }
 
@@ -205,101 +205,103 @@ char *isBooltoString(TreeNode *tree) {
 /* procedure printTree prints a syntax tree to the 
  *  file using indentation to indicate subtrees
  */
-void printTree( TreeNode * tree )
-{ int i;
-  INDENT;
-  while (tree != NULL) {
-    printSpaces();
-    if (tree->nodekind==StmtK)
-    { switch (tree->subkind.stmt) {
-        case NullK:
-          printf("Null [line: %d]\n", tree->lineno);
-          break;
-        case ElsifK:
-          printf("Else if [line: %d]\n", tree->lineno);
-          break;
-        case IfK:
-          printf("If [line: %d]\n", tree->lineno);
-          break;
-        case WhileK:
-          printf("While [line: %d]\n", tree->lineno);
-          break;
-        case LoopK:
-          printf("Loop [line: %d]\n", tree->lineno);
-          break;
-        case LoopForeverK:
-          printf("Loop Forever [line: %d]\n", tree->lineno);
-          break;
-        case CompoundK:
-          printf("Compound [line: %d]\n", tree->lineno);
-          break;
-        case RangeK:
-          printf("Range [line: %d]\n", tree->lineno);
-          break;
-        case ReturnK:
-          printf("Return [line: %d]\n", tree->lineno);
-          break;
-        case BreakK:
-          printf("Break [line: %d]\n", tree->lineno);;
-          break;
-        default:
-          printf("Unknown ExpNode kind [line: %d]\n", tree->lineno);
-          break;
-      }
-    }
-    else if (tree->nodekind==ExpK)
-    { switch (tree->subkind.exp) {
-        case OpK:
-          printf("Op: %s [line: %d]\n", tree->attr.name, tree->lineno);
-          //printToken(tree->attr.op, tree->attr.string, tree->lineno);
-          break;
-        case ConstantK:
-          printf("Const: of type %s: %s [line: %d]\n", expKindtoString(tree->expType), isBooltoString(tree), tree->lineno);
-          break;
-        case IdK:
-          printf("Id: %s [line: %d]\n",tree->attr.name, tree->lineno);
-          break;
-        case AssignK:
-          printf("Assign: %s [line: %d]\n",tree->attr.string, tree->lineno);
-          break;
-        case InitK:
-          printf("Init: %s [line: %d]\n",tree->attr.string, tree->lineno);
-          break;
-        case CallK:
-          printf("Call: %s [line: %d]\n",tree->attr.string, tree->lineno);
-          break;
-        default:
-          printf("Unknown ExpNode kind [line: %d]\n", tree->lineno);
-          break;
-      }
-    }
-    else if (tree->nodekind==DeclK)
-    { switch (tree->subkind.exp) {
-        case VarK:
-          printf("Var: %s of type %s [line: %d]\n",isArraytoString(tree), expKindtoString(tree->expType), tree->lineno);
-          break;
-        case FuncK:
-          printf("Func: %s returns type %s [line: %d]\n",tree->attr.name, expKindtoString(tree->expType), tree->lineno);
-          break;
-        case ParamK:
-          printf("Param: %s of type %s [line: %d]\n",isArraytoString(tree), expKindtoString(tree->expType), tree->lineno);
-          break;
-        default:
-          printf("Unknown ExpNode kind [line: %d]\n", tree->lineno);
-          break;
-      }
-    }
-    else printf("Unknown node kind\n");
-    for (i=0;i<MAXCHILDREN;i++)
-    {
-      if (tree->child != NULL)
-      //printf("Child: %d ", i);
-      printTree(tree->child[i]);
-    }
-
-    tree = tree->sibling;
+void printTree( TreeNode * tree, int child, int indentation, int sibling )
+{ 
+  if (tree == NULL) return;
+  printSpaces(indentation);
+  if(child >= 0){
+    printf("Child: %d  ", (child));
   }
-  UNINDENT;
+  else if(sibling >= 1){
+    printf("Sibling: %d  ", (sibling));
+  }
+  if (tree->nodekind==StmtK)
+  { switch (tree->subkind.stmt) {
+      case NullK:
+        printf("Null [line: %d]\n", tree->lineno);
+        break;
+      case ElsifK:
+        printf("Else if [line: %d]\n", tree->lineno);
+        break;
+      case IfK:
+        printf("If [line: %d]\n", tree->lineno);
+        break;
+      case WhileK:
+        printf("While [line: %d]\n", tree->lineno);
+        break;
+      case LoopK:
+        printf("Loop [line: %d]\n", tree->lineno);
+        break;
+      case LoopForeverK:
+        printf("Loop Forever [line: %d]\n", tree->lineno);
+        break;
+      case CompoundK:
+        printf("Compound [line: %d]\n", tree->lineno);
+        break;
+      case RangeK:
+        printf("Range [line: %d]\n", tree->lineno);
+        break;
+      case ReturnK:
+        printf("Return [line: %d]\n", tree->lineno);
+        break;
+      case BreakK:
+        printf("Break [line: %d]\n", tree->lineno);;
+        break;
+      default:
+        printf("Unknown ExpNode kind [line: %d]\n", tree->lineno);
+        break;
+    }
+  }
+  else if (tree->nodekind==ExpK)
+  { switch (tree->subkind.exp) {
+    case OpK:
+      printf("Op: %s [line: %d]\n", tree->attr.name, tree->lineno);
+        //printToken(tree->attr.op, tree->attr.string, tree->lineno);
+        break;
+      case ConstantK:
+        printf("Const: of type %s: %s [line: %d]\n", expKindtoString(tree->expType), isBooltoString(tree), tree->lineno);
+        break;
+      case IdK:
+        printf("Id: %s [line: %d]\n",tree->attr.name, tree->lineno);
+        break;
+      case AssignK:
+        printf("Assign: %s [line: %d]\n",tree->attr.string, tree->lineno);
+        break;
+      case InitK:
+        printf("Init: %s [line: %d]\n",tree->attr.string, tree->lineno);
+        break;
+      case CallK:
+        printf("Call: %s [line: %d]\n",tree->attr.string, tree->lineno);
+        break;
+      default:
+        printf("Unknown ExpNode kind [line: %d]\n", tree->lineno);
+        break;
+    }
+  }
+  else if (tree->nodekind==DeclK)
+  { switch (tree->subkind.exp) {
+      case VarK:
+        printf("Var: %s of type %s [line: %d]\n",isArraytoString(tree), expKindtoString(tree->expType), tree->lineno);
+        break;
+      case FuncK:
+        printf("Func: %s returns type %s [line: %d]\n",tree->attr.name, expKindtoString(tree->expType), tree->lineno);
+        break;
+      case ParamK:
+        printf("Param: %s of type %s [line: %d]\n",isArraytoString(tree), expKindtoString(tree->expType), tree->lineno);
+        break;
+      default:
+        printf("Unknown ExpNode kind [line: %d]\n", tree->lineno);
+        break;
+    }
+  }
+  else printf("Unknown node kind\n");
+  for (int i=0;i<MAXCHILDREN;i++)
+  {
+    if (tree->child != NULL)
+    printTree(tree->child[i], i, indentation+2, 0);
+  }
+
+  printTree(tree->sibling, -1, indentation, (sibling + 1));
 }
 
 // add a TreeNode to a list of siblings.
