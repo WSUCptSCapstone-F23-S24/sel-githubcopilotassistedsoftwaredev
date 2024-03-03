@@ -115,6 +115,9 @@ The implementation for this approach utilizes a PostgreSQL database. Check each 
 
 [Sprint Report 3](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint3Report.md)
 
+[Sprint Report 4](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint4Report.md)
+
+[Sprint Report 5](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint5Report.md)
 
 
 ## License
