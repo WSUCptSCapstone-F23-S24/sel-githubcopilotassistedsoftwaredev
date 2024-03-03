@@ -15,7 +15,7 @@
 This sprint, we continued with the same teams. Our CoPilot team consisted of Joshua Maloy and Jay-Ar Arsenio. Our NoAI team consisted of Joshua Burke and Ryan Luders. We completed the second part of case study 2. We will begin a new case study, giving us a better opportunity to determine the effectiveness of generative AI in the software development process.
 
 
-[Here]() is a video showing off what we completed in this second sprint aside from documentation.
+[Here](https://youtu.be/NaOq3S9oQ3k) is a video showing off what we completed in this second sprint aside from documentation.
 
 ## Unfinished Work
 Our teams have wrapped up all planned work this sprint for the current case study, and we will begin the new case study.
