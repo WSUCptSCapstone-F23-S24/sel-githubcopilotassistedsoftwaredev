@@ -23,11 +23,13 @@ Our teams have wrapped up all planned work this sprint for the current case stud
 ## Completed Issues
 Both teams completed duplicate issues. These issues can be found at the links below. Additionally, the issues are labeled with the team members who completed the issues.
  * NoAI Team
-	* [Create Print Tree Method](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/120)
+ 	* [Create Recognizer](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/122)
 	* [Add Tree Node Structure](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/118)
+	* [Create Print Tree Method](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/120)
  * CoPilot Team
-	* [Creat Print Tree Method](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/119)
-	* [Add Tree Node Structure](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/117)
+	* [Create Recognizer](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/121)	
+	* [Add Tree Node Structure](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/117) 	
+	* [Create Print Tree Method](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/issues/119)
 
  
 ## Retrospective Summary
