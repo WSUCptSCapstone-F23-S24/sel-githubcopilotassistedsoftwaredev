@@ -156,7 +156,7 @@ static int indentno = 0;
 static void printSpaces(int indentation)
 { int i;
   for (i=0;i<indentation;i++)
-    printf(" ");
+    printf(".  ");
 }
 
 char * expKindtoString(ExpType expType)
@@ -298,7 +298,7 @@ void printTree( TreeNode * tree, int child, int indentation, int sibling )
   for (int i=0;i<MAXCHILDREN;i++)
   {
     if (tree->child != NULL)
-    printTree(tree->child[i], i, indentation+2, 0);
+    printTree(tree->child[i], i, indentation+1, 0);
   }
 
   printTree(tree->sibling, -1, indentation, (sibling + 1));
