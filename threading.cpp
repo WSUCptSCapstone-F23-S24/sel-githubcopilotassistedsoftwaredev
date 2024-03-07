@@ -12,13 +12,20 @@ void *thread_func( void *arg ) {
     delete (int *)arg;
     for ( int loop = 0; loop < 10; loop++ ) { // repeat 10 times
         // enter the critical section
+        pthread_mutex_lock(&mutex);
         while ( turn != id ) {
         // wait until the (id - 1)th thread signals me.
+        pthread_cond_wait(&cond[id], &mutex);
         }
         cout << "thread["<< id << "] got " << loop << "th turn" << endl;
         // signal the next thread
+        turn = (turn + 1) % nThreads;
+        pthread_cond_signal(&cond[turn]);
         // leave the critical section
+        pthread_mutex_unlock(&mutex);
     }
+
+    pthread_exit(NULL);
 }
 
 int main( int argc, char *argv[] ) {
