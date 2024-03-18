@@ -8,20 +8,21 @@
 
 using namespace std;
 
-struct timeval start, end; // maintain starting and finishing wall time.
+struct timeval startTime;
+struct timeval endTime; // maintain starting and finishing wall time.
 
 void startTimer() 
 { 
     // memorize the starting time
-    gettimeofday(&start, NULL);
+    gettimeofday(&startTime, NULL);
 }
 
 void stopTimer(char *str) 
 { 
     // checking the finishing time and computes the elapsed time
-    gettimeofday(&end, NULL);
+    gettimeofday(&endTime, NULL);
     cout << str << "'s elapsed time\t= "
-        << ((end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec))
+        << ((endTime.tv_sec - startTime.tv_sec) * 1000000 + (endTime.tv_usec - startTime.tv_usec))
         << endl;
 }
 
@@ -61,7 +62,26 @@ int main( int argc, char *argv[] )
     close(fd);
     // standard i/o
     // write the same program as unix i/o but use fopen(), fgetc(), fread(), and fclose( )
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL) 
+    {
+        cerr << filename << " not found" << endl;
+        return -1;
+    }
+
+    startTimer();
     // use fgetc() if bytes == 1
+    if (bytes == 1) 
+    {
+        while (fgetc(fp) != EOF);
+    }
+    else 
+    {
+        while (fread(buf, 1, bytes, fp) > 0);
+    }
+    stopTimer("Standard I/O");
+    fclose(fp); 
+
     
     return 0;
 }
