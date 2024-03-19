@@ -18,7 +18,8 @@ void startTimer( )
 void stopTimer( char *str ) 
 { // checking the finishing time and computes the elapsed time gettimeofday( &end, NULL );
    cout << str << "'s elapsed time\t= "
-   << ( ( end.tv_sec - start.tv_sec ) * 1000000 + (end.tv_usec - start.tv_usec ) ) << endl;
+   << ( ( end.tv_sec - start.tv_sec ) * 1000000 + (end.tv_usec - start.tv_usec ) ) 
+   << endl;
 }
 
 int main( int argc, char *argv[] ) 
