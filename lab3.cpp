@@ -61,9 +61,17 @@ int main( int argc, char *argv[] )
       return -1;
    }
    startTimer( );
-   while(feof(fp) == 0)
-   {
-      fread(buf, bytes, 1, fp);
+   if(bytes == 1){
+      while(feof(fp) == 0)
+      {
+         fgetc(fp); // fgetc here !!
+      }
+   }
+   else{
+      while(feof(fp) == 0)
+      {
+         fread(buf, bytes, 1, fp); // no fgetc !!
+      }
    }
    stopTimer( "Standard fread" );
    fclose(fp);
