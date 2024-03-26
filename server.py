@@ -1,7 +1,9 @@
+import os
 import socket
 import threading
 import tkinter as tk
 from tkinter import scrolledtext
+from tkinter import filedialog
 
 # Server configuration
 SERVER_HOST = 'localhost'
@@ -31,24 +33,44 @@ text_area.pack()
 entry_field = tk.Entry(window)
 entry_field.pack()
 
-def send_message(event=None):
+def send_message():
     message = entry_field.get()
+    if os.path.isfile(message):
+        with open(message, 'rb') as file:
+            for client in clients:
+                client.sendall(b'FILE')
+                client.sendfile(file, 0)
+    else:
+        text_area.insert('end', f'Server: {message}\n')
+        for client in clients:
+            client.sendall(b'TEXT')
+            client.sendall(message.encode('utf-8'))
     entry_field.delete(0, 'end')
-    text_area.insert('end', f'Server: {message}\n')
-    for client in clients:
-        client.sendall(message.encode('utf-8'))
 
-# Bind the Enter key to the send_message function
-window.bind('<Return>', send_message)
+def send_file():
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        with open(file_path, 'rb') as file:
+            for client in clients:
+                client.sendall(b'FILE')
+                client.sendfile(file, 0)
+        text_area.insert('end', f'Server: {file_path}\n')
+
 
 # Create a new send button
 send_button = tk.Button(window, text="Send", command=send_message)
 send_button.pack()
 
+send_file_button = tk.Button(window, text="Send File", command=send_file)
+send_file_button.pack()
+
 def handle_client(client_socket, client_address):
     while True:
+        # Receive flag from the client
+        flag = client_socket.recv(4)
+
         # Receive data from the client
-        data = client_socket.recv(1024).decode('utf-8')
+        data = client_socket.recv(1024)
         
         if not data:
             # If no data received, client has disconnected
@@ -56,10 +78,23 @@ def handle_client(client_socket, client_address):
             clients.remove(client_socket)
             client_socket.close()
             break
-        
-        # Display the message in the text widget
-        text_area.insert('end', f'Client {client_address}: {data}\n')
 
+        if flag == b'TEXT':
+            # Display the received message in the text area
+            text_area.insert('end', f'Client {client_address}: {data.decode()}\n')
+        elif flag == b'FILE':
+            # Save the received file
+            with open('received_file', 'wb') as file:
+                file.write(data)
+            
+            # Display the received file path in the text widget
+            text_area.insert('end', f'Client {client_address}: received_file\n')
+
+            # Read and display the contents of the file
+            with open('received_file', 'r') as file:
+                contents = file.read()
+            text_area.insert('end', "Contents: " + contents + "\n")
+        
 def start_server():
     text_area.insert('end', f'Server is listening on {SERVER_HOST}:{SERVER_PORT}\n')
     
@@ -76,6 +111,22 @@ def start_server():
 
 # Start the server in a new thread
 threading.Thread(target=start_server).start()
+
+def on_close():
+    # Close all client sockets
+    for client_socket in clients:
+        client_socket.close()
+        print("Client socket closed")
+
+    # Close the server socket
+    server_socket.close()
+    print("Server socket closed")
+
+    # Stop the script
+    window.destroy()
+
+# Set the function to be called when the window is closed
+window.protocol("WM_DELETE_WINDOW", on_close)
 
 # Start the GUI
 window.mainloop()
