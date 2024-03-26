@@ -1,5 +1,7 @@
-#can you genorate the Client code of a client-server app using sockets. the app should facilitate instant message typechat functionality wherein messages sent from a client terminal should be visible on the serverterminal and vice versa. The app should also support file shares between the client and serverterminals. The client-server app interface can be either graphical or textual.
 import socket
+import threading
+from tkinter import *
+from tkinter import scrolledtext
 
 # Server address and port
 server_address = 'localhost'
@@ -11,18 +13,49 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect to the server
 client_socket.connect((server_address, server_port))
 
-while True:
-    # Send message to the server
-    message = input("Enter your message: ")
-    client_socket.send(message.encode())
+# Create a GUI window
+window = Tk()
+window.title("Client")
 
-    # Receive response from the server
-    response = client_socket.recv(1024).decode()
-    print("Server response:", response)
+# Create a text area in the window for the chat
+chat_area = scrolledtext.ScrolledText(window)
+chat_area.pack()
+
+# Create an entry field for the message
+message_field = Entry(window)
+message_field.pack()
+
+def receive_message():
+    while True:
+        # Receive response from the server
+        response = client_socket.recv(1024).decode()
+        chat_area.insert(END, "Server: " + response + "\n")
+
+def send_message(event):
+    # Send message to the server
+    message = message_field.get()
+    client_socket.send(message.encode())
+    message_field.delete(0, END)
+    chat_area.insert(END, "You: " + message + "\n")
 
     # Check if the client wants to exit
     if message.lower() == 'exit':
-        break
+        client_socket.close()
+        window.quit()
 
-# Close the socket
-client_socket.close()
+def send_message_button_click():
+    send_message(None)
+
+# Bind the Enter key to the send_message function
+window.bind("<Return>", send_message)
+
+# Create a send button
+send_button = Button(window, text="Send", command=send_message_button_click)
+send_button.pack()
+
+# Create a new thread for receiving messages from the server
+receive_thread = threading.Thread(target=receive_message)
+receive_thread.start()
+
+# Start the GUI
+window.mainloop()

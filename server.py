@@ -1,6 +1,7 @@
-#can you genorate the Server code of a client-server app using sockets. the app should facilitate instant message typechat functionality wherein messages sent from a client terminal should be visible on the serverterminal and vice versa. The app should also support file shares between the client and serverterminals. The client-server app interface can be either graphical or textual.
 import socket
 import threading
+import tkinter as tk
+from tkinter import scrolledtext
 
 # Server configuration
 SERVER_HOST = 'localhost'
@@ -18,6 +19,32 @@ server_socket.listen()
 # List to store connected clients
 clients = []
 
+# Create a new window
+window = tk.Tk()
+window.title("Server")
+
+# Create a new text widget
+text_area = scrolledtext.ScrolledText(window)
+text_area.pack()
+
+# Create a new entry field
+entry_field = tk.Entry(window)
+entry_field.pack()
+
+def send_message(event=None):
+    message = entry_field.get()
+    entry_field.delete(0, 'end')
+    text_area.insert('end', f'Server: {message}\n')
+    for client in clients:
+        client.sendall(message.encode('utf-8'))
+
+# Bind the Enter key to the send_message function
+window.bind('<Return>', send_message)
+
+# Create a new send button
+send_button = tk.Button(window, text="Send", command=send_message)
+send_button.pack()
+
 def handle_client(client_socket, client_address):
     while True:
         # Receive data from the client
@@ -25,17 +52,16 @@ def handle_client(client_socket, client_address):
         
         if not data:
             # If no data received, client has disconnected
-            print(f'Client {client_address} has disconnected')
+            text_area.insert('end', f'Client {client_address} has disconnected\n')
             clients.remove(client_socket)
             client_socket.close()
             break
         
-        # Broadcast the received message to all connected clients
-        for client in clients:
-            client.sendall(data.encode('utf-8'))
+        # Display the message in the text widget
+        text_area.insert('end', f'Client {client_address}: {data}\n')
 
 def start_server():
-    print(f'Server is listening on {SERVER_HOST}:{SERVER_PORT}')
+    text_area.insert('end', f'Server is listening on {SERVER_HOST}:{SERVER_PORT}\n')
     
     while True:
         # Accept a new connection
@@ -48,5 +74,8 @@ def start_server():
         client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address))
         client_thread.start()
 
-# Start the server
-start_server()
+# Start the server in a new thread
+threading.Thread(target=start_server).start()
+
+# Start the GUI
+window.mainloop()
