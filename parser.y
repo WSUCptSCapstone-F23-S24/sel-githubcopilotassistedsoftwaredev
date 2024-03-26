@@ -23,7 +23,7 @@ void yyerror(const char *msg) {
     TokenData *tokenData;
 }
 //// your %token statements defining token classes
-%token <tokenData> NUMBER ID BOOLFALSE BOOLTRUE QUIT CHARCONST NUMCONST STRINGCONST
+%token <tokenData> NUMBER ID BOOLCONST QUIT CHARCONST NUMCONST STRINGCONST KEYWORD SYMBOL
 %type <tokenData> token
 
 %%
@@ -34,14 +34,14 @@ tokenlist: tokenlist token
 //// put all your tokens here and individual actions 
 //// DO NOT DO THE C- GRAMMAR (this is a test program) 
 //// the grammar for assignment 1 is super simple
-token: NUMBER { printf("Line %d Token: NUMBER Value: %f\n", $1->linenum, $1->nvalue); }
-     | ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
-     | BOOLFALSE { printf("Line %d Token: BOOLFALSE\n", $1->linenum); }
-     | BOOLTRUE { printf("Line %d Token: BOOLTRUE\n", $1->linenum); }
+token: ID { printf("Line %d Token: ID Value: %s\n", $1->linenum, $1->svalue); }
+     | BOOLCONST { printf("Line %d Token: BOOLCONST Value: %d Input: %s\n", $1->linenum, $1->nvalue, $1->svalue); }
      | QUIT { printf("Line %d Token: QUIT\n", $1->linenum); exit(0); }
      | CHARCONST { printf("Line %d Token: CHARCONST Value: %c\n", $1->linenum, $1->cvalue); }
-     | NUMCONST { printf("Line %d Token: NUMCONST Value: %d\n", $1->linenum, $1->nvalue); }
-     | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s\n", $1->linenum, $1->svalue); }
+     | NUMCONST { printf("Line %d Token: NUMCONST Value: %d  Input: %d\n", $1->linenum, $1->nvalue, $1->nvalue); }
+     | STRINGCONST { printf("Line %d Token: STRINGCONST Value: %s Len: %d Input: %s\n", $1->linenum, $1->svalue, $1->nvalue, $1->svalue); }
+     | KEYWORD { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
+     | SYMBOL { printf("Line %d Token: %s\n", $1->linenum, $1->svalue); }
      ;
 %%
 
@@ -50,9 +50,22 @@ token: NUMBER { printf("Line %d Token: NUMBER Value: %f\n", $1->linenum, $1->nva
 int main(int argc, char *argv[]) 
 {
     ////  some of your stuff here
+    if (argc > 1) {
+        if ((yyin = fopen(argv[1], "r"))) {
+            // file open successful
+            yyparse();
+            fclose(yyin);
+        }
+        else {
+            // failed to open file
+            printf("ERROR: failed to open \'%s\'\n", argv[1]);
+            exit(1);
+        }
+    }
+    else{
+        yyparse();
+    }
     //yydebug = 1;
-    while(1)
-        yyparse(); // Start the parsing process
 
     return 0;
 }
