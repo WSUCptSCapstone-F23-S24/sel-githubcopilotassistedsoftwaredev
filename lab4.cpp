@@ -35,6 +35,15 @@ int main( int argc, char *argv[] ) {
     else
     {
         // behave as server
+        int serverSocket = socket.getServerSocket();
+        char recvBuffer[SIZE];
+        while ( true )
+        {
+            if ( socket.recv( recvBuffer, SIZE ) )
+            {
+                cout << recvBuffer << endl;
+            }
+        }
         
     }
     
