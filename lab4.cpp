@@ -21,14 +21,13 @@ int main( int argc, char *argv[] ) {
     char *message = (char*)malloc(SIZE);
     // if message is null, the program should behave as a server,
     // otherwise as a client.
-    if (argc == 3) // then it's a Server
+if (argc == 3) // then it's a Server
     {
         UdpMulticast server = UdpMulticast(argv[1], stoi(argv[2])); // idk what im doin here
         int server_socket = server.getServerSocket();
-        if (server.recv(message, (size_t) SIZE))
+        while (server.recv(message, (size_t) SIZE))
             cout << message << endl;
-        else
-            cout << "message not received" << endl;
+        server.~UdpMulticast();
     }
     else // it's a Client
     {
@@ -36,6 +35,7 @@ int main( int argc, char *argv[] ) {
         int client_socket = client.getClientSocket();
         if (!client.multicast(argv[3]))
             cout << "message failed" << endl;
+        client.~UdpMulticast();
     }
 
     return 0;
