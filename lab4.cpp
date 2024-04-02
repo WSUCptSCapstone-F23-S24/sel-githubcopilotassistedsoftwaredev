@@ -24,10 +24,13 @@ int main( int argc, char *argv[] ) {
     if (argc == 3) // then it's a Server
     {
         UdpMulticast server = UdpMulticast(argv[1], (int) argv[2]); // idk what im doin here
+        int server_socket = server.getServerSocket();
+        bool recv = server.recv(message, SIZE);
     }
     else // it's a Client
     {
-
+        UdpMulticast client = UdpMulticast(argv[1], (int) argv[2]); // idk what im doin here
+        int client_socket = client.getClientSocket();
     }
 
     return 0;
