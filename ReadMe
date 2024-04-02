@@ -1,0 +1,6 @@
+SEL - CaseStudy 3 Part 4 NoAI
+
+To compile:  g++ lab4.cpp UdpMulticast.cpp -o lab4
+To run:
+    Client: ./lab4 238.255.255.255 5001 Hello!
+    Server: ./lab4 238.255.255.255 5001
