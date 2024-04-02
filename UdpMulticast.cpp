@@ -69,10 +69,15 @@ int UdpMulticast::getServerSocket() {
 }
 
 bool UdpMulticast::recv(char buf[], int size) {
+   cout << "1" << endl;
    bzero(buf, size);
+   cout << "2" << endl;
    struct sockaddr src_addr;
+   cout << "3" << endl;
    socklen_t src_addrlen = sizeof(src_addr);
+   cout << "4" << endl;
    bzero((char*)&src_addr, src_addrlen);
+   cout << "5" << endl;
    if (recvfrom(serverSd, buf, size, 0, &src_addr, &src_addrlen) < 0) {
       perror("recvfrom");
       return false;
