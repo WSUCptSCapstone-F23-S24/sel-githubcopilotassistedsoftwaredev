@@ -13,6 +13,8 @@
 ## Work Summary (Developer Facing)
 This sprint we continued to work in teams to complete the 4 parts of case study 3. For each part we rotated the CoPilot and NoAI teams. We completed case study 3 and going forward our teams will work on our poster and presentation for our project.
 
+[Here](https://www.youtube.com/watch?v=GLrl-HlVLF0) is a video showing off what we completed in this second sprint aside from documentation.
+
 ## Unfinished Work
 Our teams have wrapped up all planned work this sprint for the current case study, and we will begin work on our poster and presentation for our project.
 
