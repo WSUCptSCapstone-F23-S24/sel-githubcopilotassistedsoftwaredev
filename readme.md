@@ -55,10 +55,7 @@ Run the application
 python app.py
 ```
 
-## Case Study 1: Front-End UI Application
-[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-Copilot)
-
-[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-NoAI)
+# Case Study 1: Front-End UI Application
 
 ### Functionality
 This front-end application serves as a place to gather useful data about business in a certain area. A user of this application can accomplish the following.
@@ -77,30 +74,108 @@ This front-end application serves as a place to gather useful data about busines
 * Search businesses by category.
 * View businesses within the specified category.
 
-### Known Problems
-Currently, the application has no database back-end, so data on the front-end is either inaccurate or nonexistant. The back-end implementation has now been completed in Case Study 1 Part 2, below.
+## Case Study 1 Part 1: Building the GUI
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-Copilot)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-NoAI)
+ * Joshua Burke
+ * Ryan Luders
+
 
 ## Case Study 1 Part 2: Backend-End UI Application (no sql)
-[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-CoPilot)
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-part2-approach1-CoPilot)
+ * Joshua Burke
+ * Ryan Luders
 
-[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI)
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI/Approach%201)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
 
-### Functionality
-This back-end implementation complements the previously made front-end GUI. All features explained above are now fully implemented using built-in python datatypes.
-
-### Known Problems
-The implementation for this approach utilizes dictionaries and other standard python data structures. 
 
 ## Case Study 1 Part 2: Backend-End UI Application (PostgreSQL)
-[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-approach2-CoPilot)
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-part2-approach2-CoPilot)
+ * Joshua Burke
+ * Ryan Luders
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI/Approach%202)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
 
-### Functionality
-This back-end implementation complements the previously made front-end GUI. All features explained above are now fully implemented using a PostgreSQL database.
 
-### Known Problems
-The implementation for this approach utilizes a PostgreSQL database. Check each branch to see specifics on the structure of the database.
+# Case Study 2: Building a C- Compiler
+
+## Functionality
+This is a console application that can take c- code inputted as a file or raw text and output a abstract syntax tree.
+
+One can utilize flag -p to print the tree and -d to run debugging.
+
+This is written in Flex/Bison using C.
+
+## Case Study 2 Part 1: Building The Lexer
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part1-Copilot)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part1-NoAI)
+ * Joshua Burke
+ * Ryan Luders
+
+
+## Case Study 2 Part 2: Building The Grammar Recognizer
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part2-CoPilot)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part2-NoAI)
+ * Joshua Burke
+ * Ryan Luders
+
+
+# Case Study 3: Assorted Systems Programming
+This case study investigates multithreading, file interactions, client-server architecture, and UDP multicasting.
+
+
+## Case Study 3 Part 1: Simple Multithreading
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part1-CoPilot)
+ * Joshua Burke
+ * Ryan Luders
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part1-NoAI)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+
+ ## Case Study 3 Part 2: File Interactions
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part2-Copilot)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part2-NoAI)
+ * Joshua Burke
+ * Ryan Luders
+
+
+## Case Study 3 Part 3: Client-Server Architecture
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part3-CoPilot)
+ * Joshua Burke
+ * Ryan Luders
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part3-NoAI)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+
+## Case Study 3 Part 4: UDP Multicasting
+[CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part4-Copilot)
+ * Joshua Maloy
+ * Jay-Ar Arsenio
+
+[NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part4-NoAI)
+ * Joshua Burke
+ * Ryan Luders
+
 
 ## Additional Documentation
 [Project Report](https://1drv.ms/w/s!AtV6T549EE8KhMxf6vPN9ng4BZY9ig?e=nBTRYv)
@@ -118,6 +193,10 @@ The implementation for this approach utilizes a PostgreSQL database. Check each 
 [Sprint Report 4](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint4Report.md)
 
 [Sprint Report 5](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint5Report.md)
+
+[Sprint Report 6](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint6Report.md)
+
+[Sprint Report 7](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint7Report.md)
 
 
 ## License
