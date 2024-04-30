@@ -14,7 +14,18 @@ This sprint we worked on creating the poster for our presentation which includes
 We have completed all case studies and all the issues for those case studies. Now we are finizaling our final report with the results of our findings.
 
 ## Completed Issues
-All issues have been completed by both teams.
+All issues have been completed by both teams and can be viewed through the previous sprint reports.
+ * Case Study 1
+    * [Sprint 1](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint1Report.md)
+    * [Sprint 2](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint2Report.md)
+    * [Sprint 3](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint3Report.md)
+ * Case Study 2
+    * [Sprint 4](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint4Report.md)
+    * [Sprint 5](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint5Report.md)
+ * Case Study 3
+    * [Sprint 6](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/blob/main/Sprint6Report.md)
+
+
 
 ## Retrospective Summary
 Here's what went well:
