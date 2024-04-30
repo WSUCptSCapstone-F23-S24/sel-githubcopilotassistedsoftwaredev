@@ -1,4 +1,4 @@
-# Sprint 5 Report (03/03/24 - 4/02/2024)
+# Sprint 6 Report (03/03/24 - 4/02/2024)
 
 ## What's New
  * Started and Competed Case Study 3
