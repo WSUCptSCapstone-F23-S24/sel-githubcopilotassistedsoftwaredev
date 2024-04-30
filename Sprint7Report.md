@@ -3,9 +3,10 @@
 ## What's New
  * Created poster and Presented Project
  * Finalizing final report
+ * Final client demo
 
 ## Work Summary (Developer Facing)
-This sprint we worked on creating the poster for our presentation which includes our deductions and conclusions derived from the project. Completed our presentation and won the poster competition.
+This sprint we worked on creating the poster for our presentation which includes our deductions and conclusions derived from the project. We also completed our final client demo, presented project, and won the poster competition.
 
 [Here](https://onedrive.live.com/edit?id=A4F103D9E4F7AD5!86022&resid=A4F103D9E4F7AD5!86022&ithint=file%2cpptx&authkey=!ABsExLPVRG8EqTo&wdo=2&cid=0a4f103d9e4f7ad5) is the poster created for our poster presentation.
 
