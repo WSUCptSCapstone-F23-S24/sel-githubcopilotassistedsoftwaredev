@@ -10,8 +10,7 @@ This sprint we worked on creating the poster for our presentation which includes
 
 [Here](https://onedrive.live.com/edit?id=A4F103D9E4F7AD5!86022&resid=A4F103D9E4F7AD5!86022&ithint=file%2cpptx&authkey=!ABsExLPVRG8EqTo&wdo=2&cid=0a4f103d9e4f7ad5) is the poster created for our poster presentation.
 
-[Here](https://www.youtube.com/watch?v=GLrl-HlVLF0](https://youtu.be/YsDL2bC_93U)) is a video showing off what we completed in this second sprint aside from documentation.
-
+[Here](https://www.youtube.com/watch?v=GLrl-HlVLF0](https://youtu.be/YsDL2bC_93U)) is a video showing off what we completed in sprint 7.
 ## Unfinished Work
 We have completed all case studies and all the issues for those case studies. Now we are finizaling our final report with the results of our findings.
 
