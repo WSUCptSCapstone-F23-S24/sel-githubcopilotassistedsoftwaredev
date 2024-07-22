@@ -76,32 +76,20 @@ This front-end application serves as a place to gather useful data about busines
 
 ## Case Study 1 Part 1: Building the GUI
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-Copilot)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-NoAI)
- * Joshua Burke
- * Ryan Luders
 
 
 ## Case Study 1 Part 2: Backend-End UI Application (no sql)
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-part2-approach1-CoPilot)
- * Joshua Burke
- * Ryan Luders
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI/Approach%201)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 
 ## Case Study 1 Part 2: Backend-End UI Application (PostgreSQL)
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy1-part2-approach2-CoPilot)
- * Joshua Burke
- * Ryan Luders
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-NoAI/Approach%202)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 
 # Case Study 2: Building a C- Compiler
@@ -115,22 +103,14 @@ This is written in Flex/Bison using C.
 
 ## Case Study 2 Part 1: Building The Lexer
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part1-Copilot)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part1-NoAI)
- * Joshua Burke
- * Ryan Luders
 
 
 ## Case Study 2 Part 2: Building The Grammar Recognizer
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part2-CoPilot)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy2-part2-NoAI)
- * Joshua Burke
- * Ryan Luders
 
 
 # Case Study 3: Assorted Systems Programming
@@ -139,42 +119,26 @@ This case study investigates multithreading, file interactions, client-server ar
 
 ## Case Study 3 Part 1: Simple Multithreading
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part1-CoPilot)
- * Joshua Burke
- * Ryan Luders
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part1-NoAI)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 
  ## Case Study 3 Part 2: File Interactions
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part2-Copilot)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part2-NoAI)
- * Joshua Burke
- * Ryan Luders
 
 
 ## Case Study 3 Part 3: Client-Server Architecture
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part3-CoPilot)
- * Joshua Burke
- * Ryan Luders
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part3-NoAI)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 
 ## Case Study 3 Part 4: UDP Multicasting
 [CoPilot Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part4-Copilot)
- * Joshua Maloy
- * Jay-Ar Arsenio
 
 [NoAI Branch](https://github.com/WSUCptSCapstone-F23-S24/sel-githubcopilotassistedsoftwaredev/tree/CaseStudy3-Part4-NoAI)
- * Joshua Burke
- * Ryan Luders
 
 
 ## Additional Documentation
